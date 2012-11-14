@@ -1,0 +1,17 @@
+9cdc304443848e4874fb9818f2eb9c94 *DESCRIPTION
+df390c53434517b304ac5db487184641 *NAMESPACE
+5c9d766d5acf1e0376ffb8558d869b6e *R/CV.G.Poisson.R
+31f017c462430367f185e16015021c72 *R/CV.Poisson.R
+e351cdb2b7d983f8fe16b556816ac8a4 *R/Performance.G.Poisson.R
+7ffd82e2351ce7c1753240fbabc839f0 *R/Performance.Poisson.R
+1da0571bba570c1d80b1dd2266098280 *R/SampleSize.Poisson.R
+21168548c554194acf71c460b22e4cbd *data/TableCV.PoissonD.rda
+1947d270b038213b06e36b274171dae9 *data/TableCV.PoissonM.rda
+ebf4441024cf4cfb8d3802329695f68d *man/CV.G.Poisson.Rd
+043955205cc6fa9e2839e1481a746ef2 *man/CV.Poisson.Rd
+30e6f2ab6ff41d20d5b17612010f8e14 *man/Performance.G.Poisson.Rd
+bd0c770e8c40c8c23eb1b9473ecdec25 *man/Performance.Poisson.Rd
+6e993b67db5eb0e984c7851289ad71eb *man/SampleSize.Poisson.Rd
+60a543e70b1cad4bc2bd76a07613a736 *man/Sequential-package.Rd
+26057bda24415dfb9322aa7f5ee68874 *man/TableCV.PoissonD.Rd
+2f6added460f64478b367161bf2cdab6 *man/TableCV.PoissonM.Rd
