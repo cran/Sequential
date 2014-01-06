@@ -10,14 +10,13 @@ CV.Poisson(SampleSize,D=0,M=1,alpha=0.05)
 \item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the epected number of events under the null hypothesis. 
 "SampleSize" must be greater than 0. To avoid very large computation times, we suggest not using values greater than 1000. Typically,
 this is not a major restriction. For example, for "RR=1.1" and "alpha=0.01", the statistical power is approximately 1 for a maximum 
-sample size greater than 500.}
+sample size greater than 500. There is no default value.}
 \item{D}{The expected number of events under the null hypothesis before the first look at the data. The default is "D=0", which is
 also the best choice. This means that there is no delay in the start of the sequential analyses. It is required that 'D<=SampleSize'. }
-\item{M}{The minimum number of events needed before the null hypothesis can be rejected. The default is 'M=1', 
+\item{M}{The minimum number of events needed before the null hypothesis can be rejected. The default value is 'M=1', 
 which means that even a single event can reject the null hypothesis if it occurs sufficiently early. A good rule of thumb is to set 'M=4'
 (Kulldorff and Silva, 2012).}
-\item{alpha}{The significance level. The default is 'alpha=0.05'. To avoid numerical complications on the calculation 
-of the critical value for values of alpha close to one, 'alpha' must be in the range (0,0.5].}
+\item{alpha}{The significance level, or the type 1 error probability, which is the probability of rejecting the null hypothesis when it is true. The alpha level  must be in the range (0,0.5]. The default value is 'alpha=0.05'.}
 }
 \details{
 For the continuous Poisson based MaxSPRT, \code{CV.Poisson} calculates the upper boundary used to 
@@ -67,14 +66,14 @@ for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
 
 \examples{
 
-## Calculates the upper boundary critical value for continuous sequential analysis with
+## Critical value for continuous sequential analysis with
 #  a maximum sample size of ten expected cases under the null hypothesis, requiring at 
-#  least 3 events to reject the null, and with a statistical significance level of 0.05.
+#  least 3 events to reject the null, and with a significance level of 0.05:
 
 CV.Poisson(SampleSize=10,D=0,M=3,alpha=0.05)
 
-## In this eample, no critical value eist that will give the desired 0.05 alpha level
-#  eactly. Instead, a criticical value is provided that makes the alpha as large as
+## In the next example, no critical value exist that will give the desired 0.05 alpha level
+#  exactly. Instead, a criticical value is provided that makes the alpha as large as
 #  possible without exceeding 0.05.
 
  CV.Poisson(SampleSize=3,D=3,M=1,alpha=0.05)

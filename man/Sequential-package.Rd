@@ -5,17 +5,17 @@
 \title{Exact Critical Values, Power, Time to Signal and Sample Size for Sequential Analysis with Poisson Data.}
 \description{
 This package calculates the critical values (CV) to perform continuous or group sequential surveillance by using
-the maximized sequential probability ratio test statistic (MaxSPRT) for Poisson data. The critical value provided are based on a Wald type upper boundary, 
-which is flat on the scale of the log-likelihood ratio, and a predetermined maximum sample size. The package \code{Sequential} also calculates the 
-statistical power and the expected time to signal when the null is rejected for different relative risks. For any desired power and relative risk,
+the maximized sequential probability ratio test statistic (MaxSPRT) for Poisson data. The critical value provided is based on a Wald type upper boundary, 
+which is flat on the scale of the log-likelihood ratio, and on a predetermined maximum sample size. The package \code{Sequential} also calculates the 
+statistical power and the expected time to signal when the null hypothesis is rejected. For any desired power and relative risk,
 the package can also calculate the required upper limit on the sample size, and the corresponding expected time to signal. All results are exact, 
 using iterative numerical calculations, rather than using asymptotic theory or computer simulations.}
 \details{
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2012-12-10\cr
+Version: \tab 1.01\cr
+Date: \tab 2014-01-06\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -30,9 +30,6 @@ Index: \tab \cr
 \code{\link[Sequential]{CV.G.Poisson}} \tab Critical Values for Group Sequential Analysis with Poisson Data.\cr
 \code{\link[Sequential]{Performance.G.Poisson}}  \tab Power, Expected Signal Time and Sample Size for Group Sequential\cr
                                                  \tab  Analysis with Poisson Data.\cr
-\code{\link[Sequential]{TableCV.PoissonD}}  \tab Critical Values Table, Continuous Poisson with Delayed Start.\cr
-\code{\link[Sequential]{TableCV.PoissonM}} \tab Critical Values Table, Continuous Poisson with Minimum Case\cr
-                                           \tab Requirement.\cr
 }
 }
 
@@ -130,13 +127,11 @@ for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
 
 \examples{
 
-## Obtain the critical value for a maximum sample size of 10,
-#  alpha equal to 0.05 and minimum number of events to reject the null equal to 3.
+## Critical value for a maximum sample size = 10, alpha = 0.05 and minimum number of events = 3:
 
 cvt<- CV.Poisson(SampleSize=10,D=0,M=3,alpha=0.05)
 
-## Calculate the statistical power and the expected expected time to signal for a relative 
-#  risk equal to 2 and the critical value obtained from the above function.
+## Statistical power and the expected time for RR=2:
 
 #result<- Performance.Poisson(SampleSize=10,D=0,M=3,cv=cvt,RR=2)
 

@@ -1,5 +1,5 @@
 Performance.G.Poisson <-
-function(SampleSize,cv,Looks=5,M=1,RR=1.5){
+function(SampleSize,cv,Looks=1,M=1,RR=2){
 
 LLR <- function(cc,uu) {
 	if(cc<=uu) x=0
@@ -52,14 +52,14 @@ p[1,absorb[1]+1]=1-ppois(absorb[1]-1,mu[1])			# probability of rejecting H0 at t
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
-
+if(imax>1){
 for(i in 2:imax) {
 	for(j in 1:absorb[i])					# This loop calculates the p[][] matix, one column at a time, from left to right
 		for(k in 1:min(j,absorb[i-1]))
 			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,mu[i]-mu[i-1])	# Calculates the standard p[][] cell values
 	for(k in 1:absorb[i-1]) p[i,absorb[i]+1]=p[i,absorb[i]+1]+p[i-1,k]*(1-ppois(absorb[i]-k,mu[i]-mu[i-1]))
 } # end for i	
-
+          }
 
 # Sums up the probabilities of absorbing states when a signal occurs, to get the alpha level
 # ------------------------------------------------------------------------------------------

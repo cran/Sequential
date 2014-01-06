@@ -1,5 +1,5 @@
 Performance.Poisson <-
-function(SampleSize,D=0,M=1,cv,RR=1.5){
+function(SampleSize,D=0,M=1,cv,RR=2){
 
 # ------------------- INPUT VARIABLE ----------------------------------------------------------
 # L = maximum length of surveillance, defined in terms of expected counts under H0

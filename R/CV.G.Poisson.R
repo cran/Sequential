@@ -1,5 +1,5 @@
 CV.G.Poisson <-
-function(SampleSize=30,alpha=0.05,Looks=1,M=1){
+function(SampleSize,alpha=0.05,Looks=1,M=1){
 
 #----------ExactPoisson.R-------------------------------------------------------------------
 # Function that calculates the LLR for a given observed (c) and expected (u) number of cases
@@ -30,11 +30,14 @@ if(alpha<=0|alpha>0.5|is.numeric(alpha)==FALSE){stop("alpha must be a number gre
 if(is.numeric(MinCases)==FALSE|MinCases!=round(MinCases)|MinCases<1){stop("M must be a positive integer.",call. =FALSE)}
 if(T<=0|is.numeric(T)==FALSE){stop("SampleSize must be a positive number.",call. =FALSE)}
 if(is.numeric(Looks)==FALSE|Looks<1|Looks!=round(Looks)){stop("Looks must be a positive integer.",call. =FALSE)}
-if(1-ppois(M-1,Group)<alpha){
-while(1-ppois(M-1,Group)<alpha){M<- M-1}
-M<- M+1
-stop(c("The current M you choose lead to a too conservative test given the selected configuration of SampleSize and Looks. Use M smaller than"," ",M," ", "for this SampleSize."),call. =FALSE)
-                        }
+
+
+                         if(1-ppois(0,T)<alpha|qpois(1-alpha,T)<MinCases){
+                            out<- LLR(MinCases,T)                         
+                            return(out)
+                                      
+                                               }else{ ## number 1
+#--------------------------------------------------------------####
 
 
 Perro_I<- function(CV){
@@ -42,14 +45,14 @@ Perro_I<- function(CV){
 
 absorb = seq(length=imax,from=0,by=0)		# Contains the number of events needed at time mu[i] in order to reject H0
 for(i in 1:imax)
-	while( LLR(absorb[i],mu[i])<CV ) 
+	while(LLR(absorb[i],mu[i])<CV) 
 		absorb[i]=absorb[i]+1;
 
 
 
 imin<- 1
-
-while(absorb[imin]<MinCases){absorb[imin]<- MinCases;imin<- imin+1}
+count<-0
+while(count==0){if(absorb[imin]<MinCases){absorb[imin]<- MinCases;imin<- imin+1};if(absorb[imin]>=MinCases | imin>imax){count<- 1}}
 
 
 
@@ -66,14 +69,14 @@ p[1,absorb[1]+1]=1-ppois(absorb[1]-1,mu[1])			# probability of rejecting H0 at t
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
-
+if(imax>1){
 for(i in 2:imax) {
 	for(j in 1:absorb[i])					# This loop calculates the p[][] matix, one column at a time, from left to right
 		for(k in 1:min(j,absorb[i-1]))
 			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,mu[i]-mu[i-1])	# Calculates the standard p[][] cell values
 	for(k in 1:absorb[i-1]) p[i,absorb[i]+1]=p[i,absorb[i]+1]+p[i-1,k]*(1-ppois(absorb[i]-k,mu[i]-mu[i-1]))
 } # end for i	
-
+          }
 
 # Sums up the probabilities of absorbing states when a signal occurs, to get the alpha level
 # ------------------------------------------------------------------------------------------
@@ -112,7 +115,8 @@ CV1<- CVold
 CV2<- CV
 
 
-imax = ceiling(T/Group)					# The number of tests performed, including final time T.
+imax = ceiling(T/Group)
+					# The number of tests performed, including final time T.
 mu = seq(length=imax,from=Group,by=Group)		# An array of the expected counts at each of the tests
 								# mu[i] is the commulative expected count at the i'th test
 mu[imax]=T							# Sets the expected count at the last test to equal T
@@ -196,5 +200,7 @@ out[1,3:4]<- c(alpha1,alpha2)
 if(length(out)>1){out<- out[2]}
 return(out)
 #return(hist[-1,])
+                                            } ## close number 1
+#--------------------------------------------------------------####
 
 }

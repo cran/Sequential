@@ -1,5 +1,5 @@
 SampleSize.Poisson <-
-function(alpha=0.05,power=0.9,M=1,D=0,RR=1.5,precision=0.000001)
+function(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.000001)
 {  
 
 teste1<- 0
@@ -11,7 +11,7 @@ if(RR<1 & teste1==0){teste1<- 1; out<- c("RR must be >=1.") }
 if(teste1==0 & M>100){teste1<- 1; out<- c("M must be a positive integer in the range [1,100]")}
 if(Late<0 & teste1==0){teste1<- 1; out<- c("Negative values for D does not make sense. Use D>=0.") }
 if(M<1 & teste1==0){teste1<- 1; out<- c("M must be a positive integer in the range[1,100].") }
-if(Late<0 & teste1==0){teste1<- 1; out<- c("Negative values for D does not make sense. Use D>=0.") }
+if(Late<0 & teste1==0){teste1<- 1; out<- c("Negative values for D does not make sense. Use 0<=D<=T.") }
 
 #---------CODE TO CALCULATE POWER, SIGNAL TIME AND SURVEILLANCE TIME FOR GIVEN T
 #######--------------------------------------------------------------------------
@@ -56,7 +56,7 @@ PT<- Performance.Poisson(SampleSize=T,D,M,cv,RR)
 
 cvc<- cv[1,1]
 cvl<- cv[1,2]
-resc<- Performance.Poisson(T,D,M,cvc,RR)
+resc<- Performance.Poisson(SampleSize=T,D,M,cvc,RR)
 resl<- Performance.Poisson(T,D,M,cvl,RR)
 powerc<- resc[1]
 powerl<- resl[1]
@@ -105,7 +105,7 @@ while((pow<power|power+precision<pow)&cont<lim){
                                        Tm<- (T1+T2)/2; cont<- cont+1;result<- faux(Tm, D, M, RR,alpha); pow<- result$Power.SignalTime[1]
                                        poder[cont,1]<- pow
                                        
-                                               }
+                                      }
 L<- list(Tm)
 names(L)<- c("SampleSize")
 return(L)

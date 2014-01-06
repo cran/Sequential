@@ -8,7 +8,7 @@ The metrics calculated are the statistical power, the expected time to signal wh
 rejected and the expected sample size at the end of the analysis whether the null hypothesis was rejected or not. If the user wants to calculate
 the statistical significance level alpha, that can be done by setting RR=1, in which case the power output value is the alpha level.}
 \usage{
-Performance.Poisson(SampleSize, D = 0, M = 1, cv, RR = 1.5)
+Performance.Poisson(SampleSize, D = 0, M = 1, cv, RR = 2)
 }
 \arguments{
 \item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the epected number of events under the null hypothesis. 
@@ -57,13 +57,12 @@ for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
 }
 
 \examples{
-## First, calculate the critical value for an upper limit on the sampel size set at 10 
-#  expected events under the null, and for a significance level of 0.05.
+# Critical value for an upper limit on the sample size equal to 10 and a significance 
+# level equal to 0.05:
 
 cvt<- CV.Poisson(SampleSize=10,D=0,M=1,alpha=0.05)
 
-## Second, calculate the power, expected signal time and expected sample size for a 
-#  relative risk equal to 2.
+## Power, expected signal time and expected sample size for a relative risk equal to 2:
 
 #Performance.Poisson(SampleSize=10,D=0,M=3,cvt,RR=2)  
 

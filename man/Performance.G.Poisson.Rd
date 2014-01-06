@@ -1,6 +1,6 @@
 \name{Performance.G.Poisson}
 \alias{Performance.G.Poisson}
-\title{Power, Expected Signal Time and Expected Length of Serveillance from the Poisson Group MaxSPRT.}
+\title{Power, Expected Signal Time and Expected Length of Serveillance for the Poisson Group MaxSPRT.}
 \description{The \code{Performance.G.Poisson} function calculates several performance 
 metrics for the continuous Poisson based MaxSPRT. The user specifies the upper limit on the sample 
 size (SampleSize), the upper boundary critical value (cv), the maximum number of tests to be perfomed (Looks), the minimum number of events 
@@ -9,16 +9,17 @@ The metrics calculated are the statistical power, the expected time to signal wh
 rejected and the expected sample size at the end of the analysis whether the null hypothesis was rejected or not. If the user wants to calculate
 the statistical significance level alpha, that can be done by setting RR=1, in which case the power output value is the alpha level.}
 \usage{
-Performance.G.Poisson(SampleSize,cv,Looks=5,M=1,RR=1.5)
+Performance.G.Poisson(SampleSize,cv,Looks=1,M=1,RR=2)
 }
 \arguments{
-\item{SampleSize}{the upper limit on the length of surveillance, expressed in terms of the number of events under the null hypothesis. "SampleSize" 
-must be greater than 0 and, aiming to avoid unecessary computational effort, it is suggested to do not use values greater than 1000.}
+\item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the expected number of events under the null hypothesis. 
+"SampleSize" must be greater than 0. To avoid very large computation times, we suggest not using values greater than 1000. Typically,
+this is not a major restriction. For example, for "RR=1.1" and "alpha=0.01", the statistical power is approximately 1 for a maximum 
+sample size greater than 500. There is no default value.}
 \item{cv}{the critical value for a group sequential MaxSPRT test (see \code{\link[Sequential]{CV.G.Poisson}}).}
-\item{Looks}{The maximum number of tests to be performed in the period "SampleSize". It is understood that each test will be performed after each "SampleSize/Looks"
-units with respect to the expected number of cases under the null.}
-\item{M}{the minimum number of cases for which a signal is allowed to occur(default is 1).}
-\item{RR}{the relative risk (>=1) to calculate the power and the expected time to have a signal (default is 1).}
+\item{Looks}{The maximum number of tests to be performed, which is, the number of equally spaced looks at the data if the null hypothesis is never rejected. The value must be an integer greater or equal to 1. The default value is 'Looks=1'.}
+\item{M}{The minimum number of events needed before the null hypothesis can be rejected. The default value is 'M=1'.}
+\item{RR}{the relative risk (>=1) to calculate the power and the expected time to have a signal. The default value is 'RR=2'.}
 }
 \details{
 The function \code{Performance.G.Poisson} calculates the power, the expected time to have a signal and the expected
@@ -56,17 +57,15 @@ for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
 \section{See also}{
 \code{\link[Sequential]{CV.Poisson}}, \code{\link[Sequential]{SampleSize.Poisson}}, \code{\link[Sequential]{CV.G.Poisson}}, 
 
-\code{\link[Sequential]{Performance.Poisson}}, \code{\link[Sequential]{TableCV.PoissonD}}, 
-
-\code{\link[Sequential]{TableCV.PoissonM}}, \code{\link{poisson.test}}
+\code{\link[Sequential]{Performance.Poisson}}, \code{\link{poisson.test}}
 }
 \examples{
-## calculates the critical value for a significance level of 0.05.
+## Critical value for a significance level of 0.05:
 
 cvt<- CV.G.Poisson(SampleSize=30,alpha=0.05,Looks=5,M=1)
 
-## calculates power, expected signal time and expected surveillance time for a 
-#  relative risk equal to 2
+# Power, expected signal time and expected surveillance time for a relative risk equal
+# to 2:
 
 #Performance.G.Poisson(SampleSize=30,cvt,Looks=5,M=1,RR=1.5)
 }
