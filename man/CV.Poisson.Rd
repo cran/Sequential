@@ -15,7 +15,7 @@ sample size greater than 500. There is no default value.}
 also the best choice. This means that there is no delay in the start of the sequential analyses. It is required that 'D<=SampleSize'. }
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. The default value is 'M=1', 
 which means that even a single event can reject the null hypothesis if it occurs sufficiently early. A good rule of thumb is to set 'M=4'
-(Kulldorff and Silva, 2012).}
+(Kulldorff and Silva, 2015).}
 \item{alpha}{The significance level, or the type 1 error probability, which is the probability of rejecting the null hypothesis when it is true. The alpha level  must be in the range (0,0.5]. The default value is 'alpha=0.05'.}
 }
 \details{
@@ -37,30 +37,28 @@ and \code{TableCV.PoissonM}, to speed things up.
 it is not possible to have an Type I error exactly equal to 'alpha'.}
 }
 \author{ Ivair Ramos Silva, Martin Kulldorff.
-
-Maintainer: Ivair Ramos Silva <jamesivair@yahoo.com.br>
-
 }
 \references{
+Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
 
-Ivair R. Silva, Martin Kulldorff. (2012). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Manuscript, to be submitted.
+Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum events to signal. arxiv:1503.01978 [stat.ap].
 
-Jennison, V. and Turnbull, B. (1999), Group Sequential Methods with Applications to Clinical
-Trials, \emph{no. ISBN 0-8493-0316-8, London: Chapman and Hall/CRC}.
+}
 
-Martin Kulldorff, Ivair R. Silva. (2012). Continuous Sequential Analysis with a Delayed Start. Munuscript, under review.
-
-Martin Kulldorff, Robert L. Davis, Margarette Kolczak, Edwin Lewis, Tracy Lieu, and Richard Platt. (2011). A Maximized Sequential Probability Ratio Test 
-for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
-
+\section{Acknowledgements}{
+Development of the CV.Poisson function was funded by:\cr
+-	Food and Drug Administration, Center for Biologics Evaluation and Research, through the Mini-Sentinel Post-Rapid Immunization Safety Monitoring (PRISM) program (v1.0);\cr
+-	National Council of Scientific and Technological Development (CNPq), Brazil (v1.0);\cr
+-	Bank for Development of the Minas Gerais State (BDMG), Brazil (v1.0).
 }
 
 \keyword{Continuous MaxSPRT analysis}
 
 \section{See also}{
-\code{\link[Sequential]{Performance.Poisson}}, \code{\link[Sequential]{Performance.G.Poisson}}, \code{\link[Sequential]{CV.G.Poisson}},
-
-\code{\link[Sequential]{SampleSize.Poisson}}, \code{\link[stats]{poisson.test}}.
+\code{\link[Sequential]{CV.G.Poisson}}: for calculating critical values for group sequential analysis with Poisson data.\cr
+\code{\link[Sequential]{Performance.G.Poisson}}: for calculating the statistical power, expected time to signal and expected time of analysis in group sequential analysis with Poisson data;\cr
+\code{\link[Sequential]{CV.Binomial}}: for calculating critical values in continuous sequential analysis with binomial data;\cr
+\code{\link[Sequential]{Analyze.Binomial}}: for performing sequential analysis with group, continuous or unpredictable sequential fashion. 
 }
 
 
@@ -76,7 +74,7 @@ CV.Poisson(SampleSize=10,D=0,M=3,alpha=0.05)
 #  exactly. Instead, a criticical value is provided that makes the alpha as large as
 #  possible without exceeding 0.05.
 
- CV.Poisson(SampleSize=3,D=3,M=1,alpha=0.05)
+CV.Poisson(SampleSize=3,D=1,M=1,alpha=0.05)
 
 }
 

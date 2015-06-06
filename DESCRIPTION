@@ -1,14 +1,14 @@
 Package: Sequential
 Type: Package
-Title: Exact Sequential Analysis for Poisson Data
-Version: 1.1
-Date: 2014-01-06
+Title: Exact Sequential Analysis for Poisson and Binomial Data
+Version: 2.0
+Date: 2015-06-06
 Author: Ivair Ramos Silva and Martin Kulldorff
 Maintainer: Ivair Ramos Silva <jamesivair@yahoo.com.br>
-Description: Calculates exact critical values to perform continuous or group sequential analysis for Poisson type data using the Maximized Sequential Probability Ratio Test (MaxSPRT) with a Wald type rejection boundary. Also calculates properties such as statistical power, expected time to signal when the null is rejected and maximum sample size needed to obtain a certain power.
+Description: The R Sequential package is designed for performing exact sequential analysis. There are functions to calculate exact critical values, statistical power, expected time to signal and required sample sizes. These calculations can be done for either Poisson or binomial data, for continuous or group sequential analyses, and for different types of rejection boundaries. For group sequential analyses, the group sizes do not have to be specified in advance and, for binomial data, the alpha spending can be arbitrarely settled.
 License: GPL-2
 LazyLoad: yes
-Packaged: 2014-01-16 01:38:26 UTC; Ivair
+Packaged: 2015-06-06 17:17:21 UTC; Ivair
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-01-18 01:13:33
+Date/Publication: 2015-06-07 00:55:54

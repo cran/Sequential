@@ -18,7 +18,7 @@ this is not a major restriction. For example, for "RR=1.1" and "alpha=0.01", the
 sample size greater than 500. There is no default value.}
 \item{cv}{the critical value for a group sequential MaxSPRT test (see \code{\link[Sequential]{CV.G.Poisson}}).}
 \item{Looks}{The maximum number of tests to be performed, which is, the number of equally spaced looks at the data if the null hypothesis is never rejected. The value must be an integer greater or equal to 1. The default value is 'Looks=1'.}
-\item{M}{The minimum number of events needed before the null hypothesis can be rejected. The default value is 'M=1'.}
+\item{M}{The minimum number of events needed before the null hypothesis can be rejected. According to Kulldorff and Silva(2015), a reasonable choice is 'M=4', but the default value is 'M=1', and it must be a positive integer.}
 \item{RR}{the relative risk (>=1) to calculate the power and the expected time to have a signal. The default value is 'RR=2'.}
 }
 \details{
@@ -34,39 +34,34 @@ looks at the accumulated data. In another words, the MaxSPRT statistic is compar
 }
 \value{
 \item{Power}{the statistical power for a given flat upper boundary (CV).}
-\item{Expected time to signal}{the expected time to have a signal.}
-\item{Expected length of surveillance}{the expected length of surveillance.}
+\item{ESignalTime}{the expected time to have a signal.}
+\item{ESampleSize}{the expected sample size at the end of the sequential analysis.}
 }
 \author{Ivair Ramos Silva and Martin Kulldorff
-Maintainer: Ivair Ramos Silva <jamesivair@yahoo.com.br>
 }
 \references{
-
-Ivair R. Silva, Martin Kulldorff. (2012). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Manuscript, to be submitted.
-
-Jennison, V. and Turnbull, B. (1999), Group Sequential Methods with Applications to Clinical
-Trials, \emph{no. ISBN 0-8493-0316-8, London: Chapman and Hall/CRC}.
-
-Martin Kulldorff, Ivair R. Silva. (2012). Continuous Sequential Analysis with a Delayed Start. Munuscript, under review.
-
-Martin Kulldorff, Robert L. Davis, Margarette Kolczak, Edwin Lewis, Tracy Lieu, and Richard Platt. (2011). A Maximized Sequential Probability Ratio Test 
-for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
-
+Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, in press.
+}
+\section{Acknowledgements}{
+Development of the Performance.G.Poisson function was funded by:\cr
+-	Food and Drug Administration, Center for Biologics Evaluation and Research, through the Mini-Sentinel Post-Rapid Immunization Safety Monitoring (PRISM) program (v1.0);\cr
+-	National Council of Scientific and Technological Development (CNPq), Brazil (v1.0);\cr
+-	Bank for Development of the Minas Gerais State (BDMG), Brazil (v1.0).  
 }
 
 \section{See also}{
-\code{\link[Sequential]{CV.Poisson}}, \code{\link[Sequential]{SampleSize.Poisson}}, \code{\link[Sequential]{CV.G.Poisson}}, 
-
-\code{\link[Sequential]{Performance.Poisson}}, \code{\link{poisson.test}}
+\code{\link[Sequential]{Performance.G.Binomial}}: for calculating the statistical power, expected time to signal and expected time of analysis in group sequential analysis with binomial data.\cr
+\code{\link[Sequential]{SampleSize.Binomial}}: for calculating the minimum sample size given a target power in continuous sequential analysis with binomial data.\cr 
+\code{\link[Sequential]{CV.Binomial}}: for calculating critical values in continuous sequential analysis with binomial data.\cr
+\code{\link[Sequential]{Analyze.Binomial}}: for performing sequential analysis with group, continuous or unpredictable sequential fashion.\cr  
+\code{\link[Sequential]{CV.Poisson}}: for calculating critical values for continuous sequential analysis with Poisson data.\cr 
+\code{\link[Sequential]{CV.G.Poisson}}: for calculating critical values for group sequential analysis with Poisson data.
 }
 \examples{
 ## Critical value for a significance level of 0.05:
-
 cvt<- CV.G.Poisson(SampleSize=30,alpha=0.05,Looks=5,M=1)
-
 # Power, expected signal time and expected surveillance time for a relative risk equal
 # to 2:
-
-#Performance.G.Poisson(SampleSize=30,cvt,Looks=5,M=1,RR=1.5)
+(Performance.G.Poisson(SampleSize=30,cv=cvt,Looks=5,M=1,RR=1.5))
 }
 

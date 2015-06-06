@@ -72,8 +72,10 @@ signaltime=time/power
 surveillancetime<- time+(1-power)*L
 
 result<- list(power,signaltime,surveillancetime)
-names(result)<- c("Power","Expected signal time","Expected surveillance time")
+names(result)<- c("Power","ESignalTime","ESampleSize")
 return(result)
 
 
 }
+
+

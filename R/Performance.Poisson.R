@@ -179,7 +179,7 @@ surveillancetime = etime+(1-power)*T
 # ---------------------------
 
 out=matrix(c(power,signaltime,surveillancetime),ncol=3)
-colnames(out)<- c("Power","SignalTime","SurveillanceTime")
+colnames(out)<- c("Power","ESignalTime","ESampleSize")
 return(out)
 
 }
