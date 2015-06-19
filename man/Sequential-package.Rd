@@ -4,7 +4,7 @@
 \docType{package}
 \title{Analysis Support, Critical Values, Power, Time to Signal and Sample Size for Sequential Analysis with Poisson and Binomial Data.}
 \description{
-The R \code{Sequential} package is designed for continuous and group sequential analysis, where statistical hypothesis testing is conducted repeatedly
+\code{Sequential} is designed for continuous and group sequential analysis, where statistical hypothesis testing is conducted repeatedly
 on accumulating data that gradually increases the sample size. This is different from standard statistical analysis, where a single analysis is performed
 using a fixed sample size. It is possible to analyze either Poisson type data or binomial 0/1 type data. For binomial data, it is possible to incorporate an
 off-set term to account for variable matching ratios. For Poisson data, the critical value is based on a Wald-type upper boundary, which is flat on the scale
@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2015-06-06\cr
+Version: \tab 2.0.1\cr
+Date: \tab 2015-06-19\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -92,7 +92,7 @@ but it continuous continuously thereafter, there is an option for that as well, 
 With continuous sequential analysis, investigators can repeatedly analyze the data as often as they want, ensuring that the overall probability of falsely
 rejecting the null hypothesis at any time during the analysis is controlled at the desired nominal significance level (Wald, 1945, 1947). Continuous sequential
 methods are suitable for real-time or near real-time monitoring. When data is only analyzed intermittently, group sequential methods are used instead
-(Chin, 2012; Cook and DeMets, 2007;  Friedman et al., 2010; Ghosh and Sen, 1991; Jennison and Turnbull, 2000; Mukhopadhyay and Silva, 2002; Whitehead, 1997).
+(Chin, 2012; Cook and DeMets, 2007; Xia, 2007; Friedman et al., 2010; Ghosh and Sen, 1991; Jennison and Turnbull, 2000; Mukhopadhyay and Silva, 2002; Whitehead, 1997).
 The data is then analyzed at regular or irregular discrete time intervals after a certain amount of data is accessible. Group sequential statistical methods are commonly used in
 clinical trials, where a trial may be stopped early due to either efficacy or unexpected adverse events (Jennison and Turnbull, 2000). 
 
@@ -103,7 +103,6 @@ In another words, \eqn{LLR_t} is compared against CV whenever \eqn{\mu_t} is a m
 analysis for Poisson data, use the \code{CV.G.Poisson} and \code{Performance.G.Poisson} functions.
 
 \bold{Binomial Data}
-
 The MaxSPRT method can also be applied to binomial/Bernoulli data. Let \eqn{n} to denote the total number of events that has been observed in a sequential monitoring
 up to a certain moment in time. Suppose that these n events are categorized as 'cases' and 'controls'. For example, 'cases' may be adverse events happening
 to a person taking drug A, while 'controls' may be the same adverse event happening to someone in a matched set of individuals taking drug B. As another example,
@@ -139,7 +138,7 @@ There is a vast number of proposals for choosing the shape of the alpha spending
 Jennison and Turnbull (2000) present a rich discussion about this topic. They dedicated a special attention to the alpha spending of the form:
 \eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>1}, and \eqn{t} represents a fraction of the maximum length of surveillance.
 
-To run continuous or group sequential analysis with a user defined alpha spending function, and/or, when the group sizes are not know a prior,
+To run continuous or group sequential analysis with a user defined alpha spending function, and/or, when the group sizes are not known a prior,
 the \code{Analyze.Binomial} function should be used.  This function works differently than the other functions mentioned above.
 Those other functions are designed to be used before the start of the sequential analysis, in order to determine what the maximum sample size
 and critical value should be. Once the sequential analysis is under way, the test statistic is then calculated using a hand calculator or an
@@ -185,10 +184,9 @@ Maintainer: Ivair Ramos Silva <jamesivair@yahoo.com.br>
 }
 
 \references{
+Chin R. (2012), Adaptive and Flexible Clinical Trials, Boca Raton, FL: Chapman and Hall/CRC.
 
-Chin R. (2012), Adaptive and Flexible Clinical Trials, Boca Raton, FL: Chapman & Hall/CRC.
-
-Cook TD, DeMets DL. (2007), Introduction to Statistical Methods for Clinical Trials: Chapman & Hall/CRC Texts in Statistical Science. 
+Cook TD, DeMets DL. (2007), Introduction to Statistical Methods for Clinical Trials: Chapman and Hall/CRC Texts in Statistical Science. 
 
 Fireman B, et al. (2013) Exact sequential analysis for binomial data with timevarying probabilities. Manuscript in Preparation.
 
@@ -207,11 +205,13 @@ Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveill
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
-Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, in press.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, in press.
 
-Wald A. (1945). Sequential Tests of Statistical Hypotheses, Annals of Mathematical Statistics, 16, 117--186.
+Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
-Wald A. (1947). Sequential Analysis. New York: John Wiley and Sons.
+Wald A. (1945), Sequential Tests of Statistical Hypotheses, Annals of Mathematical Statistics, 16, 117--186.
+
+Wald A. (1947), Sequential Analysis. New York: John Wiley and Sons.
 
 Whitehead J. (1997), The Design and Analysis of Sequential Clinical Trials, 2th ed.: Wiley.
 }
@@ -232,7 +232,8 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -	Ned Lewis, Kaiser Permanente Northern California.\cr
 -	Judith Maro, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
 -	Azadeh Shoaibi, Food and Drug Administration.\cr
--	Katherine Yih, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+-	Katherine Yih, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
+-       Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC. 
 }
 
 \keyword{Sequential analysis}
@@ -265,11 +266,11 @@ Exact sequential analysis for Poisson data:\cr
 -	Wald type rejection boundary.\cr
 -	Statistical power, expected time to signal and sample size calculations.\cr
 -	User guide.\cr
-
+\cr
 Version 1.2,  January 2014\cr
 -	Improved code structure and efficiency.\cr
 -	More extensive and detailed user guide. \cr
-
+\cr
 Version 2.0, June 2015\cr
 Exact sequential analysis for binomial and Bernoulli data:\cr
 -	Continuous sequential analysis.\cr
@@ -279,4 +280,8 @@ Exact sequential analysis for binomial and Bernoulli data:\cr
 -	User specified alpha spending function.\cr 
 -	Statistical power, expected time to signal and sample size calculations.\cr
 -	Updated and improved user guide. 
+\cr
+Version 2.0.1, June 2015\cr
+-       Correction of bugs for \code{CV.Poisson} function. \cr
+-       Updated and improved user guide.
 }

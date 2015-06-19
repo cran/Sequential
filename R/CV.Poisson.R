@@ -1,4 +1,4 @@
-CV.Poisson <-
+CV.Poisson<-
 function(SampleSize,D=0,M=1,alpha=0.05){
 T<- SampleSize
 L<- T
@@ -122,7 +122,6 @@ teste2<- teste1
 ####### Choosing CVstart by using the known CV table to save time.
 # -------------------------------------------------------------------------
 
-if(T>1000){CVstart<- 3}else{
 x1<- 1
 x2<- 0
 while(x1<=ncol(tDescont)&x2==0){if(T==tDescont[1,x1]&D==tDescont[2,x1]){x2<- 1};x1<- x1+1}
@@ -139,7 +138,6 @@ if(alpha==0.05 & T>=2 & teste1==0){
                                                                                                                }
                                  }else{CVstart<- 3}
          }else{CVstart<- 3}
-                       }
 
 ####### end the choice of CVstart by using the known CV table to save time.  
 # -------------------------------------------------------------------------
@@ -168,7 +166,6 @@ mmu = diff(mtemp) 		#The marginal difference of the mu[] vector
 
 
 imin=MinCases
-if(mu[imin]>=Late){stop(c("For this sample size, use 'D' smaller than ",mu[imin]),call. =FALSE)}
 while (mu[imin] < Late) imin=imin+1
 if(imin>MinCases) { 
 	mu[imin-1]=Late
@@ -260,7 +257,7 @@ alphaold=1
 LLR=CVstart				#Smarter start vaules reduces computing time.
 alpha=0
 
-c = 1:(100+2*qpois(1-ALPHAFIX,SampleSize))
+c = 1:1200
 CV1<- LLRold
 CV2<- LLR
 teste<- 0
@@ -329,6 +326,6 @@ return(out[1,1])
 
 }
 
-#CV.Poisson(SampleSize=3,D=1,M=1,alpha=0.05)
+#CV.Poisson(SampleSize=30,D=0,M=1,alpha=0.05)
 
 
