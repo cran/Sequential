@@ -43,7 +43,7 @@ ProdLog <- function(z) {
 	x
 	}
 
-c = 1:1200
+c = 1:(2*T)
 
 z = -exp(-1-LLR/c)
 mu = -c * ProdLog(z) 		#The expected counts under H0 that is needed to reject the null with i number of adverse events

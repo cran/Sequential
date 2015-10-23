@@ -6,12 +6,12 @@
 Analyze.Binomial(name,test,z,cases,controls,AlphaSpend="n")
       }
 \arguments{
-\item{name}{The 'name' of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.Binomial} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
+\item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.Binomial} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
 \item{test}{An integer indicating the number of hypothesis tests performed up to and including the current test. For example, if there were four prior looks at the data, and this is the fifth one, then "test=5". This number should be increased by one each time that the \code{Analyze.Binomial} function is run for a new group of data, when it is part of the same sequential analysis.  If not, there is an error message.}
-\item{z}{For a matched case-control analysis, 'z' is the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". In a self-control analysis, 'z' is the ratio of the length of the control interval to the length of the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, "z=7/2". In terms of p, the binomial probability under the null hypothesis, "p=1/(1+z)", or equivalently, "z=1/p-1". The parameter 'z' must be a positive number. The default value is 'z=1' (p=0.5). If the ratio is the same for all observations, then 'z' can be any positive number. If the ratio is different for different observations, then 'z' is a vector of positive numbers.}
-\item{cases}{A number or a vector of the same length as 'z' containing the number of cases.}
-\item{controls}{A number or a vector of the same length as 'z' containing the number of controls.}
-\item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.Binomial} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the 'AlphaSpend' parameter. 'AlphaSpend' is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the binomial distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.Binomial} function.}
+\item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". In a self-control analysis, z is the ratio of the length of the control interval to the length of the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, "z=7/2". In terms of p, the binomial probability under the null hypothesis, "p=1/(1+z)", or equivalently, "z=1/p-1". The parameter z must be a positive number. The default value is z=1 (p=0.5). If the ratio is the same for all observations, then z can be any positive number. If the ratio is different for different observations, then z is a vector of positive numbers.}
+\item{cases}{A number or a vector of the same length as z containing the number of cases.}
+\item{controls}{A number or a vector of the same length as z containing the number of controls.}
+\item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.Binomial} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the AlphaSpend parameter. AlphaSpend is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the binomial distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.Binomial} function.}
 }
 
 
@@ -28,13 +28,13 @@ running \code{Analyze.Binomial}  for the first time, it is necessary to set up t
 and just once, to define the sequential analysis parameters. For information about this, see the description of the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function. 
 
 The function \code{Analyze.Binomial} calculates critical values to determine if the null hypothesis should be rejected or not at each analysis. Critical values are given in the
-scale of the number of cases. This is done for a pre-specified overall statistical significance level ('alpha'), and for an upper limit on the sample size ('N').
+scale of the number of cases. This is done for a pre-specified overall statistical significance level (alpha), and for an upper limit on the sample size (N).
 The exact analytical solution is obtained through numerical calculations. Based on the data and the critical value, the function determines if the null hypothesis should
 be rejected or not, and if subsequent tests should be conducted. After each test, the function also provides information about the amount of alpha that has been spent,
 the cumulative number of cases and controls, and the estimated relative risk. When the null hypothesis is rejected, or when the sequential analysis ends without rejecting the null,
 then the function calculates a confidence interval for the relative risk. 
 
-For binomial and Bernoulli data, there are a number of 0/1 observations that can either be a 'case' or a 'control'. Under the null hypothesis, the probability of being a case is p,
+For binomial and Bernoulli data, there are a number of 0/1 observations that can either be a case or a control. Under the null hypothesis, the probability of being a case is p,
 and the probability of being a control is 1-p. If data comes from a self-control analysis, the observation is a case if the event occurred in the risk interval, and it is a control
 if the event occurred in the control interval. Under the null hypothesis, we then have that \eqn{p=1/(1+z)}, where z is the ratio of the length of the control interval to the length of the
 risk interval. This ratio, and hence p, does not need to be the same for all observations. If data comes from a matched set of exposed and unexposed individuals, then the observation
@@ -43,31 +43,31 @@ unexposed individuals divided by the number of exposed individuals in the matche
 positive number. 
 
 If the ratio parameter z, and hence p, is the same for all observations in the same group of data, then z is just a positive number. On the other hand, if different observations in the
-same group of data have different values for z, then z is a vector, representing multiple z values. For each value of z, it is necessary to specify the number of 'cases' and the number
-of 'controls'. This means that for a group of data, the vector of z's has to be of the same length as the vector of 'cases' and the vector of 'controls'. The first entry of the vector
-'z' is the matching ratio associated to the first entries of 'cases' and of 'controls'. The second entry of 'z' is the matching ratio with respect to the second entries of 'cases' and
-of 'controls', and so on. For example, consider that each of five observations came from four different matching ratios. In this situation, the vectors 'cases', 'controls' and 'z' are
+same group of data have different values for z, then z is a vector, representing multiple z values. For each value of z, it is necessary to specify the number of cases and the number
+of controls. This means that for a group of data, the vector of zs has to be of the same length as the vector of cases and the vector of controls. The first entry of the vector
+z is the matching ratio associated to the first entries of cases and of controls. The second entry of z is the matching ratio with respect to the second entries of cases and
+of controls, and so on. For example, consider that each of five observations came from four different matching ratios. In this situation, the vectors cases, controls and z are
 all of length four. For example, suppose "z=c(2,1,0.5,3)",  "cases=c(1,1,0,0)" and "controls=c(0,0,1,2)". The matching ratio for the first observation, which turned out as a case,
 is equal to 2. For the second observation, also a case, the matching is equal to 1. With a matching ration of 0.5, the third observation turned out to be a control. The two last
 observations both had a matching ratio of 3, and both of them were controls. If all observations in the same data group has the same ratio, the vectors are of size one, that is,
 they are simple numbers. For example, if there were ten observations that all had a ratio of 2, with seven cases and three controls, we have "z=2", "cases=7", and "controls=3". 
 
-Before running \code{Analyze.Binomial}, it is necessary to specify a planned default alpha spending function, which is done using the 'AlphaSpendType' parameter in the
-\code{AnalyzeSetUp.Binomial} function. The default alpha spending plan can be either, (i) the polynomial power-type alpha spending plan, which is parameterized with 'rho',
+Before running \code{Analyze.Binomial}, it is necessary to specify a planned default alpha spending function, which is done using the AlphaSpendType parameter in the
+\code{AnalyzeSetUp.Binomial} function. The default alpha spending plan can be either, (i) the polynomial power-type alpha spending plan, which is parameterized with rho,
 or (ii) the alpha spending associated to the Wald-type rejection boundary, which is flat with respect to the likelihood ratio. See the \code{\link[Sequential]{AnalyzeSetUp.Binomial}}
 for more details. 
 
 In most cases, this pre-specified alpha spending function is used throughout the analysis, but if needed, it is possible to override it at any or each of the sequential tests.
-This is done using the 'AlphaSpend' parameter, which specifies the maximum amount of alpha to spend up to and including the current test. In this way, it is possible to use any
+This is done using the AlphaSpend parameter, which specifies the maximum amount of alpha to spend up to and including the current test. In this way, it is possible to use any
 alpha spending function, and not only those available in \code{AnalyzeSetUp.Binomial}. It is also possible to use a flexible adaptive alpha spending plan that is not set in stone
-before the sequential analysis starts. The only requirement is that for a particular test with a new group of data, 'AlphaSpend' must be decided before knowing the number of cases
-and controls in that group. To ensure a statistically valid sequential analysis, 'AlphaSpend' can only depend on the number of events (cases + controls) at prior tests and the total
+before the sequential analysis starts. The only requirement is that for a particular test with a new group of data, AlphaSpend must be decided before knowing the number of cases
+and controls in that group. To ensure a statistically valid sequential analysis, AlphaSpend can only depend on the number of events (cases + controls) at prior tests and the total
 number of events in the current test. This is important.
 
 The function \code{Analyze.Binomial} is meant to perform the binomial sequential analysis with a certain level of autonomy. After running a test, the code offers a synthesis about
 the general parameter settings, the main conclusions concerning the acceptance or rejection of the null hypothesis, and the historical information from previous tests.
 A table with the main analyses results is automatically printed in the R console. Each column of the table contains a historical characteristic,
-including the information for the current test. Each line of the table corresponds to a specific test organized by calendar time. The table is titled with the 'title'
+including the information for the current test. Each line of the table corresponds to a specific test organized by calendar time. The table is titled with the title
 input defined through the function \code{AnalyzeSetUp.Binomial}, and its columns are organized and labeled in the following way: "Test",
 "Cases", "Controls", "Cumulative Cases", "Cumulative Controls", "Cumulative E[Cases]", "RR", "LLR", "target", "actual", "CV", "H0 rejected". Here follows a short description of each column:
 
@@ -97,7 +97,7 @@ a realistic interpretation of the results.
    
 The function \code{Analyze.Binomial} was designed to instruct the user with minimal information about bugs from the code, or about non-applicable parameter input usages. Some entries are not
 applicable for the parameter inputs. For example, the input "z" must be a positive number, and then if the user sets "z= -1", the code will report an error with the message "the entries of
-the vector 'z' must be positive numbers". Thus, messages will appear when mistakes and inconsistencies are detected, and instructions about how to proceed to solve such problems will automatically appear. 
+the vector "z" must be positive numbers". Thus, messages will appear when mistakes and inconsistencies are detected, and instructions about how to proceed to solve such problems will automatically appear. 
 }
 
 \value{

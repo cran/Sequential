@@ -1,5 +1,5 @@
 CV.G.Poisson <-
-function(SampleSize,alpha=0.05,Looks=1,M=1){
+function(SampleSize,alpha=0.05,Looks,M=1){
 
 #----------ExactPoisson.R-------------------------------------------------------------------
 # Function that calculates the LLR for a given observed (c) and expected (u) number of cases

@@ -1,1 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+importFrom("graphics", "axis", "legend", "lines", "par", "plot","points")
+importFrom("stats", "dbinom", "dpois", "pbinom", "ppois", "qbinom","qexp", "qpois")
+importFrom("utils", "read.table", "write.table")

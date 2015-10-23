@@ -1,5 +1,6 @@
 CV.Poisson<-
 function(SampleSize,D=0,M=1,alpha=0.05){
+alphin<- alpha
 T<- SampleSize
 L<- T
 # ------------------- INPUT VARIABLE ----------------------------------------------------------
@@ -139,6 +140,8 @@ if(alpha==0.05 & T>=2 & teste1==0){
                                  }else{CVstart<- 3}
          }else{CVstart<- 3}
 
+if(T>1000){CVstart<- 4}
+
 ####### end the choice of CVstart by using the known CV table to save time.  
 # -------------------------------------------------------------------------
 
@@ -211,7 +214,9 @@ if(imin>MinCases) {
 # -------------------------------------------------
 
 if(MinCases+1<=imax-1&((imin+1)<=(imax-1)))
-for(i in (imin+1):(imax-1)) {
+probaux3<- 0
+i<- (imin+1)
+while(i <=(imax-1)&probaux3<=alphin+PRECISION) {
 	for(j in 1:(i-1))							# This loop calculates the p[][] matix, one column at a time, from left to right
 		for(k in 1:j) 
 			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,mmu[i])	# Calculates the standard p[][] cell values
@@ -219,6 +224,8 @@ for(i in (imin+1):(imax-1)) {
 		p[i,i]=p[i,i]+p[i-1,k]*dpois(i-k,mmu[i])		# Calculates the diagonal under the absorbing states, which requires a unique formula
 	for(k in 1:(i-1)) 
 		p[i,i+1]=p[i,i+1]+p[i-1,k]*(1-ppois(i-k,mmu[i]))# Calculates the diagonal absorbing states where H0 is rejected
+ probaux3<- probaux3 + p[i,i+1]
+i<- i+1
 } # end for i	
 
 
@@ -257,7 +264,7 @@ alphaold=1
 LLR=CVstart				#Smarter start vaules reduces computing time.
 alpha=0
 
-c = 1:1200
+c = 1:(2*T)
 CV1<- LLRold
 CV2<- LLR
 teste<- 0
@@ -326,6 +333,6 @@ return(out[1,1])
 
 }
 
-#CV.Poisson(SampleSize=30,D=0,M=1,alpha=0.05)
+#system.time(res<- CV.Poisson(SampleSize=1001,D=0,M=1,alpha=0.05))
 
 

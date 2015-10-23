@@ -1,5 +1,5 @@
 Performance.G.Poisson <-
-function(SampleSize,cv,Looks=1,M=1,RR=2){
+function(SampleSize,cv,Looks,M=1,RR=2){
 
 LLR <- function(cc,uu) {
 	if(cc<=uu) x=0

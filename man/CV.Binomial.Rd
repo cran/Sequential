@@ -11,23 +11,23 @@ CV.Binomial(N,alpha=0.05,M=1,z=1)
 "N" must be a positive integer. To avoid very large computation times, we suggest not using values greater than 1000. Typically,
 this is not a major restriction. For example, for "RR=1.1", "alpha=0.01" and "z=1", the statistical power is approximately 1 for "N>500". There is no default value.}
 \item{alpha}{The significance level. The "alpha" level must be in the range (0,0.5]. The default value is "alpha=0.05".}
-\item{M}{The minimum number of events needed before the null hypothesis can be rejected. "M" must be a positive integer, and the default value is 'M=1'.}
-\item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, z=3.  In a self-control analysis, z is the ratio of the control interval to the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2. In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number. The default value is z=1.}
+\item{M}{The minimum number of events needed before the null hypothesis can be rejected. "M" must be a positive integer, and the default value is "M=1".}
+\item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3".  In a self-control analysis, z is the ratio of the control interval to the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2. In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number. The default value is "z=1".}
 }
 \details{
 For the continuous binomial MaxSPRT, \code{CV.Binomial} calculates the upper boundary used to 
 determine if the null hypothesis is to be rejected at each analysis. This is done for pre-specified values of the statistical significance level (alpha) and 
-an upper limit on the sample size equal to "N". For details about the
+an upper limit on the sample size equal to N. For details about the
 algorithm used to calculate the critical value, see the paper by Kulldorff et al. (2011).
 
-For some configurations of 'N' and 'alpha', there is no critical value that gives a Type I error probability that is exactly equal to the
+For some configurations of N and alpha, there is no critical value that gives a Type I error probability that is exactly equal to the
 requested "alpha". This is because of the discrete nature of binomial data. In such situations, \code{CV.Binomial} returns the greatest critical value that guarantees a Type I error probability smaller than "alpha". Thus 
 the critical value for the binomial sequential analysis is conservative in this sense. 
 }
 \value{
 \item{cv}{The critical value for a significance level equal to alpha. The largest conservative value is provided when
-it is not possible to have an Type I error exactly equal to 'alpha'.}
-\item{Type_I_Error}{The exact Type I error probability given "cv". Always less than or equal to "alpha".}
+it is not possible to have an Type I error exactly equal to alpha.}
+\item{Type_I_Error}{The exact Type I error probability given cv. Always less than or equal to alpha.}
 }
 \author{ Ivair Ramos Silva, Ned Lewis, Ron Berman, Martin Kulldorff.
 }

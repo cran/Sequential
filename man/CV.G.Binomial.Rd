@@ -19,17 +19,17 @@ If the group sizes is an integer instead of a vector, then that integer is the g
 }
 \details{
 For group sequential analysis with binomial data, the function \code{CV.G.Binomial} calculates critical value for the decision of accepting/rejecting
-the null hypothesis. This is done for a pre-defined significance level (alpha) and an upper limit on the sample size ('N'), as well as other parameter settings.
-When the length of 'Groups' is equal to one, 'N' must be a multiple of 'Groups'.
+the null hypothesis. This is done for a pre-defined significance level (alpha) and an upper limit on the sample size (N), as well as other parameter settings.
+When the length of 'Groups' is equal to one, N must be a multiple of Groups.
 
-For several configurations of 'N', 'Groups' and 'M', there are no critical values for a true Type I error probability strictly equal to "alpha". The is
+For several configurations of N, Groups and M, there are no critical values for a true Type I error probability strictly equal to alpha. The is
 because of the discrete nature of binomial data. For such cases, the function \code{CV.G.Binomial} returns the greatest critical value that will guarantee a
 type I error probability that is smaller than 'alpha', so that the sequential analysis is conservative.  
 }
 \value{
 \item{cv}{The critical value for a significance level equal to alpha. The largest conservative value is provided when
-it is not possible to have an Type I error exactly equal to 'alpha'.}
-\item{Type_I_Error}{The exact Type I error probability given "cv", and it is always less than or equal to "alpha".}
+it is not possible to have an Type I error exactly equal to alpha.}
+\item{Type_I_Error}{The exact Type I error probability given cv, and it is always less than or equal to alpha.}
 }
 \author{ Ivair Ramos Silva, Ned Lewis, Martin Kulldorff.
 }

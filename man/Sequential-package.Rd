@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.0.1\cr
-Date: \tab 2015-06-19\cr
+Version: \tab 2.0.2\cr
+Date: \tab 2015-09-22\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -74,11 +74,11 @@ using iterative numerical calculations. None of the results are based on asympto
 
 \bold{Poisson Data}
 
-To start, let`s consider continuous sequential analysis for Poisson data. Let \eqn{C_t} be the random variable that counts the number of events up to time t.
+To start, consider continuous sequential analysis for Poisson data. Let \eqn{C_t} be the random variable that counts the number of events up to time t.
 Suppose that, under the null hypothesis, \eqn{C_t} has a Poisson distribution with mean \eqn{\mu_t}, where \eqn{\mu_t} is a known function reflecting the population at risk.
 Under the alternative hypothesis, suppose that \eqn{C_t} has a Poisson distribution with mean RR\eqn{\mu_t}, where "RR" is the unknown increased relative risk due to the vaccine.
 The MaxSPRT statistic defined in terms of the log likelihood ratio is given by: \deqn{LLR_t=(\mu_t-c_t)+c_t \log{c_t/\mu_t},} when \eqn{c_t} is at least \eqn{\mu_t}, and \eqn{LLR_t =0}, otherwise.
-For continuous sequential analysis, the test statistic, \eqn{LLR_t}, is monitored at all times \eqn{t \in (0,T]}, where \eqn{T}= SampleSize. 'SampleSize' is defined
+For continuous sequential analysis, the test statistic, \eqn{LLR_t}, is monitored at all times \eqn{t \in (0,T]}, where \eqn{T}= SampleSize. SampleSize is defined
 a priori by the user in order to achieve the desired statistical power, which can be calculated using the \code{SampleSize.Poisson} function.
 The sequential analysis ends, and \eqn{H_0} is rejected if, and when, \eqn{LLR_t \geq CV}, where CV is calculated using the \code{CV.Poisson} function.
 If \eqn{\mu_t}= SampleSize, the sequential analysis ends without rejecting the null hypothesis. To calculate other important performance metrics, such as the expected time to signal when
@@ -103,15 +103,16 @@ In another words, \eqn{LLR_t} is compared against CV whenever \eqn{\mu_t} is a m
 analysis for Poisson data, use the \code{CV.G.Poisson} and \code{Performance.G.Poisson} functions.
 
 \bold{Binomial Data}
-The MaxSPRT method can also be applied to binomial/Bernoulli data. Let \eqn{n} to denote the total number of events that has been observed in a sequential monitoring
-up to a certain moment in time. Suppose that these n events are categorized as 'cases' and 'controls'. For example, 'cases' may be adverse events happening
-to a person taking drug A, while 'controls' may be the same adverse event happening to someone in a matched set of individuals taking drug B. As another example,
-in a self-control sequential analysis, 'cases' may be adverse events happening during the 1-28 days following vaccination, while 'controls' are the same adverse events
+
+The MaxSPRT method can also be applied to binomial/Bernoulli data. Let \eqn{n} denote the total number of events that has been observed in a sequential monitoring
+up to a certain moment in time. Suppose that these n events are categorized as cases and controls. For example, cases may be adverse events happening
+to a person taking drug A, while controls may be the same adverse event happening to someone in a matched set of individuals taking drug B. As another example,
+in a self-control sequential analysis, cases may be adverse events happening during the 1-28 days following vaccination, while controls are the same adverse events
 happening 29-56 days after vaccination. 
 
 Let \eqn{C_t} to denote the number of cases among the n events, and assume that \eqn{C_t} follows a binomial distribution with success probability equal to \eqn{p}, where \eqn{p = 1=(1 + z)},
 and z is the matching ratio between the occurrence of a case and of a control under the null hypothesis. For example, if the probability of having a case (instead of a control)
-is \eqn{p = 1=(1 + z) = 0.5}, then 'z=1' (1:1 matching ratio), or, \eqn{p = 0.25} for 'z=3' (1:3 matching ratio), etc.
+is \eqn{p = 1=(1 + z) = 0.5}, then z=1 (1:1 matching ratio), or, \eqn{p = 0.25} for z=3 (1:3 matching ratio), etc.
 
 The MaxSPRT statistic (Kulldorff et al., 2011) for a continuous binomial surveillance is:
 \deqn{LR_n=\frac{(c_n/n)^{c_n}+\left[(n-c_n)/n\right]^{n-c_n}}{\left[1/(1+z)\right]^{c_n}\left[z/(1+z)\right]^{n-c_n}}},
@@ -283,5 +284,8 @@ Exact sequential analysis for binomial and Bernoulli data:\cr
 \cr
 Version 2.0.1, June 2015\cr
 -       Correction of bugs for \code{CV.Poisson} function. \cr
+-       Updated and improved user guide.
+\cr
+Version 2.0.2, Octuber 2015\cr
 -       Updated and improved user guide.
 }
