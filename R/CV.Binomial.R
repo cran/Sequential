@@ -7,7 +7,20 @@
 # Function produces critical value for the continuous Sequential Binomial MaxSPRT
 # -------------------------------------------------------------------------------------------
 
-CV.Binomial<- function(N,alpha=0.05,M=1,z=1){
+CV.Binomial<- function(N,alpha=0.05,M=1,z="n",p="n"){
+
+if(p=="n"&z=="n"){stop("Please, at least z or p must be provided.",call. =FALSE)}
+
+if(z!="n"){if(sum(is.numeric(z))!=1){stop("Symbols and texts are not applicable for 'z'. It must be a number greater than zero.",call. =FALSE)}}
+if(z<=0){stop("'z' must be a number greater than zero.",call. =FALSE)}
+
+if(p!="n"){
+if(is.numeric(p)!=TRUE){stop("Symbols and texts are not applicable for 'p'. It must be a probability measure.",call. =FALSE)}
+if(z!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
+if(p<=0|p>=1){stop("p must be a number greater than zero and smaller than 1.",call. =FALSE)}
+           }
+
+if(z!="n"){z<- z}else{z<- 1/p-1}
 
 MinCases<- M
 
@@ -15,18 +28,17 @@ MinCases<- M
 # alpha = desired alpha level
 # MinCases = The minimum number of cases for which a signal is allowed to occur, default=1
 # z = matching ratio between exposed and unexposed cases 
+# p = probability of having a case under the null hypothesis
 
 if(is.numeric(N)==FALSE){stop("The maximum length of surveillance, 'N', must be a positive integer.",call. =FALSE)} 
 if(is.numeric(M)==FALSE){stop("The minimum number of cases, 'M', must be a positive integer.",call. =FALSE)} 
 if(is.numeric(alpha)==FALSE){stop("The significance level, 'alpha', must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
-if(is.numeric(z)==FALSE){stop("The matching ratio, 'z', must be a positive number.",call. =FALSE)}
 
 if(N!=round(N)){stop("The maximum length of surveillance, 'N', must be a positive integer.",call. =FALSE)}
 if(MinCases!=round(MinCases)){stop("The minimum number of cases, 'M', must be a positive integer.",call. =FALSE)}
 
 if(N<=0){stop("The maximum length of surveillance, 'N', must be a positive integer.",call. =FALSE)}
 if(M<=0){stop("The minimum number of cases, 'M', must be a positive integer.",call. =FALSE)}
-if(z<=0){stop("The matching ratio, 'z', must be a positive number.",call. =FALSE)}
 if(M>N){
 pst<- 1/(1+z)
 if(1-pbinom(MinCases-1,N,pst)<alpha){Mr<- MinCases-1;while(1-pbinom(Mr-1,N,pst)<alpha&Mr>1){Mr<- Mr-1};if(Mr==0){Mr<- 1}

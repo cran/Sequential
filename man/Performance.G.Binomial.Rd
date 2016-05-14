@@ -8,7 +8,7 @@ required before rejecting the null hypothesis (M), and true relative risk (RR).
 The metrics calculated are the statistical power, the expected time to signal when the null hypothesis is 
 rejected and the expected sample size at the end of the analysis whether the null hypothesis was rejected or not.}
 \usage{
-Performance.G.Binomial(N,M=1,cv,z=1,RR=2,GroupSizes)
+Performance.G.Binomial(N,M=1,cv,z="n",p="n",RR=2,GroupSizes)
 }
 \arguments{
 \item{N}{The upper limit on the sample size (length of surveillance) expressed in terms of the total number of events. 
@@ -16,7 +16,8 @@ Performance.G.Binomial(N,M=1,cv,z=1,RR=2,GroupSizes)
 this is not a major restriction. For example, for "RR=1.1" and "alpha=0.01" and "z=1", the statistical power is approximately 1 for "N>500". There is no default value.}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. "M" must be a positive integer, and the default value is M=1.}
 \item{cv}{Critical value, defining the upper rejection boundary. The null hypothesis is rejected when the log-likelihood value is greater than "cv". The "cv" parameter is usually obtained by first running \code{CV.Binomial}.It must be a positive number, and there is no default.}
-\item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, z=3.  In a self-control analysis, z is the ratio of the control interval to the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2. In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number. The default value is z=1.}
+\item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
+\item{p}{The probability of having a case under the null hypothesis. There is no default value.}
 \item{RR}{The relative risk under the alternative hypothesis. If p and q are binomial probabilities under the null and the alternative hypotheses, respectively, then "RR=(1/p-1)/(1/q-1)".}
 \item{GroupSizes}{Vector with the number of events (cases+controls) between two consecutive looks (tests) at the data, i.e, the group sizes. The
 length of this vector is equal to the maximum number of looks. The entries do not have the same, but they sum up to N.
@@ -31,6 +32,16 @@ probability of having a case is \eqn{p=RR/(RR+z)}.
 If the user wants to calculate the actual overall size (or the maximum Type I error probability) of the test, that can be done by setting RR=1, in which case the power output value is the test size.
 This is made for a given flat critical value, an upper limit on the sample size (N),
 and a delayed start in the vigilance given by M.
+
+The input z represents the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". 
+In a self-control analysis, z is the ratio of the control interval to the risk interval.
+For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2.
+In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number.
+
+Alternatively, instead of z the user can specify p directly.
+Note that only one of these inputs, z or p, has to be specified, but if both are entered the code will only work if z and p are such that p=1/(1+z).
+Otherwise, an error message will appear to remind that such condition must be complied.
+
  }
 \value{
 \item{Power}{Statistical power.}

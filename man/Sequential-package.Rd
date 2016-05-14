@@ -8,7 +8,7 @@
 on accumulating data that gradually increases the sample size. This is different from standard statistical analysis, where a single analysis is performed
 using a fixed sample size. It is possible to analyze either Poisson type data or binomial 0/1 type data. For binomial data, it is possible to incorporate an
 off-set term to account for variable matching ratios. For Poisson data, the critical value is based on a Wald-type upper boundary, which is flat on the scale
-of the log-likelihood ratio, and on a predetermined maximum sample size. For binomial data, it is also possible to apply a user defined alpha spending function.
+of the log-likelihood ratio, and on a predetermined maximum sample size. For data distributions, it is also possible to apply a user defined alpha spending function.
 For group sequential analyses, there are functions for pre-specified group sizes and for the situation when the group sizes are not known a priori.
 It is also possible to perform mixed continuous/group sequential analysis, where, for example, there is at first a big batch of data that arrives in one group,
 followed by continuous sequential analysis. All results are exact, based on iterative numerical calculations, rather than asymptotic theory or computer simulations.  
@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.0.2\cr
-Date: \tab 2015-09-22\cr
+Version: \tab 2.1\cr
+Date: \tab 2016-03-30\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -31,6 +31,10 @@ Index: \tab \cr
                                            \tab Data When the Goup Sizes are not Known a Priori.\cr
 \code{\link[Sequential]{AnalyzeSetUp.Binomial}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.Binomial} Function for the First Time.\cr
+\code{\link[Sequential]{Analyze.Poisson}} \tab Function to Conduct Group Sequential Analyses for Poisson\cr
+                                           \tab Data When the Goup Sizes are not Known a Priori.\cr
+\code{\link[Sequential]{AnalyzeSetUp.Poisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
+                                                \tab \code{Analyze.Poisson} Function for the First Time.\cr
 \code{\link[Sequential]{CV.Binomial}} \tab Critical Values for Continuous Sequential Analysis with\cr
                                      \tab Binomial Data.\cr
 \code{\link[Sequential]{CV.G.Binomial}} \tab Critical Values for Group Sequential Analysis with Binomial Data.\cr
@@ -115,20 +119,22 @@ and z is the matching ratio between the occurrence of a case and of a control un
 is \eqn{p = 1=(1 + z) = 0.5}, then z=1 (1:1 matching ratio), or, \eqn{p = 0.25} for z=3 (1:3 matching ratio), etc.
 
 The MaxSPRT statistic (Kulldorff et al., 2011) for a continuous binomial surveillance is:
-\deqn{LR_n=\frac{(c_n/n)^{c_n}+\left[(n-c_n)/n\right]^{n-c_n}}{\left[1/(1+z)\right]^{c_n}\left[z/(1+z)\right]^{n-c_n}}},
+\deqn{LR_n=\frac{(c_n/n)^{c_n}\left[(n-c_n)/n\right]^{n-c_n}}{\left[1/(1+z)\right]^{c_n}\left[z/(1+z)\right]^{n-c_n}}},
 if \eqn{z c_n/(n-c_n)>1}, and \eqn{LR_n= 1} otherwise.
 
 The monitoring is continued until either there is a signal rejecting the null hypothesis \eqn{(LR_n > CV)}
 or until \eqn{n=N}, which indicates that the null is not to be rejected. To perform the calculations, use the \code{CV.Binomial}, \code{SampleSize.Binomial} and \code{Performance.Binomial} functions.
 
+To calculate the critical value for a Wald type rejection boundary, and when the group sizes are fixed a priori, use the \code{CV.G.Binomial} function. For statistical power,
+expected time to signal and maximum sample size requirements, use the \code{Performance.G.Binomial} function.
+
 The main assumptions behind the method above are: (i) the monitoring is truly performed in a continuous fashion; (ii) the matching ratio (z) is constant for all of the n events,
 and (iii) it uses a Wald type rejection boundary that is flat in terms of the likelihood function. Relaxing these assumptions, Fireman et al. (2013) developed exact sequential
 analysis for group sequential data with varying matching ratios, and for any user specified alpha rejection plan.
 
-To calculate the critical value for a Wald type rejection boundary, and when the group sizes are fixed a priori, use the \code{CV.G.Binomial} function. For statistical power,
-expected time to signal and maximum sample size requirements, use the \code{Performance.G.Binomial} function.
+\bold{Alpha spending function for unpredictable group sizes}
 
-The alpha spending function specifies the cumulative amount, \eqn{F_{\alpha}(t)} of Type I error probability related to each of the possible values of \eqn{n}.
+The alpha spending function specifies the cumulative amount, \eqn{F_{\alpha}(t)}, of Type I error probability related to each of the possible values of \eqn{n}.
 Thus, at the end of the monitoring the alpha spending corresponds to a value smaller than or equal to the overall amount of Type I error probability defined for
 the overall nominal significance level, \eqn{\alpha}.
 
@@ -140,14 +146,15 @@ Jennison and Turnbull (2000) present a rich discussion about this topic. They de
 \eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>1}, and \eqn{t} represents a fraction of the maximum length of surveillance.
 
 To run continuous or group sequential analysis with a user defined alpha spending function, and/or, when the group sizes are not known a prior,
-the \code{Analyze.Binomial} function should be used.  This function works differently than the other functions mentioned above.
+the function \code{Analyze.Binomial} and \code{Analyze.Poisson} should be used for binomial and Poisson data, respectively. 
+These functions work differently than the other functions mentioned above.
 Those other functions are designed to be used before the start of the sequential analysis, in order to determine what the maximum sample size
 and critical value should be. Once the sequential analysis is under way, the test statistic is then calculated using a hand calculator or an
-excel spread sheet, and compared with the critical value. The \code{Analyze.Binomial} function works very differently, in that it is run at each look at
+excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial} and \code{Analyze.Poisson} work very differently, in that they are run at each look at
 the accumulating data, whenever a new group of data arrives, and it is meant to perform the test itself, i.e., there is no need to use hand calculators or
 excel spread sheets or any other auxiliar code. The results and conclusions, including a descriptive table and illustrative graphics, are automatically
-provided after running \code{Analyze.Binomial}. Important: before using this function, though, it is necessary to first run the
-\code{AnalyzeSetup.Binomial} function once in order to set everything up for the sequential analysis.
+provided after running \code{Analyze.Binomial} (or \code{Analyze.Poisson}). Important: before using these functions, though, it is necessary to first run the
+functions \code{AnalyzeSetup.Binomial} (or \code{AnalyzeSetup.Poisson}) once in order to set everything up for the sequential analysis.
 
 }
 
@@ -263,7 +270,7 @@ result
 Version 1.1, February 2013\cr
 Exact sequential analysis for Poisson data:\cr
 -	Exact continuous sequential analysis.\cr
--	Exact group sequential analysis with pre-defined group sizes.\cr
+-	Exact group sequential analysis with pre-defined and constant groups sizes.\cr
 -	Wald type rejection boundary.\cr
 -	Statistical power, expected time to signal and sample size calculations.\cr
 -	User guide.\cr
@@ -276,16 +283,27 @@ Version 2.0, June 2015\cr
 Exact sequential analysis for binomial and Bernoulli data:\cr
 -	Continuous sequential analysis.\cr
 -	Group sequential analysis with pre-defined group sizes.\cr
--	Group sequential analysis with unpredictable group sizes, that do not need to be specified a priori.\cr
+-	Group sequential analysis with unpredictable group sizes, that do not need to be specified a priori for Binomial data.\cr
 -	Fixed or variable binomial probabilities (matching ratios).\cr
--	User specified alpha spending function.\cr 
+-	User specified alpha spending function for binomial data.\cr 
 -	Statistical power, expected time to signal and sample size calculations.\cr
--	Updated and improved user guide. 
+-	Updated and improved user guide.\cr
 \cr
 Version 2.0.1, June 2015\cr
 -       Correction of bugs for \code{CV.Poisson} function. \cr
--       Updated and improved user guide.
+-       Updated and improved user guide.\cr
 \cr
 Version 2.0.2, Octuber 2015\cr
--       Updated and improved user guide.
+-       Updated and improved user guide.\cr
+\cr
+Version 2.1, May 2016\cr
+Exact sequential analysis for Poisson data:\cr
+-     Directory address is to be informed manually in AnalyzeSetUp.Binomial and AnalyzeSetUp.Poisson.\cr
+-     New feature to inform the binomial tuning parameters. Instead of matching ratio, the user can alternatively enter with the probability of having a case under the null hypothesis.\cr
+-	Mixed group-continuous sequential analysis for Poisson data.\cr
+-	Fixed or variable Poisson rates (expected number of cases under the null).\cr
+-	User specified alpha spending function for Poisson data.\cr 
+-	Critical value, statistical power, expected time to signal and sample size calculations for group sequential analysis for constant and non-constant groups sizes.\cr
+-	Updated and improved user guide.
+\cr
 }

@@ -91,19 +91,22 @@ if(imin>MinCases) {
 } # end if 
 
 
+funcaux1<- function(ii){j<- matrix(seq(1,(ii-1)),,1); ptes<- apply(j,1,funcaux2,ii); return(ptes)}
+funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,mmu[ii])) ) }
+funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,mmu[ii])) ) }
+funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,mmu[ii])) ) ) }
+
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
 
 if(MinCases+1<=imax-1)
 for(i in (imin+1):(imax-1)) {
-	for(j in 1:(i-1))								# This loop calculates the p[][] matix, one column at a time, from left to right
-		for(k in 1:j) 
-			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,RRmmu[i])	# Calculates the standard p[][] cell values
-	for(k in 1:(i-1))
-		p[i,i]=p[i,i]+p[i-1,k]*dpois(i-k,RRmmu[i])		# Calculates the diagonal under the absorbing states, which requires a unique formula
-	for(k in 1:(i-1)) 
-		p[i,i+1]=p[i,i+1]+p[i-1,k]*(1-ppois(i-k,RRmmu[i]))# Calculates the diagonal absorbing states where H0 is rejected
-} # end for i	
+
+p[i,1:((i-1))]<- funcaux1(i)  # This loop calculates the p[][] matix, one column at a time, from left to right
+p[i,i]<- funcaux3(i)
+p[i,i+1]<- funcaux4(i) # Calculates the diagonal absorbing states where H0 is rejected
+
+                            } # end for i	
 pp=0
 for(k in 1:(imax-1)) pp=pp+p[imax-1,k]*(1-ppois(imax-k,(T-mu[imax-1])*RR)) #Calculates the last probability to signal before time T
 

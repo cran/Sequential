@@ -3,17 +3,32 @@
 # Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Binomial<- function(name, N,alpha=0.05,zp=1,M=1,AlphaSpendType="Wald",rho="n",title="n")
+AnalyzeSetUp.Binomial<- function(name,N,alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="Wald",rho="n",title="n",address="n")
 {
 
+# Example of address: "C:/Users/Ivair/Documents"
+
+if(address=="n"){stop(c("Please, provide a valid directory address to save the setup information."),call. =FALSE)}
+
+if(pp=="n"&zp=="n"){stop("Please, at least zp or pp must be provided.",call. =FALSE)}
+
+if( zp!="n"){if(sum(is.numeric(zp))!=1){stop("Symbols and texts are not applicable for 'zp'. It must be a number greater than zero.",call. =FALSE)}}
+if(zp<=0){stop("'zp' must be a number greater than zero.",call. =FALSE)}
+
+if(pp!="n"){
+if(is.numeric(pp)!=TRUE){stop("Symbols and texts are not applicable for 'pp'. It must be a probability measure.",call. =FALSE)}
+if(zp!="n"){if(pp!= 1/(1+zp)){stop("Both zp and pp are specified, but the required relationship that pp=1/(1+zp) does not hold. Please remove either the definition of zp or the definition of pp. Only one of them is needed. .",call. =FALSE)}}
+if(pp<=0|pp>=1){stop("pp must be a number greater than zero and smaller than 1.",call. =FALSE)}
+           }
+
 pho<- rho
-z<- zp
+if(zp!="n"){z<- zp}else{z<- 1/pp-1}
 
 phoref<- rho
 
 if(AlphaSpendType!="Wald"&AlphaSpendType!="power-type"){stop("Set AlphaSpendType= 'Wald' or AlphaSpendType= 'power-type'.",call. =FALSE)}
 if(AlphaSpendType=="power-type"&is.numeric(pho)!=TRUE){stop("Symbols and texts are not applicable for 'rho'. It must be a positive number.",call. =FALSE)}
-if(pho<0&AlphaSpendType=="power-type"){stop("rho must be greater than zero or equal to the default (rho='n')",call. =FALSE)}
+if(pho<=0&AlphaSpendType=="power-type"){stop("rho must be greater than zero or equal to the default (rho='n')",call. =FALSE)}
 
 if(pho=="n"){pho<- 0}
 
@@ -22,14 +37,12 @@ if(AlphaSpendType=="Wald"){pho<- 0}
 safedir<- getwd()
 if(title== "n"){title<- 0}
 name1<- name
-address<- choose.dir(default = "", caption = paste("Select the folder where the file '",name,"' is going to be saved."))
 
 address1<- tempdir()
 y<- substr(address1,1:4,4) ; i<- 2
 while(i<=nchar(address1)-3&y!="Temp"&y!="TEMP"){y<- substr(address1,i:(i+3),i+3);i<- i+1}
 address1<- substr(address1,1:(i+3),i+3)
 
-if(paste(address)=="NA"){address<- address1}
 address2<- data.frame(c(0))
 address2[1,1]<- address
 setwd(address1)
@@ -47,11 +60,10 @@ then try 'AnalyzeSetUp.Binomial' again."),call. =FALSE)
 MinCases<- M
 
 if( sum(is.numeric(alpha))!=1){stop("Symbols and texts are not applicable for 'alpha'. It must be a number in the (0,0.5) interval.",call. =FALSE)}
-if( sum(is.numeric(z))!=1){stop("Symbols and texts are not applicable for 'z'. It must be a number greater than zero.",call. =FALSE)}
 if( sum(is.numeric(MinCases))!=1){stop("Symbols and texts are not applicable for 'M'. It must be an integer greater than zero.",call. =FALSE)}
 if(is.numeric(N)==FALSE){stop("Symbols and texts are not applicable for 'N'. It must be an integer greater than zero.",call. =FALSE)}
 
-if(z<0){stop("'z' must be a number greater than zero.",call. =FALSE)}
+
 if(N<=0){stop("'N' must be an integer greater than zero.",call. =FALSE)}
 
 if(alpha<=0|alpha>0.5||is.numeric(alpha)==FALSE){stop("'alpha' must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
@@ -187,13 +199,13 @@ omega<- omega[begin:length(omega)]
 i1<- 1 ;  i2<- length(omega) ; im<- round((i1+i2)/2)
 
 while(i2-i1>1){
- res<- Perror_I(omega[im]) ; error1<- res[[1]]
-      if(error1>alpha){i1<- im}else{i2<- im; resold<- res}
+ resE<- Perror_I(omega[im]) ; error1<- resE[[1]]
+      if(error1>alpha){i1<- im}else{i2<- im; resold<- resE}
  im<- round((i1+i2)/2)
               }
 
-error1<- res[[1]]
-if(error1<alpha){salpha<- res[[2]]; absorb<- res[[3]]}else{salpha<- resold[[2]]; absorb<- resold[[3]]}
+error1<- resE[[1]]
+if(error1<alpha){salpha<- resE[[2]]; absorb<- resE[[3]]}else{salpha<- resold[[2]]; absorb<- resold[[3]]}
 
 result<- list(salpha,absorb)
             

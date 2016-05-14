@@ -4,7 +4,7 @@
 \description{The function \code{CV.Binomial} obtains critical values for the continuous sequential MaxSPRT test with binomial data, using a Wald-type upper boundary,
 which is flat with respect to the likelihood ratio function, and an pre-specified upper limit on the sample size.}
 \usage{
-CV.Binomial(N,alpha=0.05,M=1,z=1)
+CV.Binomial(N,alpha=0.05,M=1,z="n",p="n")
       }
 \arguments{
 \item{N}{The upper limit on the sample size (length of surveillance) expressed in terms of the total number of events (cases plus controls). 
@@ -12,13 +12,24 @@ CV.Binomial(N,alpha=0.05,M=1,z=1)
 this is not a major restriction. For example, for "RR=1.1", "alpha=0.01" and "z=1", the statistical power is approximately 1 for "N>500". There is no default value.}
 \item{alpha}{The significance level. The "alpha" level must be in the range (0,0.5]. The default value is "alpha=0.05".}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. "M" must be a positive integer, and the default value is "M=1".}
-\item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3".  In a self-control analysis, z is the ratio of the control interval to the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2. In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number. The default value is "z=1".}
+\item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
+\item{p}{The probability of having a case under the null hypothesis. There is no default value.}
 }
 \details{
 For the continuous binomial MaxSPRT, \code{CV.Binomial} calculates the upper boundary used to 
 determine if the null hypothesis is to be rejected at each analysis. This is done for pre-specified values of the statistical significance level (alpha) and 
-an upper limit on the sample size equal to N. For details about the
-algorithm used to calculate the critical value, see the paper by Kulldorff et al. (2011).
+an upper limit on the sample size equal to N. 
+
+The input z represents the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". 
+In a self-control analysis, z is the ratio of the control interval to the risk interval.
+For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2.
+In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number.
+
+Alternatively, instead of z the user can specify p directly.
+Note that only one of these inputs, z or p, has to be specified, but if both are entered the code will only work if z and p are such that p=1/(1+z).
+Otherwise, an error message will appear to remind that such condition must be complied.
+
+For details about the algorithm used to calculate the critical value, see the paper by Kulldorff et al. (2011).
 
 For some configurations of N and alpha, there is no critical value that gives a Type I error probability that is exactly equal to the
 requested "alpha". This is because of the discrete nature of binomial data. In such situations, \code{CV.Binomial} returns the greatest critical value that guarantees a Type I error probability smaller than "alpha". Thus 

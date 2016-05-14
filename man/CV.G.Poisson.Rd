@@ -4,7 +4,7 @@
 \description{The function \code{CV.G.Poisson} calculates exact critical values for group sequential analysis with Poisson data, using a Wald 
 type upper boundary, which is flat with respect to the likelihood ratio function, and with a pre-specified upper limit on the sample size.}
 \usage{
-CV.G.Poisson(SampleSize,alpha=0.05,Looks,M=1)
+CV.G.Poisson(SampleSize,alpha=0.05,GroupSizes,M=1)
       }
 \arguments{
 \item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the expected number of events under the null hypothesis. The
@@ -13,7 +13,7 @@ CV.G.Poisson(SampleSize,alpha=0.05,Looks,M=1)
 If there are frequent looks at the data, so that the group sizes are extremely small, a value of M=1 means that even a single event can reject the null hypothesis if it occurs sufficiently early.
 According to Kulldorff and Silva(2015), a reasonable choice is M=4.}
 \item{alpha}{The significance level, or the type 1 error probability, which is the probability of rejecting the null hypothesis when it is true. The alpha level  must be in the range (0,0.5]. The default value is alpha=0.05.}
-\item{Looks}{The maximum number of tests to be performed, which is, the number of equally spaced looks at the data if the null hypothesis is never rejected. The value must be an integer greater or equal to 1. There is no default value. If Looks=1, there is only one test, and there is no sequential analysis performed.}
+\item{GroupSizes}{Vector containing the expected number of events under H0 for each test. The values must be positive numbers. The dimension of this vector must be equal to the maximum number of sequential tests. Thus, the sum of the entries in GroupSizes has to be equal to SampleSize. There is no default value.}
 }
 \details{
 For group sequential analysis with Poisson data, \code{CV.G.Poisson} calculates the critical value that constitutes the upper boundary used to 
@@ -56,11 +56,11 @@ Development of the CV.G.Poisson function was funded by:\cr
 
 \examples{
 
-#  Calculates the critical value for five equally spaced group sequential looks, at 6, 12,
-#  18, 24 and 30 expected events under the null hypothesis, and for a statistical signifi-
+#  Calculates the critical value for five group sequential looks, at 5, 11,
+#  17, 22 and 30 expected events under the null hypothesis, and for a statistical signifi-
 #  cance level of 0.05. 
 
-CV.G.Poisson(SampleSize=30,alpha=0.05,Looks=5)
+CV.G.Poisson(SampleSize=30,alpha=0.05,GroupSizes= c(5,6,6,5,8))
 
 }
 

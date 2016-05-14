@@ -4,7 +4,7 @@
 \description{The function \code{CV.G.Binomial} calculates the critical values for the group sequential MaxSPRT test with Binomial data, using a Wald-type
 upper boundary, which is flat with respect to the likelihood ratio function, and with a pre-specified upper limit on the sample size (N).}
 \usage{
-CV.G.Binomial(N,alpha=0.05,M=1,z=1,GroupSizes)
+CV.G.Binomial(N,alpha=0.05,M=1,z="n",p="n",GroupSizes)
       }
 \arguments{
 \item{N}{The upper limit on the sample size (length of surveillance) expressed in terms of the total number of events (cases plus controls). 
@@ -12,7 +12,8 @@ CV.G.Binomial(N,alpha=0.05,M=1,z=1,GroupSizes)
 this is not a major restriction. For example, for "RR=1.1" and "alpha=0.01" and "z=1", the statistical power is approximately 1 for "N>500". There is no default value.}
 \item{alpha}{The significance level. The "alpha" level must be in the range (0,0.5]. The default value is "alpha=0.05".}
 \item{M}{The minimum number of cases needed before the null hypothesis can be rejected. It must be a positive integer, and the default value is 'M=1'}
-\item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, z=3.  In a self-control analysis, z is the ratio of the control interval to the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2. In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number. The default value is z=1.}
+\item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
+\item{p}{The probability of having a case under the null hypothesis. There is no default value.}
 \item{GroupSizes}{Vector with the number of events (cases+controls) between two consecutive looks (tests) at the data, i.e, the group sizes. The
 length of this vector is equal to the maximum number of looks. The entries do not have the same, but they sum up to "N".
 If the group sizes is an integer instead of a vector, then that integer is the group size for all looks at the data, and the number of looks is "N/GroupSizes".}
@@ -21,6 +22,15 @@ If the group sizes is an integer instead of a vector, then that integer is the g
 For group sequential analysis with binomial data, the function \code{CV.G.Binomial} calculates critical value for the decision of accepting/rejecting
 the null hypothesis. This is done for a pre-defined significance level (alpha) and an upper limit on the sample size (N), as well as other parameter settings.
 When the length of 'Groups' is equal to one, N must be a multiple of Groups.
+
+The input z represents the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". 
+In a self-control analysis, z is the ratio of the control interval to the risk interval.
+For example, if the risk interval is 2 days long and the control interval is 7 days long, z=7/2.
+In terms of p, the binomial probability under the null hypothesis, p=1/(1+z), or equivalently, z=1/p-1. The parameter z must be a positive number.
+
+Alternatively, instead of z the user can specify p directly.
+Note that only one of these inputs, z or p, has to be specified, but if both are entered the code will only work if z and p are such that p=1/(1+z).
+Otherwise, an error message will appear to remind that such condition must be complied.
 
 For several configurations of N, Groups and M, there are no critical values for a true Type I error probability strictly equal to alpha. The is
 because of the discrete nature of binomial data. For such cases, the function \code{CV.G.Binomial} returns the greatest critical value that will guarantee a

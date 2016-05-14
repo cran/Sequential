@@ -5,16 +5,32 @@
 # Function produces power and expected signal time for the Group Sequential Binomial MaxSPRT
 # -------------------------------------------------------------------------
 
-Performance.G.Binomial <- function(N,M=1,cv,z=1,RR=2,GroupSizes){
+Performance.G.Binomial <- function(N,M=1,cv,z="n",p="n",RR=2,GroupSizes){
 Groups<- GroupSizes
 alpha<- 0.05
 MinCases<- M
 # N = maximum length of surveillance defined in terms of the total number of adverse events
 # alpha = desired alpha level
 # MinCases = The minimum number of cases for which a signal is allowed to occur, default=1
-# z = matching ratio between exposed and unexposed cases    
+# z = matching ratio between exposed and unexposed cases 
+# probability of having a case under the null hypothesis   
 # Groups: Vector with the number of adverse events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N
 # RR= Relative risk 
+
+
+if(p=="n"&z=="n"){stop("Please, at least z or p must be provided.",call. =FALSE)}
+
+if( z!="n"){if(sum(is.numeric(z))!=1){stop("Symbols and texts are not applicable for 'z'. It must be a number greater than zero.",call. =FALSE)}}
+if(z<=0){stop("'z' must be a number greater than zero.",call. =FALSE)}
+
+if(p!="n"){
+if(is.numeric(p)!=TRUE){stop("Symbols and texts are not applicable for 'p'. It must be a probability measure.",call. =FALSE)}
+if(z!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
+if(p<=0|p>=1){stop("p must be a number greater than zero and smaller than 1.",call. =FALSE)}
+           }
+
+if(z!="n"){z<- z}else{z<- 1/p-1}
+
 
 if(length(Groups)==1){
 if(is.numeric(Groups)==FALSE){stop("'Groups' must be an integer smaller than or equal to 'N'.",call. =FALSE)}
@@ -31,7 +47,6 @@ if(sum(Groups<0)>0){stop("The vector 'Groups' must contain only positive integer
 }
 if((N<=0|is.numeric(N)==FALSE)){stop("'N' must be a positive integer.",call. =FALSE)}
 if(alpha<=0|alpha>0.5||is.numeric(alpha)==FALSE){stop("'alpha' must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
-if(z<0||is.numeric(z)==FALSE){stop("'z' must be a number greater than zero.",call. =FALSE)}
 if(MinCases>N||is.numeric(MinCases)==FALSE){stop("'M' must be an integer smaller than or equal to N.",call. =FALSE)}
 if(MinCases<1){stop("'M' must be an integer greater than zero.",call. =FALSE)}
 if(MinCases!=round(MinCases)){stop("'M' must be an integer.",call. =FALSE)}

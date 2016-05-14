@@ -9,15 +9,33 @@
 # Function produces critical value for the Group Sequential Binomial MaxSPRT
 # -------------------------------------------------------------------------
 
-CV.G.Binomial <- function(N,alpha=0.05,M=1,z=1,GroupSizes){
+CV.G.Binomial <- function(N,alpha=0.05,M=1,z="n",p="n",GroupSizes){
 Groups<- GroupSizes
 MinCases<- M
 
 # N = maximum length of surveillance defined in terms of the total number of adverse events
 # alpha = desired alpha level
 # MinCases = The minimum number of cases for which a signal is allowed to occur, default=1
-# z = matching ratio between exposed and unexposed cases 
-# Groups: Vector with the number of adverse events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N
+# z = matching ratio between exposed and unexposed cases
+# p = probability of having a case
+# GroupSizes: Vector with the number of adverse events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N
+
+
+
+if(p=="n"&z=="n"){stop("Please, at least z or p must be provided.",call. =FALSE)}
+
+if( z!="n"){if(sum(is.numeric(z))!=1){stop("Symbols and texts are not applicable for 'z'. It must be a number greater than zero.",call. =FALSE)}}
+if(z<=0){stop("'z' must be a number greater than zero.",call. =FALSE)}
+
+if(p!="n"){
+if(is.numeric(p)!=TRUE){stop("Symbols and texts are not applicable for 'p'. It must be a probability measure.",call. =FALSE)}
+if(z!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
+if(p<=0|p>=1){stop("p must be a number greater than zero and smaller than 1.",call. =FALSE)}
+           }
+
+if(z!="n"){z<- z}else{z<- 1/p-1}
+
+
  
 
 
@@ -48,8 +66,7 @@ if((is.numeric(M)==FALSE)){stop("The minimum number of cases, 'M', must be a pos
 if((M<=0)){stop("The minimum number of cases, 'M', must be a positive integer.",call. =FALSE)}
 if((is.numeric(alpha)==FALSE)){stop("'alpha' must be a number in the '(0,0.5]' interval.",call. =FALSE)}
 if((alpha<=0|alpha>0.5)){stop("'alpha' must be a number in the '(0,0.5]' interval.",call. =FALSE)}
-if(is.numeric(z)==FALSE){stop("'z' must be a positive number.",call. =FALSE)}
-if(z<0){stop("'z' must be a positive number.",call. =FALSE)}
+
 if(MinCases>N){
 if(M>1){
 if(1-pbinom(MinCases-1,N,pst)<alpha){Mr<- MinCases-1;while(1-pbinom(Mr-1,N,pst)<alpha&Mr>1){Mr<- Mr-1};if(Mr==0){Mr<- 1}

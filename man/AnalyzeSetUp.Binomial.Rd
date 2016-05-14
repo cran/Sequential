@@ -3,17 +3,20 @@
 \title{Function to Set Up the Input Parameters Before Using the Analyze.Binomial Function for the First Time.}
 \description{The function \code{AnalyzeSetUp.Binomial} must be run ahead of \code{Analyze.Binomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Binomial(name, N,alpha=0.05,zp=1,M=1,AlphaSpendType="Wald",rho="n",title="n")
+AnalyzeSetUp.Binomial(name,N,alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="Wald",rho="n",
+title="n",address="n")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Binomial} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
 \item{N}{The maximum sample size, at which the sequential analysis stops without rejecting the null hypothesis. There is no default value.}
 \item{alpha}{The overall significance level. Must be in the range (0,0.5]. The default is "alpha=0.05".}
 \item{zp}{The prediction for z, the expected ratio between cases and controls under the null hypothesis that will be specified in the \code{Analyze.Binomial} function. This variable is only needed when AlphaSpendType= "Wald", and it is used to calculate the appropriate rejection boundary. If the z used in \code{Analyze.Binomial} during the actual sequential analysis is different from zp, that is okay, and the sequential analysis will still maintain the correct alpha level. The default value is "z=1".}
+\item{pp}{The prediction for p, the expected probability under the null hypothesis that will be specified in the \code{Analyze.Binomial} function. This variable is only needed when AlphaSpendType= "Wald", and it is used to calculate the appropriate rejection boundary. If the p used in \code{Analyze.Binomial} during the actual sequential analysis is different from pp, that is okay, and the sequential analysis will still maintain the correct alpha level. There is no default value.}
 \item{M}{The minimum number of events required before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".}
 \item{AlphaSpendType}{The type of alpha spending function to be used. The options are AlphaSpendType="Wald" and AlphaSpendType="power-type". With the 'Wald' option, the Wald type upper rejection boundary is used, which is flat with respect to the likelihood ratio. With the power-type option, the alpha spending uses a power function with parameter rho, with rho defined by the user. This alpha spending setting is automatically used when the \code{Analyze.Binomial} function is run, but, during the sequential analysis, and before each test, the user can always specify an arbitrary amount of alpha spending to be used up until and including that test. See below for details.}
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=1".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
+\item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
 }
 
 
@@ -48,6 +51,9 @@ since the actual z that is specified in \code{Analyze.Binomial} does not have to
 in \code{AnalyzeSetUp.Binomial}. The latter is only used to set the alpha spending plan. The former, the actual z, is used to calculate the
 likelihood function which in turn determines whether the null hypothesis should be rejected or not. If the actual z is variable, so that
 it is different for different observations, we recommend setting the predicted z to be our best guess about the average of the actual zs.
+Alternatively, instead of zp the user can specify pp, the best guess about the average of the actual ps.
+Note that only one of these parameters has to be specified, but if both are entered the code will only work if zp and pp are such that pp=1/(1+zp).
+Otherwise, an error message will appear to remind that such condition must be complied. 
 
 Another alpha spending option is the power-type alpha spending plan (Kim and DeMetz 1987, p150; Jennison and Turnbull 2000, p148), with parameter rho: \eqn{F(t)= alpha*t^{rho}}, 
 where \eqn{alpha} is the overall significance level and \eqn{t} is a fraction of N, the maximum length of sequential analysis.

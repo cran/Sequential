@@ -3,8 +3,38 @@
 # -------------------------------------------------------------------------
 
 
-Analyze.Binomial<- function(name,test,z,cases,controls,AlphaSpend="n")
+Analyze.Binomial<- function(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
 {
+
+if(length(p)==1&length(z)==1){if(p=="n"&z=="n"){stop("Please, at least one of the inputs, z or p, must be provided.",call. =FALSE)}}
+
+if(length(z)>1){if(sum(is.numeric(z))!=1){stop("Symbols and texts are not applicable for 'z'. It must be a vector of positive numbers.",call. =FALSE)}}
+if(length(z)==1){if(z!="n"&is.numeric(z)!=TRUE){stop("Symbols and texts are not applicable for 'z'. It must be a vector of positive numbers.",call. =FALSE)}}
+if(sum(z<=0)>0){stop("'z' must be a vector of positive numbers.",call. =FALSE)}
+
+if(length(p)==1){
+if(p!="n"){
+if(sum(is.numeric(p))!=1){stop("Symbols and texts are not applicable for 'p'. It must contain only probability measures.",call. =FALSE)}
+if(sum(p<=0)>0|sum(p>=1)>0){stop("Each entry of p must be a number greater than zero and smaller than 1.",call. =FALSE)}
+    if(z!="n"){
+if(length(z)!=length(p)){stop("'z' and 'p' are vectors that must have the same dimension.",call. =FALSE)}
+if(sum(p== 1/(1+z))!=length(p)&z!="n"){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}
+              }
+          }
+                }
+
+if(length(p)>1){
+if(sum(is.numeric(p))!=1){stop("Symbols and texts are not applicable for 'p'. It must contain only probability measures.",call. =FALSE)}
+if(sum(p<=0)>0|sum(p>=1)>0){stop("Each entry of p must be a number greater than zero and smaller than 1.",call. =FALSE)}
+    if(z!="n"){
+if(length(z)!=length(p)){stop("'z' and 'p' are vectors that must have the same dimension.",call. =FALSE)}
+if(sum(p== 1/(1+z))!=length(p)&z!="n"){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}
+              }
+                }
+
+
+if(length(z)==1){if(z=="n"){z<- 1/p-1}}
+
 
 name1<- name
 #----- THE MAXSPRT STATISTIC
@@ -49,11 +79,9 @@ if(sum(cases<0)>0|sum(controls<0)>0){stop("The counts 'cases' and 'controls' mus
 
 if(sum(is.numeric(z))!=1){stop("Symbols and texts are not applicable for 'z'. It must be a number greater than zero.",call. =FALSE)}
 
-if(sum(z<=0)>0){stop("The entries of 'z' must be numbers greater than zero.",call. =FALSE)}
-
 if( sum(is.numeric(cases))==1&sum(is.numeric(controls))==1){if(sum(controls+cases)==0){stop("At least one of the entries of 'cases' + 'controls' must be greater than zero.",call. =FALSE)}}
 
-if(length(controls)!=length(cases)|length(controls)!=length(z)){stop("'cases', 'controls' and 'z' are vectors that must have the same dimension.",call. =FALSE)}
+if(length(controls)!=length(cases)|length(controls)!=length(z)){stop("'cases', 'controls' and 'z' (or equivalently 'p') are vectors that must have the same dimension.",call. =FALSE)}
 
 
 inputSetUp<- read.table(name)

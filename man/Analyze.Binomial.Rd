@@ -3,12 +3,13 @@
 \title{Function to Conduct Group Sequential Analyses for Binomial Data When the Goup Sizes are not Known a Priori.}
 \description{The function \code{Analyze.Binomial} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the binomial probability, p, can be different for different observations. In a matched case-control setting, this means that the matching ratios can be different for different matched sets.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Binomial} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function.}
 \usage{
-Analyze.Binomial(name,test,z,cases,controls,AlphaSpend="n")
+Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.Binomial} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
 \item{test}{An integer indicating the number of hypothesis tests performed up to and including the current test. For example, if there were four prior looks at the data, and this is the fifth one, then "test=5". This number should be increased by one each time that the \code{Analyze.Binomial} function is run for a new group of data, when it is part of the same sequential analysis.  If not, there is an error message.}
 \item{z}{For a matched case-control analysis, z is the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". In a self-control analysis, z is the ratio of the length of the control interval to the length of the risk interval. For example, if the risk interval is 2 days long and the control interval is 7 days long, "z=7/2". In terms of p, the binomial probability under the null hypothesis, "p=1/(1+z)", or equivalently, "z=1/p-1". The parameter z must be a positive number. The default value is z=1 (p=0.5). If the ratio is the same for all observations, then z can be any positive number. If the ratio is different for different observations, then z is a vector of positive numbers.}
+\item{p}{The probability of having a case under the null hypothesis. There is no default value.}
 \item{cases}{A number or a vector of the same length as z containing the number of cases.}
 \item{controls}{A number or a vector of the same length as z containing the number of controls.}
 \item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.Binomial} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the AlphaSpend parameter. AlphaSpend is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the binomial distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.Binomial} function.}
@@ -51,6 +52,10 @@ all of length four. For example, suppose "z=c(2,1,0.5,3)",  "cases=c(1,1,0,0)" a
 is equal to 2. For the second observation, also a case, the matching is equal to 1. With a matching ration of 0.5, the third observation turned out to be a control. The two last
 observations both had a matching ratio of 3, and both of them were controls. If all observations in the same data group has the same ratio, the vectors are of size one, that is,
 they are simple numbers. For example, if there were ten observations that all had a ratio of 2, with seven cases and three controls, we have "z=2", "cases=7", and "controls=3". 
+
+Alternatively, instead of z the user can specify p directly.
+Note that only one of these inputs, z or p, has to be specified, but if both are entered the code will only work if z and p are such that p=1/(1+z).
+Otherwise, an error message will appear to remind that such condition must be complied.
 
 Before running \code{Analyze.Binomial}, it is necessary to specify a planned default alpha spending function, which is done using the AlphaSpendType parameter in the
 \code{AnalyzeSetUp.Binomial} function. The default alpha spending plan can be either, (i) the polynomial power-type alpha spending plan, which is parameterized with rho,
@@ -148,8 +153,8 @@ We thank Claudia Coronel-Moreno for valuable editorial support, Bruce Fireman fo
 ### Firstly, it is necessary to set up the input parameters.
 ##  Here we use the Wald type alpha spending.
 ##  Note: cut off the "#" symbol before running the two lines below.
-#     AnalyzeSetUp.Binomial(name="VaccineA",N=200,alpha=0.05,M=3,AlphaSpendType="Wald",
-#     title="Monitoring_vaccineA")
+#     AnalyzeSetUp.Binomial(name="VaccineA",N=200,alpha=0.05,zp=1,M=3,AlphaSpendType="Wald",
+#     title="Monitoring_vaccineA", address="C:/Users/Ivair/Documents")
 
 ### Now we can sequentially apply a test for each one of four chunks of data.
 # -------------------------------------------------------------------------
@@ -167,9 +172,9 @@ We thank Claudia Coronel-Moreno for valuable editorial support, Bruce Fireman fo
 #  AlphaSpend=0.02)
 
 ## Test 3 - Situation of elevated number of events, but now the
-## arbitrary alpha spending is of 0.04.
+## arbitrary alpha spending is of 0.04, and p is entered instead of z.
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Binomial(name= "VaccineA",test=3,z=c(1.5,1),cases= c(12,10),controls= c(10,14),
+#  Analyze.Binomial(name= "VaccineA",test=3,p=c(0.4,0.5),cases= c(12,10),controls= c(10,14),
 #  AlphaSpend=0.04)
  
 ## Test 4 - Situation where all the events came from the same matching ratio.

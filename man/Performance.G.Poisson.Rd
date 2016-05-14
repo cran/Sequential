@@ -5,21 +5,21 @@
 for group sequential analysis with Poisson data. It is required that the number of looks at the data is pre-specified, and equally spaced in terms of the sample size.
 This function can also be used to  calculate the statistical significance level alpha, by setting RR=1, in which case the power output value is the alpha level.}
 \usage{
-Performance.G.Poisson(SampleSize,cv,Looks,M=1,RR=2)
+Performance.G.Poisson(SampleSize,cv,GroupSizes,M=1,RR=2)
 }
 \arguments{
 \item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the expected number of events under the null hypothesis. 
 SampleSize must be greater than 0. There is no default value.}
 \item{cv}{The critical value for a group sequential analysis with Poisson data. This is calculated using the \code{\link[Sequential]{CV.G.Poisson}}.
 There is no default value.}
-\item{Looks}{The maximum number of tests to be performed, which is, the number of equally spaced looks at the data if the null hypothesis is never rejected. The value must be an integer greater or equal to 1.}
+\item{GroupSizes}{Vector containing the expected number of events under H0 for each test. The values must be positive numbers. The dimension of this vector must be equal to the maximum number of sequential tests. Thus, the sum of the entries in GroupSizes has to be equal to SampleSize. There is no default value.}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. M must be a positive integer, and the default value is M=1. According to Kulldorff and Silva (2015), a reasonable choice is M=4.}
 \item{RR}{The relative risk under the alternative hypothesis. Can be any number greater or equal to 1. The default value is RR=2.}
 }
 \details{
 The function \code{Performance.G.Poisson} calculates the statistical power, the expected time to signal when the null hypothesis is rejected, and
 the expected sample size at the end of the sequential analysis, whether the null hypothesis was rejected or not. The user specifies the upper limit
-on the sample size (SampleSize), the upper boundary critical value (cv), the maximum number of tests to be performed (Looks), the minimum number of
+on the sample size (SampleSize), the upper boundary critical value (cv), a vector with the expected number of cases under H0 at each test (GroupSizes), the minimum number of
 events required before rejecting the null hypothesis (M) and the relative risk under the alternative hypothesis (RR).
 
 The calculations are done using an upper rejection boundary that is flat with respect to the log likelihood ratio, as expressed using the critical value.
@@ -56,12 +56,12 @@ Development of the Performance.G.Poisson function was funded by:\cr
 ## looks  at the data, spaced six units apart, and with a statistical significance level
 ## of 0.05:
 
-cvt<- CV.G.Poisson(SampleSize=30,alpha=0.05,Looks=5)
+cvt<- CV.G.Poisson(SampleSize=30,alpha=0.05,GroupSizes=c(6,6,6,6,6))
 
 ## For an alternative hypothesis of a relative risk of RR=1.5, calculates the statistical 
 ## power, the expected time to signal, and the expected sample size at the 
 ## end of the sequential analysis.
 
-(Performance.G.Poisson(SampleSize=30,cv=cvt,Looks=5,RR=1.5))
+(Performance.G.Poisson(SampleSize=30,cv=cvt,GroupSizes=c(6,6,6,6,6),RR=1.5))
 }
 

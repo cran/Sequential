@@ -1,6 +1,6 @@
 CV.G.Poisson <-
-function(SampleSize,alpha=0.05,Looks,M=1){
-
+function(SampleSize,alpha=0.05,GroupSizes,M=1){
+alphin<- alpha 
 #----------ExactPoisson.R-------------------------------------------------------------------
 # Function that calculates the LLR for a given observed (c) and expected (u) number of cases
 #-------------------------------------------------------------------------------------------
@@ -17,19 +17,21 @@ LLR <- function(cc,uu) {
 # alpha = desired alpha level
 # CVstart = LLR/CV start value, a good guess reduces computing time
 # MinCases = The minimum number of cases for which a signal is allowed to occur, default=1
-# Group = Time between looks in a group sequential trial, must be greater than 0
+# GroupSizes = Expected number of events under H0 between two looks at the data
 # Late = Time at first look at the data, defined in terms of the expected counts under H0, default=0
 # NOTE: Only one of MinCases and Late can be different from the default value
 CVstart=3
 MinCases<- M
 T<- SampleSize
-Group<- T/Looks
+
 
 
 if(alpha<=0|alpha>0.5|is.numeric(alpha)==FALSE){stop("alpha must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
 if(is.numeric(MinCases)==FALSE|MinCases!=round(MinCases)|MinCases<1){stop("M must be a positive integer.",call. =FALSE)}
 if(T<=0|is.numeric(T)==FALSE){stop("SampleSize must be a positive number.",call. =FALSE)}
-if(is.numeric(Looks)==FALSE|Looks<1|Looks!=round(Looks)){stop("Looks must be a positive integer.",call. =FALSE)}
+if(is.numeric(GroupSizes)==FALSE){stop("Symbols and texts are not applicable for GroupSizes. It must contain only positive numbers.",call. =FALSE)}
+if(sum(GroupSizes<=0)>1){stop("GroupSizes must contain only positive numbers.",call. =FALSE)}
+if(sum(GroupSizes)!=SampleSize){stop("The entries of GroupSizes must sum up SampleSize.",call. =FALSE)}
 
 
                          if(1-ppois(0,T)<alpha|qpois(1-alpha,T)<MinCases){
@@ -66,16 +68,28 @@ dim(p) = c(imax,absorb[imax]+1)				# i in 1:imax-1 is the rows and j in 1:imax i
 for(s in 1:absorb[1]) p[1,s]=dpois(s-1,mu[1])		# Probability of having s-1 cases at time mu[1]
 p[1,absorb[1]+1]=1-ppois(absorb[1]-1,mu[1])			# probability of rejecting H0 at time mu[imin]
 
+funcaux1<- function(ii){j<- matrix(seq(1,(ii-1)),,1); ptes<- apply(j,1,funcaux2,ii); return(ptes)}
+funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,mmu[ii])) ) }
+funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,mmu[ii])) ) }
+funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,mmu[ii])) ) ) }
+
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
 if(imax>1){
-for(i in 2:imax) {
-	for(j in 1:absorb[i])					# This loop calculates the p[][] matix, one column at a time, from left to right
-		for(k in 1:min(j,absorb[i-1]))
-			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,mu[i]-mu[i-1])	# Calculates the standard p[][] cell values
-	for(k in 1:absorb[i-1]) p[i,absorb[i]+1]=p[i,absorb[i]+1]+p[i-1,k]*(1-ppois(absorb[i]-k,mu[i]-mu[i-1]))
-} # end for i	
+
+probaux3<- 0
+i<- 2
+
+while(i <=imax&probaux3<=alphin+PRECISION){
+
+p[i,1:((i-1))]<- funcaux1(i)  # This loop calculates the p[][] matix, one column at a time, from left to right
+p[i,i]<- funcaux3(i)
+p[i,i+1]<- funcaux4(i)  # probability in the absorbing states	
+
+probaux3<- probaux3 + p[i,i+1]
+i<- i+1
+                                          } # end for i	
           }
 
 # Sums up the probabilities of absorbing states when a signal occurs, to get the alpha level
@@ -84,7 +98,7 @@ for(i in 2:imax) {
 alpha=0
 for(i in 1:imax) alpha=alpha+p[i,absorb[i]+1]					
 time=0
-for(i in 1:imax) time=time+i*Group*p[i,absorb[i]+1]
+for(i in 1:imax) time=time+sum(GroupSizes[1:i])*p[i,absorb[i]+1]
 signaltime=time/alpha					
 return(alpha)
 }# end function P_erro_I
@@ -115,11 +129,19 @@ CV1<- CVold
 CV2<- CV
 
 
-imax = ceiling(T/Group)
-					# The number of tests performed, including final time T.
-mu = seq(length=imax,from=Group,by=Group)		# An array of the expected counts at each of the tests
+#imax = ceiling(T/Group)
+imax<- length(GroupSizes)                       # The number of tests performed, including final time T.					
+#mu = seq(length=imax,from=Group,by=Group)	
+mmu<- 	GroupSizes                                # An array of the expected counts at each of the tests
+
+mu<- mmu%*%upper.tri(matrix(0,length(mmu),length(mmu)),diag=T)*1
+mu<- as.vector(mu)
+
+
 								# mu[i] is the commulative expected count at the i'th test
 mu[imax]=T							# Sets the expected count at the last test to equal T
+mtemp = c(0,mu)
+mmu = diff(mtemp) 		                  #The marginal difference of the mu[] vector
 
 loops=0
 while(abs(CV1-CV2)>PRECISION & abs(alpha-ALPHAFIX)>PRECISION) {
@@ -206,5 +228,5 @@ return(out)
 }
 
 
-#CV.G.Poisson(SampleSize=1,alpha=0.05,Looks=1000,M=10)
+#CV.G.Poisson(SampleSize=30,alpha=0.05,GroupSizes= c(5,6,6,5,8))
 
