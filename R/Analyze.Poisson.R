@@ -214,6 +214,7 @@ if(CV<=events+sum(inputSetUp[4,])){reject_new<- test}else{reject_new<- 0}
 
 if(M>events+sum(inputSetUp[4,]) |reject==1| max(inputSetUp[5,])>=alpha-0.00000001  ){actualspent<- 0; CV<- "NA"}
 
+if(reject>0){actualspent<- max(actual_alpha_old)}
 
 ##########################################################
 ###### PRINTING TABLES AND GRAPHS WITH RESULTS
@@ -399,9 +400,9 @@ lines(seq(1,test,1),loglike,col="blue",lty=1)
 
 
 ###############
-### Situation 3: SampleSize achieved with remaining alpha spending and "start>0"
+### Situation 3: SampleSize achieved with remaining alpha spending, H0 not rejected in previous tests (that is "reject==0"), and "start>0"
 
-if(start>0&mu0+sum(mu0_old)>=SampleSize&alpha-actualspent>0.00000001&start>0&reject==0&reject_new==0){ # OPEN
+if(start>0&mu0+sum(mu0_old)>=SampleSize&alpha-actualspent>0.00000001&reject==0&reject_new==0){ # OPEN
 
 result<- data.frame(matrix(0,test+1,11))
 
@@ -823,11 +824,11 @@ if(test> ncol(inputSetUp) ){inputSetUp<- cbind(inputSetUp,matrix(0,nrow(inputSet
 inputSetUp[1,1]<- test
 inputSetUp[2,1]<- start
 if(start>0){inputSetUp[1,7]<- reject_new}
-inputSetUp[3,test]<- CV
+if(reject==0){inputSetUp[3,test]<- CV}
 inputSetUp[4,test]<- events
 inputSetUp[5,test]<- actualspent
 inputSetUp[6,test]<- mu0
-inputSetUp[7,test]<- current_alpha
+if(reject==0){inputSetUp[7,test]<- current_alpha}else{inputSetUp[7,test]<- alpha}
 
 ############################################################
 ## SAVING INFORMATION FOR FUTURE TESTES
@@ -837,14 +838,15 @@ if(rho==0){write.table(alphaspend,paste(name1,"alphaspend.txt",sep=""))}
 
 write.table(inputSetUp,name)
 
-write.table(p,paste(name1,"p.txt",sep=""))
+if(start>0&reject==0){write.table(p,paste(name1,"p.txt",sep=""))}
 
 #####################################
 }##### Close function Analyze.Poisson
 #####################################
 
 
-# AnalyzeSetUp.Binomial(name="VaccineA", SampleSize=100, alpha=0.05,M=1,AlphaSpendType="power-type",rho=0.5,title="n",address="C:/Users/Ivair/Documents")
+# AnalyzeSetUp.Poisson(name="VaccineA", SampleSize=100, alpha=0.05,M=1,AlphaSpendType="power-type",rho=0.5,title="n",address="C:/Users/Ivair/Documents")
+# AnalyzeSetUp.Poisson(name="CvH MMR",SampleSize=25,alpha=0.05,M=3,AlphaSpendType="Wald",rho="n",title="CvH MMR_MMRV",address="C:/Users/Visitante/Ivair")
 # Analyze.Poisson(name="VaccineA",test=1,mu0=1,events=1,AlphaSpend="n")
 
 

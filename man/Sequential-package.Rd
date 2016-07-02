@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.1\cr
-Date: \tab 2016-03-30\cr
+Version: \tab 2.1.1\cr
+Date: \tab 2016-06-28\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -241,7 +241,8 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -	Judith Maro, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
 -	Azadeh Shoaibi, Food and Drug Administration.\cr
 -	Katherine Yih, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
--       Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC. 
+-     Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC.\cr
+-	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland. 
 }
 
 \keyword{Sequential analysis}
@@ -277,33 +278,38 @@ Exact sequential analysis for Poisson data:\cr
 \cr
 Version 1.2,  January 2014\cr
 -	Improved code structure and efficiency.\cr
--	More extensive and detailed user guide. \cr
+-	More extensive user guide. \cr
 \cr
 Version 2.0, June 2015\cr
-Exact sequential analysis for binomial and Bernoulli data:\cr
+Exact sequential analysis for binomial data:\cr
 -	Continuous sequential analysis.\cr
 -	Group sequential analysis with pre-defined group sizes.\cr
--	Group sequential analysis with unpredictable group sizes, that do not need to be specified a priori for Binomial data.\cr
+-	Group sequential analysis with unpredictable group sizes, not specified a priori.\cr
 -	Fixed or variable binomial probabilities (matching ratios).\cr
--	User specified alpha spending function for binomial data.\cr 
+-	User specified alpha spending function.\cr 
 -	Statistical power, expected time to signal and sample size calculations.\cr
--	Updated and improved user guide.\cr
+-	Updated user guide.\cr
 \cr
 Version 2.0.1, June 2015\cr
--       Correction of bugs for \code{CV.Poisson} function. \cr
--       Updated and improved user guide.\cr
+-       Correction of bugs in \code{CV.Poisson} function. \cr
+-       Updated user guide.\cr
 \cr
 Version 2.0.2, Octuber 2015\cr
--       Updated and improved user guide.\cr
+-       Improved user guide.\cr
 \cr
 Version 2.1, May 2016\cr
 Exact sequential analysis for Poisson data:\cr
--     Directory address is to be informed manually in AnalyzeSetUp.Binomial and AnalyzeSetUp.Poisson.\cr
--     New feature to inform the binomial tuning parameters. Instead of matching ratio, the user can alternatively enter with the probability of having a case under the null hypothesis.\cr
--	Mixed group-continuous sequential analysis for Poisson data.\cr
--	Fixed or variable Poisson rates (expected number of cases under the null).\cr
--	User specified alpha spending function for Poisson data.\cr 
--	Critical value, statistical power, expected time to signal and sample size calculations for group sequential analysis for constant and non-constant groups sizes.\cr
--	Updated and improved user guide.
+-	Group sequential analysis with unpredictable group sizes, not specified a priori.\cr
+-	User specified alpha spending function.\cr
+-	Mixed group-continuous sequential analysis.\cr
+-	Statistical power, expected time to signal and sample size calculations for non-constant groups sizes.\cr
+Other:\cr
+-	Directory address parameter in AnalyzeSetUp functions.\cr
+-	Probability parameter in binomial functions.\cr
+-	Updated user guide.\cr
+\cr
+Version 2.1.1, June 2016\cr
+-	Correction of bugs in Poisson functions.\cr
+-	Updated user guide.\cr
 \cr
 }

@@ -29,6 +29,7 @@ if(teste1==0 & M>100){teste1<- 1; out<- c("M must be a positive integer in the r
 if(Late>T & teste1==0){teste1<- 1; out<- c("D must be <= SampleSize") }
 if(Late<0 & teste1==0){teste1<- 1; out<- c("Negative values for D does not make sense. Use 0<=D<=SampleSize.") }
 if(M<1 & teste1==0){teste1<- 1; out<- c("M must be a positive integer in the range[1,100].") }
+if(round(M)!=M){teste1<- 1; out<- c("M must be a positive integer in the range[1,100].") }
 
 # If the parameters are incorrect in any sense, the code is interrupted and an error message is informed according to the possibilies above
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -43,7 +44,7 @@ ProdLog <- function(z) {
 	x
 	}
 
-c = 1:(2*T)
+c = 1:max(round(2*T),1200)
 
 z = -exp(-1-LLR/c)
 mu = -c * ProdLog(z) 		#The expected counts under H0 that is needed to reject the null with i number of adverse events
@@ -92,9 +93,9 @@ if(imin>MinCases) {
 
 
 funcaux1<- function(ii){j<- matrix(seq(1,(ii-1)),,1); ptes<- apply(j,1,funcaux2,ii); return(ptes)}
-funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,mmu[ii])) ) }
-funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,mmu[ii])) ) }
-funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,mmu[ii])) ) ) }
+funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,RRmmu[ii])) ) }
+funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,RRmmu[ii])) ) }
+funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,RRmmu[ii])) ) ) }
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
