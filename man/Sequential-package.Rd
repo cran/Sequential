@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.1.1\cr
-Date: \tab 2016-06-28\cr
+Version: \tab 2.2\cr
+Date: \tab 2016-07-08\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -40,7 +40,9 @@ Index: \tab \cr
 \code{\link[Sequential]{CV.G.Binomial}} \tab Critical Values for Group Sequential Analysis with Binomial Data.\cr
 \code{\link[Sequential]{CV.G.Poisson}} \tab Critical Values for Group Sequential Analysis with Poisson Data.\cr
 \code{\link[Sequential]{CV.Poisson}} \tab Critical Values for Continuous Sequential Analysis with\cr
-                                     \tab Poisson Data.\cr 
+                                     \tab Poisson Data.\cr
+\code{\link[Sequential]{CV.CondPoisson}} \tab Critical Values for continuous sequential CMaxSPRT for\cr
+                                     \tab Poisson data with limited information from historical cohort.\cr
 \code{\link[Sequential]{Performance.Binomial}}  \tab Power, Expected Signal Time and Sample Size for Continuous Sequen-\cr
                                                \tab tial Analysis with Binomial Data.\cr
 \code{\link[Sequential]{Performance.G.Binomial}}  \tab Power, Expected Signal Time and Sample Size for Group Sequential\cr
@@ -48,11 +50,15 @@ Index: \tab \cr
 \code{\link[Sequential]{Performance.G.Poisson}}  \tab Power, Expected Signal Time and Sample Size for Group Sequential\cr
                                                  \tab  Analysis with Poisson Data.\cr
 \code{\link[Sequential]{Performance.Poisson}}  \tab Power, Expected Signal Time and Sample Size for Continuous Sequen-\cr
-                                               \tab tial Analysis with Poisson Data.\cr
-\code{\link[Sequential]{SampleSize.Binomial}}  \tab Sample Size Calculation for Continuous Sequential Analysis with.\cr
+                                               \tab tial Analysis from Limited Historical Cohort Poisson Data.\cr
+\code{\link[Sequential]{Performance.CondPoisson}}  \tab Power, Expected Signal Time and Sample Size for Continuous\cr
+                                                    \tab Sequential CMaxSPRT with Poisson Data.\cr
+\code{\link[Sequential]{SampleSize.Binomial}}  \tab Sample Size Calculation for Continuous Sequential Analysis with\cr
                                               \tab Binomial Data.\cr                              
-\code{\link[Sequential]{SampleSize.Poisson}}  \tab Sample Size Calculation for Continuous Sequential Analysis with.\cr
-                                              \tab Poisson Data.\cr                                   
+\code{\link[Sequential]{SampleSize.Poisson}}  \tab Sample Size Calculation for Continuous Sequential Testing with\cr
+                                              \tab Poisson Data.\cr
+\code{\link[Sequential]{SampleSize.CondPoisson}}  \tab Sample Size Calculation for Continuous Sequential CMaxSPRT with\cr
+                                              \tab Poisson Data.\cr
 }
 }
 
@@ -119,7 +125,7 @@ and z is the matching ratio between the occurrence of a case and of a control un
 is \eqn{p = 1=(1 + z) = 0.5}, then z=1 (1:1 matching ratio), or, \eqn{p = 0.25} for z=3 (1:3 matching ratio), etc.
 
 The MaxSPRT statistic (Kulldorff et al., 2011) for a continuous binomial surveillance is:
-\deqn{LR_n=\frac{(c_n/n)^{c_n}\left[(n-c_n)/n\right]^{n-c_n}}{\left[1/(1+z)\right]^{c_n}\left[z/(1+z)\right]^{n-c_n}}},
+\deqn{LR_n=\frac{(c_n/n)^{c_n}\left[(n-c_n)/n\right]^{n-c_n}}{\left[1/(1+z)\right]^{c_n}\left[z/(1+z)\right]^{n-c_n}},}
 if \eqn{z c_n/(n-c_n)>1}, and \eqn{LR_n= 1} otherwise.
 
 The monitoring is continued until either there is a signal rejecting the null hypothesis \eqn{(LR_n > CV)}
@@ -146,15 +152,45 @@ Jennison and Turnbull (2000) present a rich discussion about this topic. They de
 \eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>1}, and \eqn{t} represents a fraction of the maximum length of surveillance.
 
 To run continuous or group sequential analysis with a user defined alpha spending function, and/or, when the group sizes are not known a prior,
-the function \code{Analyze.Binomial} and \code{Analyze.Poisson} should be used for binomial and Poisson data, respectively. 
+\code{Analyze.Binomial} and \code{Analyze.Poisson} should be used for binomial and Poisson data, respectively. 
 These functions work differently than the other functions mentioned above.
 Those other functions are designed to be used before the start of the sequential analysis, in order to determine what the maximum sample size
 and critical value should be. Once the sequential analysis is under way, the test statistic is then calculated using a hand calculator or an
 excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial} and \code{Analyze.Poisson} work very differently, in that they are run at each look at
 the accumulating data, whenever a new group of data arrives, and it is meant to perform the test itself, i.e., there is no need to use hand calculators or
 excel spread sheets or any other auxiliar code. The results and conclusions, including a descriptive table and illustrative graphics, are automatically
-provided after running \code{Analyze.Binomial} (or \code{Analyze.Poisson}). Important: before using these functions, though, it is necessary to first run the
+provided after running \code{Analyze.Binomial} (or \code{Analyze.Poisson}).
+
+Important: before using these functions, though, it is necessary to first run the
 functions \code{AnalyzeSetup.Binomial} (or \code{AnalyzeSetup.Poisson}) once in order to set everything up for the sequential analysis.
+
+\bold{CMaxSPRT for Poisson data with limited information from historical cohort}
+
+In Poisson MaxSPRT, the expected mean \eqn{\mu_t} is assumed to be a known function reflecting the baseline adverse event risk
+in the absence of the exposure of interest. In practice, it is estimated with historical data and the uncertainty associated with
+the estimated counts may or may not have a non-negligible impact on the performance of the sequential analysis method.
+Li and Kulldorff (Li and Kulldorff, 2010) showed in their simulation study that uncertainty in the estimated baseline means can be
+ignored when the total number of events in the historical data is at least 5 times the specified upper limit \eqn{T}. Otherwise, it
+is recommended to implement the Conditional Maximized Sequential Probabilit Ratio Test (CMaxSPRT) to account for variation in both
+the historical and surveillance cohorts.
+
+Let \eqn{c} and \eqn{V} denote the total number of events and the cumulative person-time in the historical data, let \eqn{P_k} denote the
+cumulative person-time observed in the surveillance population when the \eqn{k}th event occurred. The CMaxSPRT statistic defined in terms
+of the log likelihood ratio is given by \deqn{U_k=clog(\frac{c(1+P_k/V)}{c+k})+klog(\frac{k(1+P_k/V)}{P_k/V(c+k)}),} when \eqn{k/c>P_k/V},
+and \eqn{U_k=0,} otherwise. In the original publication (Li and Kulldorff, 2010), the method was introduced as a continuous sequential analytic
+approach with the upper limit defined in terms of the maximum number of observed events, i.e., \eqn{k \leq K}, and the critical value calculated
+via a Monte Carlo approach. A large number of Monte Carlo simulations (e.g., 10 million) might be needed to calculate the critical values with
+a reasonable precision. In Silva et al. (2016), the method was extended i) with another option of defining the surveillance length in terms of
+the maximum cumulative person-time divided by the total cumulative person-time in the historical cohort, i.e., \eqn{P_k/V \le T}, ii) with an exact
+calculation of the critical values for both surveillance length definitions, and iii) for group sequential analysis with data updated and analyzed
+intermittently instead of continuously. The exact critical values are calculated using the interval havling method to solve for the root of a complex,
+non-linear equation such that the overall Type I error rate is preserved at the nominal level. As \eqn{K} increases, the computing time for the exact
+critical values increases exponentially. Silva et al. (2016) also proposed two approximation methods to calculate the critical values that require
+substantially less computing time. One approch may overestimate the critical values and thus is referred to as the conservative approach as it may
+yield lower-than-nominal Type I error rates; the other approach may underestmate the critical values and thus is referred to as the liberal approach
+as it may yield higher-than-nominal Type I error rates. The recommendation is to use the exact approach when \eqn{K} is small (e.g., 10),
+use the conservative approach when \eqn{K} is medium or large but \eqn{c} is small, and use the liberal approach when \eqn{c} is medium (e.g., 50)
+or large. Simulation results show that the three approaches yield very similar results when \eqn{K} and \eqn{c} are reasonably large.
 
 }
 
@@ -213,7 +249,7 @@ Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveill
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
-Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, in press.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
 Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
@@ -261,7 +297,7 @@ result<- Performance.Poisson(SampleSize=10,D=0,M=3,cv=cvt,RR=2)
 # And if you type:
 result
 
-# Then you well see the following:
+# Then you will see the following:
 #          Power ESignalTime ESampleSize
 #     [1,] 0.7329625    4.071636    5.654732
 
@@ -310,6 +346,10 @@ Other:\cr
 \cr
 Version 2.1.1, June 2016\cr
 -	Correction of bugs in Poisson functions.\cr
+-	Updated user guide.\cr
+\cr
+Version 2.2, July 2016\cr
+-	Critical Value, Performance, and SampleSize calculations for CMaxSPRT with Poisson data.\cr
 -	Updated user guide.\cr
 \cr
 }
