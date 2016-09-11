@@ -214,7 +214,7 @@ funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,mmu[
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
-
+probaux3<- 0
 if(MinCases+1<=imax-1&((imin+1)<=(imax-1)))
 probaux3<- 0
 i<- (imin+1)

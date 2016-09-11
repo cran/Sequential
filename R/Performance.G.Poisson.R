@@ -55,21 +55,18 @@ dim(p) = c(imax,absorb[imax]+1)				# i in 1:imax-1 is the rows and j in 1:imax i
 for(s in 1:absorb[1]) p[1,s]=dpois(s-1,mu[1])		# Probability of having s-1 cases at time mu[1]
 p[1,absorb[1]+1]=1-ppois(absorb[1]-1,mu[1])			# probability of rejecting H0 at time mu[1]
 
-funcaux1<- function(ii){j<- matrix(seq(1,(ii-1)),,1); ptes<- apply(j,1,funcaux2,ii); return(ptes)}
-funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,mmu[ii])) ) }
-funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,mmu[ii])) ) }
-funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,mmu[ii])) ) ) }
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
 if(imax>1){
 for(i in 2:imax) {
-	
-p[i,1:((i-1))]<- funcaux1(i)  # This loop calculates the p[][] matix, one column at a time, from left to right
-p[i,i]<- funcaux3(i)
-p[i,i+1]<- funcaux4(i) # Calculates the diagonal absorbing states where H0 is rejected
-                 } # end for i	
+	for(j in 1:absorb[i])					# This loop calculates the p[][] matix, one column at a time, from left to right
+		for(k in 1:min(j,absorb[i-1]))
+			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,mu[i]-mu[i-1])	# Calculates the standard p[][] cell values
+	for(k in 1:absorb[i-1]) p[i,absorb[i]+1]=p[i,absorb[i]+1]+p[i-1,k]*(1-ppois(absorb[i]-k,mu[i]-mu[i-1]))
+} # end for i	
           }
+
 
 # Sums up the probabilities of absorbing states when a signal occurs, to get the alpha level
 # ------------------------------------------------------------------------------------------

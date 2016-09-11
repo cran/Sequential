@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.2\cr
-Date: \tab 2016-07-08\cr
+Version: \tab 2.2.1\cr
+Date: \tab 2016-09-09\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -278,7 +278,8 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -	Azadeh Shoaibi, Food and Drug Administration.\cr
 -	Katherine Yih, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
 -     Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC.\cr
--	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland. 
+-	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland.\cr
+-	Andreia Leite, Department of Infectious Disease Epidemiology, London School of Hygiene and Tropical Medicine.\cr 
 }
 
 \keyword{Sequential analysis}
@@ -351,5 +352,9 @@ Version 2.1.1, June 2016\cr
 Version 2.2, July 2016\cr
 -	Critical Value, Performance, and SampleSize calculations for CMaxSPRT with Poisson data.\cr
 -	Updated user guide.\cr
+\cr
+Version 2.2.1, September 2016\cr
+-       Correction of bugs in \code{CV.Poisson} and \code{CV.G.Poisson} functions. \cr
+-       Updated user guide.\cr
 \cr
 }
