@@ -13,8 +13,8 @@ SampleSize.CondPoisson(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2)
 \item{D}{The minium number for the ratio \eqn{P_k/V} before the null hypothesis can be rejected. The default value is \eqn{D=0}. A delayed start with \eqn{D>0} is recommended to avoid signaling very early on such that very little information would be available to judge whether the signal is more likely to be a true signal or chance finding.}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. The default value is M=1. A delayed start with \eqn{M>1} is recommended to avoid signaling very early on such that very little information would be available to judge whether the signal is more likely to be a true signal or chance finding.}
 \item{alpha}{The significance level. It must be in the range (0,0.5]. The default value is alpha=0.05.}
-\item{power}{The target overall statistical power to detect an increased relative risk (RR). The default value is power=0.90.}
-\item{RR}{The target relative risk to be detected with the requested statistical power. The default value is RR=2.}
+\item{power}{The target vector of overall statistical powers to detect an increased relative risk (RR). The default value is power=0.90.}
+\item{RR}{The target vector of relative risks to be detected with the requested vector of statistical powers. The default value is RR=2.}
 }
 \details{
 When using the CMaxSPRT and the \code{CV.CondPoisson} function to conduct continuous sequential analysis
@@ -35,19 +35,19 @@ is used in \code{SampleSize.CondPoisson} to find the solution.
 }
 
 \value{
-\item{T}{The minimum required sample size (length of surveillance), expressed in terms of the ratio of the cumulative person-time in the surveillance population divided by the total cumulative person-time in historical data, needed to achieve the desired statistical power for the pre-specified relative risk (RR).}
-\item{K}{The minimum required sample size (length of surveillance), expressed in terms of the observed number of events in the surveillance population, needed to achieve the desired statistical power for the pre-specified relative risk (RR).}
-\item{cv}{the corresponding critical value}
+\item{SampleSize_by_RR_Power}{A table containing the main performance measures associated to the required samples sizes, expressed in the scale of the number of events in the surveillance period, for each combination of RR and power.}
 }
 
 \author{Ivair Ramos Silva, Lingling Li}
 \references{
 Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for pharmacovigilance. Statistics in Medicine, 30;29(2):284-95.\cr
-Silva IR, Li L, Kulldorff M. (2016). Exact conditional maximized sequential probability ratio test adjusting for covariates. Working paper.
+
+Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
 }
 \section{Acknowledgements}{
 Development of the \code{SampleSize.CondPoisson} function was funded by:\cr
 - National Institute of General Medical Sciences, NIH, USA, through grant number R01GM108999 (v2.0.1, v2.0.2).
+- Foundation for Research Support of Minas Gerais State (FAPEMIG), MG, Brazil, through the grant Demanda Universal.
 }
 
 \keyword{Continuous CmaxSPRT sample size}

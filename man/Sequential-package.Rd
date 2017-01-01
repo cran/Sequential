@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.2.1\cr
-Date: \tab 2016-09-09\cr
+Version: \tab 2.3\cr
+Date: \tab 2016-12-28\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -35,6 +35,10 @@ Index: \tab \cr
                                            \tab Data When the Goup Sizes are not Known a Priori.\cr
 \code{\link[Sequential]{AnalyzeSetUp.Poisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.Poisson} Function for the First Time.\cr
+\code{\link[Sequential]{Analyze.CondPoisson}} \tab Function to Conduct Group Sequential Analyses for Conditional\cr
+                                           \tab Poisson Data When the Goup Sizes are not Known a Priori.\cr
+\code{\link[Sequential]{AnalyzeSetUp.CondPoisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
+                                                \tab \code{Analyze.CondPoisson} Function for the First Time.\cr
 \code{\link[Sequential]{CV.Binomial}} \tab Critical Values for Continuous Sequential Analysis with\cr
                                      \tab Binomial Data.\cr
 \code{\link[Sequential]{CV.G.Binomial}} \tab Critical Values for Group Sequential Analysis with Binomial Data.\cr
@@ -132,11 +136,47 @@ The monitoring is continued until either there is a signal rejecting the null hy
 or until \eqn{n=N}, which indicates that the null is not to be rejected. To perform the calculations, use the \code{CV.Binomial}, \code{SampleSize.Binomial} and \code{Performance.Binomial} functions.
 
 To calculate the critical value for a Wald type rejection boundary, and when the group sizes are fixed a priori, use the \code{CV.G.Binomial} function. For statistical power,
-expected time to signal and maximum sample size requirements, use the \code{Performance.G.Binomial} function.
+expected time to signal, expected time of surveillance, use the \code{Performance.G.Binomial} function.
 
 The main assumptions behind the method above are: (i) the monitoring is truly performed in a continuous fashion; (ii) the matching ratio (z) is constant for all of the n events,
 and (iii) it uses a Wald type rejection boundary that is flat in terms of the likelihood function. Relaxing these assumptions, Fireman et al. (2013) developed exact sequential
 analysis for group sequential data with varying matching ratios, and for any user specified alpha rejection plan.
+
+\bold{Conditional Poisson data with limited information from historical cohort - CMaxSPRT}
+
+In Poisson MaxSPRT, the expected mean \eqn{\mu_t} is assumed to be a known function reflecting the baseline adverse event risk
+in the absence of the exposure of interest. In practice, it is estimated with historical data and the uncertainty associated with
+the estimated counts may or may not have a non-negligible impact on the performance of the sequential analysis method.
+Li and Kulldorff (Li and Kulldorff, 2010) showed in their simulation study that uncertainty in the estimated baseline means can be
+ignored when the total number of events in the historical data is at least 5 times the specified upper limit \eqn{T}. Otherwise, it
+is recommended to implement a statistical procedure that takes in account the variation from the historical data, i.e. a procedure that
+conditionates the likelihood function of the historical Poisson data, here simply called "conditional Poisson data". For this, the
+Conditional Maximized Sequential Probabilit Ratio Test (CMaxSPRT) to account for variation in both the historical and surveillance cohorts.
+
+Let \eqn{c} and \eqn{V} denote the total number of events and the cumulative person-time in the historical data, let \eqn{P_k} denote the
+cumulative person-time observed in the surveillance population when the \eqn{k}th event occurred. The CMaxSPRT statistic defined in terms
+of the log likelihood ratio is given by \deqn{U_k=clog(\frac{c(1+P_k/V)}{c+k})+klog(\frac{k(1+P_k/V)}{P_k/V(c+k)}),} when \eqn{k/c>P_k/V},
+and \eqn{U_k=0,} otherwise. In the original publication (Li and Kulldorff, 2010), the method was introduced as a continuous sequential analytic
+approach with the upper limit defined in terms of the maximum number of observed events, i.e., \eqn{k \leq K}, and the critical value calculated
+via a Monte Carlo approach. A large number of Monte Carlo simulations (e.g., 10 million) might be needed to calculate the critical values with
+a reasonable precision. 
+
+In Silva et al. (2016), the method was extended i) with another option of defining the surveillance length in terms of
+the maximum cumulative person-time divided by the total cumulative person-time in the historical cohort, i.e., \eqn{P_k/V \le T}, ii) with an exact
+calculation of the critical values for both surveillance length definitions, and iii) for group sequential analysis with data updated and analyzed
+intermittently instead of continuously. The exact critical values are calculated using the interval havling method to solve for the root of a complex,
+non-linear equation such that the overall Type I error rate is preserved at the nominal level. As \eqn{K} increases, the computing time for the exact
+critical values increases exponentially. 
+
+Silva et al. (2016) also proposed two approximation methods to calculate the critical values that require
+substantially less computing time. One approch may overestimate the critical values and thus is referred to as the conservative approach as it may
+yield lower-than-nominal Type I error rates; the other approach may underestmate the critical values and thus is referred to as the liberal approach
+as it may yield higher-than-nominal Type I error rates. The recommendation is to use the exact approach when \eqn{K} is small (e.g., 10),
+use the conservative approach when \eqn{K} is medium or large but \eqn{c} is small, and use the liberal approach when \eqn{c} is medium (e.g., 50)
+or large. Exact calculations for selected tuning parameters show that the three approaches yield very similar results when \eqn{K} and \eqn{c} are reasonably large.
+
+For calculating critical values for a Wald type rejection boundary, use the \code{CV.CondPoisson} function. For statistical power,
+expected time to signal, expected time of surveillance, and maximum sample size requirements, use the \code{Performance.CondPoisson} and \code{SampleSize.CondPoisson} functions.
 
 \bold{Alpha spending function for unpredictable group sizes}
 
@@ -152,50 +192,22 @@ Jennison and Turnbull (2000) present a rich discussion about this topic. They de
 \eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>1}, and \eqn{t} represents a fraction of the maximum length of surveillance.
 
 To run continuous or group sequential analysis with a user defined alpha spending function, and/or, when the group sizes are not known a prior,
-\code{Analyze.Binomial} and \code{Analyze.Poisson} should be used for binomial and Poisson data, respectively. 
+\code{Analyze.Binomial}, \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} should be used for binomial and Poisson, and conditional Poisson data, respectively. 
 These functions work differently than the other functions mentioned above.
 Those other functions are designed to be used before the start of the sequential analysis, in order to determine what the maximum sample size
 and critical value should be. Once the sequential analysis is under way, the test statistic is then calculated using a hand calculator or an
-excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial} and \code{Analyze.Poisson} work very differently, in that they are run at each look at
+excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial}, \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} work very differently, in that they are run at each look at
 the accumulating data, whenever a new group of data arrives, and it is meant to perform the test itself, i.e., there is no need to use hand calculators or
 excel spread sheets or any other auxiliar code. The results and conclusions, including a descriptive table and illustrative graphics, are automatically
-provided after running \code{Analyze.Binomial} (or \code{Analyze.Poisson}).
+provided after running \code{Analyze.Binomial}, \code{Analyze.Poisson}, or \code{Analyze.CondPoisson}.
 
 Important: before using these functions, though, it is necessary to first run the
-functions \code{AnalyzeSetup.Binomial} (or \code{AnalyzeSetup.Poisson}) once in order to set everything up for the sequential analysis.
-
-\bold{CMaxSPRT for Poisson data with limited information from historical cohort}
-
-In Poisson MaxSPRT, the expected mean \eqn{\mu_t} is assumed to be a known function reflecting the baseline adverse event risk
-in the absence of the exposure of interest. In practice, it is estimated with historical data and the uncertainty associated with
-the estimated counts may or may not have a non-negligible impact on the performance of the sequential analysis method.
-Li and Kulldorff (Li and Kulldorff, 2010) showed in their simulation study that uncertainty in the estimated baseline means can be
-ignored when the total number of events in the historical data is at least 5 times the specified upper limit \eqn{T}. Otherwise, it
-is recommended to implement the Conditional Maximized Sequential Probabilit Ratio Test (CMaxSPRT) to account for variation in both
-the historical and surveillance cohorts.
-
-Let \eqn{c} and \eqn{V} denote the total number of events and the cumulative person-time in the historical data, let \eqn{P_k} denote the
-cumulative person-time observed in the surveillance population when the \eqn{k}th event occurred. The CMaxSPRT statistic defined in terms
-of the log likelihood ratio is given by \deqn{U_k=clog(\frac{c(1+P_k/V)}{c+k})+klog(\frac{k(1+P_k/V)}{P_k/V(c+k)}),} when \eqn{k/c>P_k/V},
-and \eqn{U_k=0,} otherwise. In the original publication (Li and Kulldorff, 2010), the method was introduced as a continuous sequential analytic
-approach with the upper limit defined in terms of the maximum number of observed events, i.e., \eqn{k \leq K}, and the critical value calculated
-via a Monte Carlo approach. A large number of Monte Carlo simulations (e.g., 10 million) might be needed to calculate the critical values with
-a reasonable precision. In Silva et al. (2016), the method was extended i) with another option of defining the surveillance length in terms of
-the maximum cumulative person-time divided by the total cumulative person-time in the historical cohort, i.e., \eqn{P_k/V \le T}, ii) with an exact
-calculation of the critical values for both surveillance length definitions, and iii) for group sequential analysis with data updated and analyzed
-intermittently instead of continuously. The exact critical values are calculated using the interval havling method to solve for the root of a complex,
-non-linear equation such that the overall Type I error rate is preserved at the nominal level. As \eqn{K} increases, the computing time for the exact
-critical values increases exponentially. Silva et al. (2016) also proposed two approximation methods to calculate the critical values that require
-substantially less computing time. One approch may overestimate the critical values and thus is referred to as the conservative approach as it may
-yield lower-than-nominal Type I error rates; the other approach may underestmate the critical values and thus is referred to as the liberal approach
-as it may yield higher-than-nominal Type I error rates. The recommendation is to use the exact approach when \eqn{K} is small (e.g., 10),
-use the conservative approach when \eqn{K} is medium or large but \eqn{c} is small, and use the liberal approach when \eqn{c} is medium (e.g., 50)
-or large. Simulation results show that the three approaches yield very similar results when \eqn{K} and \eqn{c} are reasonably large.
+functions \code{AnalyzeSetup.Binomial}, \code{AnalyzeSetup.Poisson}, or \code{AnalyzeSetup.CondPoisson} once in order to set everything up for the sequential analysis.
 
 }
 
 \section{Comparison with Other R Packages for Sequential Analysis}{
-The R Sequential package is designed for sequential analysis where statistical hypothesis testing is performed using gradually accumulating data.
+The R  \code{Sequential} package is designed for sequential analysis where statistical hypothesis testing is performed using gradually accumulating data.
 It is not designed for quality control problems, where a process is monitored over time to detect an emerging problem due to a sudden increase in the excess risk.
 Although the methods for sequential analysis and quality control may seem similar, as they both analyze gradually accumulating data, they are actually very different
 in both their purpose and design. Under the sequential hypothesis testing approach, the objective is to quickly determine if there is some intrinsic excess risk,
@@ -210,7 +222,7 @@ In a number of ways, the R Sequential package differs from other R packages for 
 using asymptotic statistical theory, and that is also what is used in the \code{gsDesign}, \code{ldbounds}, \code{PwrGSD}, \code{seqDesign}, \code{seqmon}, and \code{sglr} R packages.
 In contrast, the R Sequential package is based on exact results, using iterative numerical calculations, rather than using asymptotic theory or computer simulations.
 
-With this package, it is only possible to analyze Poisson or binomial/Bernoulli data. For other probability distributions, such as normal or exponential data,
+With this package, it is only possible to analyze binomial/Bernoulli, Poisson, or conditional Poisson data. For other probability distributions, such as normal or exponential data,
 other R packages should be consulted, such as \code{GroupSeq} or \code{SPRT}. Moreover, all functions in this package uses a one-sided upper bound to reject the null hypothesis,
 while the analyses end without rejecting the null when an upper limit on the sample size is reached. For two sided sequential analysis, or other types of rejection
 boundaries, other R packages must be used, such as e.g. \code{ldbounds} and \code{Binseqtest}. Finally, in this package, there are functions for both continuous
@@ -218,7 +230,9 @@ and group sequential analysis, and it is also possible to analyze situations whe
 Most other R packages are exclusively designed for group sequential analysis, but there are some that also do continuous sequential analysis, such as \code{Binseqtest} and \code{SPRT},
 but \code{Binseqtest} is only for binomial data type, and \code{SPRT} is for simple alternative hypothis, while \code{Sequential} can be used for binomial and Poisson data and is meant to
 composite alternative hypothesis. The present package offers the possibility to calculate the expected time to signal through the \code{Performance.Poisson}, \code{Performance.G.Poisson},
-\code{Performance.G.Binomial}, and \code{Performance.Binomial} functions, which is not offered by the other packages cited above.    
+\code{Performance.Binomial}, \code{Performance.G.Binomial}, and Performance.CondPoisson functions, which is not offered by the other packages cited above.
+Another important advantage of the \code{Sequential} package is the possibility of eliciting, through exact calculations, the minimum sample size needed to
+accomplish with target statistical powers through the functions \code{SampleSize.Poisson}, \code{SampleSize.CondPoisson}, and \code{SampleSize.Binomial}.     
 }
 
 
@@ -251,6 +265,8 @@ Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
+Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
+
 Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
 Wald A. (1945), Sequential Tests of Statistical Hypotheses, Annals of Mathematical Statistics, 16, 117--186.
@@ -280,6 +296,7 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -     Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC.\cr
 -	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland.\cr
 -	Andreia Leite, Department of Infectious Disease Epidemiology, London School of Hygiene and Tropical Medicine.\cr 
+-	Laura Hou, Harvard Pilgrim Health Care Institute, Boston, USA.\cr
 }
 
 \keyword{Sequential analysis}
@@ -354,7 +371,13 @@ Version 2.2, July 2016\cr
 -	Updated user guide.\cr
 \cr
 Version 2.2.1, September 2016\cr
--       Correction of bugs in \code{CV.Poisson} and \code{CV.G.Poisson} functions. \cr
--       Updated user guide.\cr
+-     Correction of bugs in \code{CV.Poisson} and \code{CV.G.Poisson} functions. \cr
+-     Updated user guide.\cr
+\cr
+Version 2.3, Dez 2016\cr
+-     Correction of bugs in the \code{SampleSize.Binomial} function.\cr
+-	Improvement of SampleSize functions for considering vectors for the input parameters R and power.\cr
+-	Inclusion of the new functions \code{AnalyzeSetUp.CondPoisson} and \code{Analyze.CondPoisson}.\cr
+-     Updated user guide.\cr
 \cr
 }

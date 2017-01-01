@@ -6,12 +6,13 @@ power for a pre-specified relative risk, when doing continuous sequential analys
 respect to the log-likelihood ratio. It can also be used to approximate the sample size needed when doing group sequential analysis for Poisson data.
 }
 \usage{
-SampleSize.Poisson(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.000001)
+SampleSize.Poisson(alpha=0.05,power=0.9,M=1,D=0,RR=2,
+precision=0.000001)
       }
 \arguments{
 \item{alpha}{The significance level. The default value is alpha=0.05. Must be in the range (0,0.5].}
-\item{RR}{The target relative risk to be detected with the requested statistical power. The default value is RR=2.}
-\item{power}{The target overall statistical power to detect an increased relative risk (RR). The default value is power=0.90.}
+\item{RR}{The target vector of relative risks to be detected with the requested statistical vector of powers. The default value is RR=2.}
+\item{power}{The target vector of overall statistical powers to detect an increased relative risk (RR). The default value is power=0.90.}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. It must be a positive integer.
 A good rule of thumb is to set M=4 (Kulldorff and Silva, 2015). The default value is M=1, which means that even a single event
 can reject the null hypothesis if it occurs sufficiently early.}
@@ -36,12 +37,12 @@ The solution is exact using iterative numerical calculations (Kulldorff et al., 
 While designed for continuous sequential analysis, the \code{SampleSize.Poisson} function can also be used to approximate the
 required upper limit on the sample size that is needed when doing group sequential analysis for Poisson data, using the \code{CV.G.Poisson function}.
 }
+
 \value{
-\item{SampleSize}{The minimum required sample size (length of surveillance) needed to achieve the desired statistical power for
-the pre-specified relative risk (RR). Expressed in terms of the expected number of events under the null hypothesis.}
+\item{SampleSize_by_RR_Power}{A table containing the main performance measures associated to the required samples sizes, expressed in terms of the expected number of events under the null hypothesis, for each combination of RR and power.}
 }
-\author{ Ivair Ramos Silva, Martin Kulldorff.
-}
+
+\author{ Ivair Ramos Silva, Martin Kulldorff.}
 \references{
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
 Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum events to signal. arxiv:1503.01978 [stat.ap].

@@ -3,8 +3,16 @@
 # -------------------------------------------------------------------------
 
 
-Analyze.Binomial<- function(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
+Analyze.Binomial<- function(name,test,z="n",p="n",cases,controls,AlphaSpend="n",CIgamma="n",dplaces=3)
 {
+
+if(length(CIgamma)>1){stop(" 'CIgamma' must be a single number in the '(0.5,1)' interval.",call. =FALSE)}
+if(as.numeric(CIgamma)==F){stop(" 'CIgamma' must be a single number in the '(0.5,1)' interval.",call. =FALSE)}
+if(CIgamma>=1|CIgamma<=0.5){stop(" 'CIgamma' must be a single number in the '(0.5,1)' interval.",call. =FALSE)}
+
+if(length(dplaces)>1){stop(" 'dplaces' must be a positive integer.",call. =FALSE)}
+if(as.numeric(dplaces)==F){stop(" 'dplaces'  must be a positive integer.",call. =FALSE)}
+if(round(dplaces)!=dplaces|dplaces<=0|dplaces>6){stop(" 'dplaces' must be a positive integer in the '[1,6]' interval.",call. =FALSE)}
 
 if(length(p)==1&length(z)==1){if(p=="n"&z=="n"){stop("Please, at least one of the inputs, z or p, must be provided.",call. =FALSE)}}
 
@@ -220,7 +228,7 @@ exposed_cases<- as.numeric(cases)%*%(upper.tri(matrix(0,length(cases),length(cas
 
 alpha1<- alpha
 posi<- length(total_cases)+1
-CIgamma<- 1-2*alpha
+if(CIgamma=="n"){CIgamma<- 1-2*alpha}
 
 
 #-------------------------------------------------------------------------
@@ -234,7 +242,7 @@ if(cases[test]+controls[test]==0&sum(total_cases)>0){
 result<- data.frame(matrix(0,length(total_cases)+1,12))
 result[2:(length(total_cases)+1),1]<- seq(1,length(total_cases),1)
 colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","Reject H0")
 result[2:nrow(result),2]<- as.numeric(cases) ; result[2:nrow(result),3]<- as.numeric(controls) ; result[2:nrow(result),4]<- t(as.numeric(cases)%*%(upper.tri(matrix(0,length(cases),length(cases)),diag=T)*1)) 
 
 
@@ -291,7 +299,7 @@ message(" ", domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------", domain = NULL, appendLF = TRUE)                                                         
                                                                                                                                                               }
          } # 3 close
-               
+options("width"=300)               
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -308,7 +316,7 @@ if(test==1){inputSetUp[6,test]<- 0}else{inputSetUp[6,test]<- inputSetUp[6,test-1
 result<- data.frame(matrix(0,length(total_cases)+1,12))
 result[2:(length(total_cases)+1),1]<- seq(1,length(total_cases),1)
 colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","Reject H0")
 result[2:nrow(result),2]<- as.numeric(cases) ; result[2:nrow(result),3]<- as.numeric(controls) ; result[2:nrow(result),4]<- t(as.numeric(cases)%*%(upper.tri(matrix(0,length(cases),length(cases)),diag=T)*1)) 
 
 ## Useful auxiliar variable
@@ -323,7 +331,7 @@ message(c("                                ",title),domain = NULL, appendLF = TR
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
 message("There is no sufficient information to perform a test at this moment.",domain = NULL, appendLF = TRUE)                                                                                                                                                                                                           
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
-               
+options("width"=300)               
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -355,7 +363,7 @@ total_cases<- total_cases[(sum(total_cases==0)+1):length(total_cases)]
 result<- data.frame(matrix(0,length(totalg)+1,12))
 result[2:nrow(result),1]<- seq(1,length(totalg),1)
 colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","Reject H0")
 result[2:nrow(result),2]<- as.numeric(cases) ; result[2:nrow(result),3]<- as.numeric(controls) ; result[2:nrow(result),4]<- t(as.numeric(cases)%*%(upper.tri(matrix(0,length(cases),length(cases)),diag=T)*1)) 
 
 ## Useful auxiliar variable
@@ -396,6 +404,7 @@ if(sum(totalg==0)>0){result[2:(1+sum(totalg==0)),8]<- paste("NA")}
                                               message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
                                               message(paste(c("=>    H0 was rejected on test"," ",rejt,". ","No further sequential analyses are needed.")),domain = NULL, appendLF = TRUE)
                                               message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -672,29 +681,36 @@ if(decision1==1){#1
                                                              #p_value<- cumulative_prob(total_cases,absorbp,RRseq=1,zhc)
                                                              #p_value<- p_value[[1]]
                              
-RR1<- 0.1
-RRseq<- seq(0.01,100,0.01) ; j<- max(total_cases) ; cv<- exposed_cases[length(exposed_cases)] 
-RRref<- RRseq[max(seq(1,length(RRseq),1)*(pbinom(cv-1,j,RRseq/(RRseq+max(as.numeric(zhc))))>(1-CIgamma)/2))]
-RR2<- RRref
+j<- max(total_cases) ; cv<- exposed_cases[length(exposed_cases)] 
 
 ## Obtaining RR_L and RR_U
-if(RR2>=1.2){RRseq<- c(seq(RR1,0.9,0.1),seq(0.91,1.1,0.01),seq(1.2,RR2,0.1))}else{if(RR2>0.9){RRseq<- c(seq(RR1,0.9,0.1),seq(0.91,RR2,0.01))}else{RRseq<- seq(RR1,RR2,0.1)}}
-probs<- cumulative_prob(total_cases,absorbp,RR=RRseq,zhc)
-res1<- probs[[1]]
-res2<- probs[[2]]
 
 # Obtaining RR_L
-if(min(res1)<=(1-CIgamma)/2){RR_L<- max(RRseq[seq(1,length(RRseq),1)*(res1<=(1-CIgamma)/2)])}else{
-                RR11<- seq(0.001,RR1-0.001,0.001)
-                probs<- cumulative_prob(total_cases,absorbp,RR=RR11,zhc) ; res1<- probs[[1]]
-                RR_L<- max(RR11[seq(1,length(RR11),1)*(res1<=(1-CIgamma)/2)])                                                                              
-                                                                                             }
+   
+precision<- 10^(-(dplaces+1))
+RR1<- 0
+RR2<- 100
+
+while(RR2-RR1>=precision){ # 3
+RR_L<- (RR1+RR2)/2
+probs<- cumulative_prob(total_cases,absorbp,RR=RR_L,zhc)
+res1<- as.numeric(probs[[1]])
+
+if(res1<=(1-CIgamma)/2){RR1<- RR_L}else{RR2<- RR_L}
+                         } # close 3
 
 # Obtaining RR_U
-if(min(res2)<=(1-CIgamma)/2){RR_U<- max(RRseq[1+seq(1,length(RRseq),1)*(res2>(1-CIgamma)/2)])}else{
-                while(min(probs[[2]])>(1-CIgamma)/2){RR2<- RR2+0.1; probs<- cumulative_prob(total_cases,absorbp,RR=RR2,zhc)}
-                                                                                               RR_U<- RR2
-                                                                                             }
+
+RR1<- RR_L
+RR2<- 100
+while(RR2-RR1>=precision){ # 4
+RR_U<- (RR1+RR2)/2
+probs<- cumulative_prob(total_cases,absorbp,RR=RR_U,zhc)
+res2<- as.numeric(probs[[2]])
+
+if(res2>(1-CIgamma)/2){RR1<- RR_U}else{RR2<- RR_U}
+                         } # close 4
+
 
       
                                                            }else{#p_value<- 1 
@@ -717,12 +733,13 @@ if(length(exposed_cases)==length(total_cases)){if(sum(exposed_cases>=absorb[tota
 
 if(max(exposed_cases)>=max(absorb[total_cases])|stop1==1){ # 1
                                               if(sum(exposed_cases>=absorb[total_cases])==1&max(exposed_cases)>=max(absorb[total_cases])){ # 2
-                                              decision<- c("Reject H0"); if(RR_L<1){RR_L<- 1}
+                                              decision<- c("Reject H0")
+                                              # if(RR_L<1){RR_L<- 1}
                                               message(  " ",domain = NULL, appendLF = TRUE)
                                               message(c("                                ",title),domain = NULL, appendLF = TRUE)
                                               message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
                                               message("=>    Reject H0. No further sequential analyses are needed.",domain = NULL, appendLF = TRUE)
-                                              message(c("      ",paste(round(CIgamma*100,2)),"% ","Confidence interval for the actual relative risk=(",round(RR_L,2),",",round(RR_U,2),"]"), domain = NULL, appendLF = TRUE)
+                                              message(c("      ",paste(round(CIgamma*100)),"% ","Confidence interval for the actual relative risk=(",round(RR_L,dplaces),",",round(RR_U,dplaces),"]"), domain = NULL, appendLF = TRUE)
                                               message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
 #message(c("P-value=",round(p_value,4)), domain = NULL, appendLF = TRUE)
 
@@ -743,7 +760,7 @@ message("Then, the 'AlphaSpend' input is no longer used, and by default the targ
 message(c("You may now end the sequential analysis without rejecting H0."), domain = NULL, appendLF = TRUE)
 message(c("There is still ",round(alpha1-max(sum_sa_used),6)," alpha to spend if you wish continue with more analyses."), domain = NULL, appendLF = TRUE)
 message(" ", domain = NULL, appendLF = TRUE)  
-message(c("  ",paste(round(CIgamma*100)),"% ","Confidence interval for the actual relative risk=[",round(RR_L,2),",",round(RR_U,2),"]"), domain = NULL, appendLF = TRUE)
+message(c("  ",paste(round(CIgamma*100)),"% ","Confidence interval for the actual relative risk=[",round(RR_L,dplaces),",",round(RR_U,dplaces),"]"), domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------", domain = NULL, appendLF = TRUE)                                                         
 #message(c("P-value=",round(p_value,4)), domain = NULL, appendLF = TRUE)
 
@@ -818,7 +835,7 @@ for(i in 1:length(total_cases)){
 result<- data.frame(matrix(0,length(totalg)+1,12))
 result[2:(length(totalg)+1),1]<- seq(1,length(totalg),1)
 colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases]","RR","LLR","target","actual","CV","Reject H0")
 zeros<- sum(totalg==0)
 result[2:(length(totalg)+1),2]<- as.numeric(cases) ; result[2:(length(totalg)+1),3]<- as.numeric(controls) ; result[2:(length(totalg)+1),4]<- t(as.numeric(cases)%*%(upper.tri(matrix(0,length(cases),length(cases)),diag=T)*1)) 
 
@@ -947,7 +964,7 @@ axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
 
 
 ## Here we finish the code by offering the answers inside result
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
          
 message("===========================================================================================",domain = NULL, appendLF = TRUE)

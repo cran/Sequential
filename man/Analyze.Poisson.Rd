@@ -30,7 +30,7 @@ The function \code{Analyze.Poisson} calculates critical values to determine if t
 scale of the number of events. This is done for a pre-specified overall statistical significance level (alpha), and for an upper limit on the sample size (N).
 The exact analytical solution is obtained through numerical calculations. Based on the data and the critical value, the function determines if the null hypothesis should
 be rejected or not, and if subsequent tests should be conducted. After each test, the function also provides information about the amount of alpha that has been spent,
-the cumulative number of cases and controls, and the estimated relative risk. 
+the cumulative number of events, and the estimated relative risk. 
 
 
 Before running \code{Analyze.Poisson}, it is necessary to specify a planned default alpha spending function, which is done using the AlphaSpendType parameter in the
@@ -41,8 +41,8 @@ for more details.
 In most cases, this pre-specified alpha spending function is used throughout the analysis, but if needed, it is possible to override it at any or each of the sequential tests.
 This is done using the AlphaSpend parameter, which specifies the maximum amount of alpha to spend up to and including the current test. In this way, it is possible to use any
 alpha spending function, and not only those available in \code{AnalyzeSetUp.Poisson}. It is also possible to use a flexible adaptive alpha spending plan that is not set in stone
-before the sequential analysis starts. The only requirement is that for a particular test with a new group of data, AlphaSpend must be decided before knowing the number of cases
-and controls in that group. To ensure a statistically valid sequential analysis, AlphaSpend can only depend on cumulative mu0 values at prior tests and of the mu0 value in the current test.
+before the sequential analysis starts. The only requirement is that for a particular test with a new group of data, AlphaSpend must be decided before knowing the number of events
+in that group. To ensure a statistically valid sequential analysis, AlphaSpend can only depend on cumulative mu0 values at prior tests and of the mu0 value in the current test.
 This is important.
 
 The function \code{Analyze.Poisson} is meant to perform the Poisson sequential analysis with a certain level of autonomy. After running a test, the code offers a synthesis about
@@ -50,7 +50,7 @@ the general parameter settings, the main conclusions concerning the acceptance o
 A table with the main analyses results is automatically printed in the R console. Each column of the table contains a historical characteristic,
 including the information for the current test. Each line of the table corresponds to a specific test organized by calendar time. The table is titled with the title
 input defined through the function \code{AnalyzeSetUp.Poisson}, and its columns are organized and labeled in the following way: "Test",
-"mu0", "Events", "Cumulative mu0", "Cumulative Events", "RR", "LLR", "target", "actual", "CV", "H0 rejected". Here follows a short description of each column:
+"mu0", "Events", "Cumulative mu0", "Cumulative Events", "RR", "LLR", "target", "actual", "CV", "Reject H0". Here follows a short description of each column:
 
 -	"Test" shows the order of the analysis, i.e., the arrival order of each chunk of data. 
 
@@ -70,9 +70,9 @@ input defined through the function \code{AnalyzeSetUp.Poisson}, and its columns 
 
 -	"actual" is the actual alpha spent up to the i-th test. 
 
--	"CV" is the critical value in the scale of the number of cases, showing how many casesa re needed to reject the null hypothesis at this test.
+-	"CV" is the critical value in the scale of the number of events, showing how many events are needed to reject the null hypothesis at this test.
 
--	"H0 rejected" is a logical variable that is "Yes" when the null hypothesis is rejected, and the label "No" when H0 is not to be rejected
+-	"Reject H0" is a logical variable that is "Yes" when the null hypothesis is rejected, and the label "No" when H0 is not to be rejected
 
 
 Observe that, because the Poisson distribution is discrete, the target alpha spending will rarely be reached. The actual alpha spending is then shown to facilitate
@@ -130,7 +130,7 @@ Development of the \code{Analyze.Poisson} function was funded by:
 #   M=1,AlphaSpendType="power-type",rho=0.5,title="n",
 #   address="C:/Users/Ivair/Documents")
 
-### Now we can sequentially apply a test for each one of four chunks of data.
+### Now we can sequentially apply a test for each one of three chunks of data.
 # -------------------------------------------------------------------------
   
 ## Test 1 - Situation where the expected number of events under H0 is equal to 2.

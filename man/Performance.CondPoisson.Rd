@@ -7,7 +7,8 @@ the type of upper limit definition and its value, critical value, number of hist
 and a relative risk. The metrics calculated are the statistical power, the expected time to signal when the null hypothesis
 is rejected, and the expected sample size at the end of the analysis whether the null hypothesis was rejected or not.}
 \usage{
-Performance.CondPoisson(Inference="exact",cv,StopType="Cases",T="n",K="n",cc,D=0,M=1,RR=2)
+Performance.CondPoisson(Inference="exact",cv,StopType="Cases",
+T="n",K="n",cc,D=0,M=1,RR=2)
 }
 
 \arguments{
@@ -49,6 +50,7 @@ Silva IR, Li L, Kulldorff M. (2016). Exact conditional maximized sequential prob
 \section{Acknowledgements}{
 Development of the \code{Performance.CondPoisson} function was funded by:\cr
 - National Institute of General Medical Sciences, NIH, USA, through grant number R01GM108999 (v2.0.1, v2.0.2).
+- Foundation for Research Support of Minas Gerais State (FAPEMIG), MG, Brazil, through the grant Demanda Universal.
 }
 
 \keyword{Continuous CmaxSPRT performance}
@@ -60,13 +62,18 @@ Development of the \code{Performance.CondPoisson} function was funded by:\cr
 
 \examples{
 
-# First calculate the critical value with upper limit defined in terms of the number of observed
-# events in surveillance population (K=50), with 50 events in historical data, no delayed start,
-# and alpha=0.05: 
-# res<- CV.CondPoisson(Inference="exact",StopType="Cases",K=20,cc=50,M=1,alpha=0.05)
+## First calculate the critical value with upper limit defined in terms of
+## the number of observed events in surveillance population (K=50), with 50
+## events in historical data, no delayed start, and alpha=0.05: 
+# res<-CV.CondPoisson(Inference="exact",StopType="Cases",K=20,cc=50,M=1,
+# alpha=0.05)
+
 # cvt<- res[[2]] 
-# calculate the performance using the critical value 'cvt' from the previous step, under RR=1.5:
-# Performance.CondPoisson(Inference="exact",cv=cvt,StopType="Cases",K=20,cc=50,M=1,RR=1.5) 
+
+## calculate the performance using the critical value 'cvt' from the previous
+## step, under RR=1.5:
+#Performance.CondPoisson(Inference="exact",cv=cvt,StopType="Cases",K=20,cc=50,
+# M=1,RR=1.5) 
 
 }
 

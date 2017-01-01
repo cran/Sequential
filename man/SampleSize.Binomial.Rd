@@ -6,9 +6,9 @@
 SampleSize.Binomial(RR,alpha=0.05,power=0.9,M=1,z="n",p="n")
       }
 \arguments{
-\item{RR}{A target relative risk to be detected with the requested statistical power.}
+\item{RR}{A target vector of relative risks to be detected with the requested statistical powers.}
 \item{alpha}{The significance level. The default value is "alpha=0.05". Must be in the range (0, 0.5].}
-\item{power}{The target overall statistical power to detect an increased risk of the relative risk (RR). The default value is "power=0.90".}
+\item{power}{The target vector of overall statistical powers to detect an increased risk of the relative risk (RR). The default value is "power=0.90".}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".}
 \item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
 \item{p}{The probability of having a case under the null hypothesis. There is no default value.}
@@ -29,12 +29,11 @@ Alternatively, instead of z the user can specify p directly.
 Note that only one of these inputs, z or p, has to be specified, but if both are entered the code will only work if z and p are such that p=1/(1+z).
 Otherwise, an error message will appear to remind that such condition must be complied.
 }
+
 \value{
-\item{Required_N}{The minimum sample size, N, that is required to achieve the requested statistical power for the relative risk RR provided. The sample size N is provided in terms of the total number of observations. In the case-control setting, this is equal to the total number of cases and controls. In the self-control setting, it is equal to the total number of events in either the risk or the control interval.}
-\item{cv}{Critical value for the sequential binomial surveillance for the overall significance level alpha.}
-\item{Type_I_Error}{Exact size of the test by fixing alpha, N=Required_N and cv=Associated_cv. Always less than or equal to the requested alpha, it is typically smaller due to the discrete nature of the binomial probability function.}
-\item{Actual_power}{The exact actual power provided with a sample size of "Required_N". Always greater than or equal to the requested power, it is typically greater due to the discrete nature of the binomial probability function.}
+\item{SampleSize_by_RR_Power}{A table containing the main performance measures associated to the required samples sizes for each combination of RR and power. The sample size N is provided in terms of the total number of observations. In the case-control setting, this is equal to the total number of cases and controls. In the self-control setting, it is equal to the total number of events in either the risk or the control interval.}
 }
+
 \author{ Ivair Ramos Silva, Martin Kulldorff.
 }
 \references{

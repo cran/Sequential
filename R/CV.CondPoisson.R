@@ -175,7 +175,7 @@ alpharef<- 0
 if(imin>MinCases){alpharef=p[imin-1,imin+1]}
 alpharef<- alpharef+p[imin,imin+1]
 
-# Calculating the remaining rows in the p[][] matix
+# Calculating the remaining rows in the p[][] matrix
 # -------------------------------------------------
 
 if(MinCases+1<=imax-1&((imin+1)<=(imax-1))){
@@ -261,7 +261,7 @@ return(res)
 
 
 #########################################
-### APPROACH CONSERVATIVE  ==> Inference="exact"
+### APPROACH EXACT  ==> Inference="exact"
 ########################################## 
 
 if(Inference=="exact"){
@@ -499,7 +499,7 @@ return(res)
 
 
 #########################################
-### APPROACH CONSERVATIVE  ==> Inference="liberal"
+### APPROACH LIBERAL  ==> Inference="liberal"
 ########################################## 
 
 if(Inference=="liberal"){
@@ -611,7 +611,7 @@ p<- matrix(0,imax,imax+1)
 
 if(imin==MinCases){
 	for(s in 1:imin) p[imin,s] = cond.dpois_mult(s-1,mu[imin])			# Probability of having s-1 cases at time mu[imin], not rejectinh H0
-	p[imin,imin+1] = 1-cond.ppois(imin-1,mu[imin])				# Probability of having s+ cases at time mu[imin], rejectinh H0
+	p[imin,imin+1] = 1-cond.ppois(imin-1,mu[imin])				# Probability of having s+ cases at time mu[imin], rejecting H0
 	            } # end if
 
 if(imin>MinCases){
@@ -633,7 +633,7 @@ alpharef<- 0
 if(imin>MinCases){alpharef=p[imin-1,imin+1]}
 alpharef<- alpharef+p[imin,imin+1]
 
-# Calculating the remaining rows in the p[][] matix
+# Calculating the remaining rows in the p[][] matrix
 # -------------------------------------------------
 
 if(MinCases+1<=imax-1&((imin+1)<=(imax-1))){

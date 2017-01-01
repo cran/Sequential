@@ -3,8 +3,8 @@
 \title{Function to Set Up the Input Parameters Before Using the Analyze.Poisson Function for the First Time.}
 \description{The function \code{AnalyzeSetUp.Poisson} must be run ahead of \code{Analyze.Poisson} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Poisson(name,SampleSize,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",
-title="n",address="n")
+AnalyzeSetUp.Poisson(name,SampleSize,alpha=0.05,M=1,
+AlphaSpendType="Wald",rho="n",title="n",address="n")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Poisson} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}

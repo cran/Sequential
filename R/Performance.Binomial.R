@@ -10,10 +10,10 @@
 # -------------------------------------------------------------------------
 
 Performance.Binomial<- function(N,M=1,cv,z="n",p="n",RR=2){
-alpha<- 0.05
+
 MinCases<- M
 # N = maximum length of surveillance defined in terms of the total number of adverse events
-# alpha = desired alpha level
+
 # MinCases = The minimum number of cases for which a signal is allowed to occur, default=1
 # z = matching ratio between exposed and unexposed cases
 # p = probability of having a case under the null hypothesis 
@@ -26,7 +26,7 @@ if(z<=0){stop("'z' must be a number greater than zero.",call. =FALSE)}
 
 if(p!="n"){
 if(is.numeric(p)!=TRUE){stop("Symbols and texts are not applicable for 'p'. It must be a probability measure.",call. =FALSE)}
-if(z!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
+if(z!="n"&p!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
 if(p<=0|p>=1){stop("p must be a number greater than zero and smaller than 1.",call. =FALSE)}
            }
 
@@ -35,7 +35,7 @@ if(z!="n"){z<- z}else{z<- 1/p-1}
 
 if(is.numeric(N)==FALSE|N<=0){stop("N must be a positive integer.",call. =FALSE)}
 if(is.numeric(M)==FALSE|M<=0){stop("M must be a positive integer smaller than or equal to 'N'.",call. =FALSE)}
-if(is.numeric(alpha)==FALSE|alpha<=0|alpha>0.5){stop("alpha must be a number in the '(0,0.5]' interval.",call. =FALSE)}
+
 if(round(N)!=N){stop("N must be a positive integer.",call. =FALSE)}
 if(round(M)!=M){stop("M must be a positive integer.",call. =FALSE)}
 if(is.numeric(cv)==FALSE){stop("cv must be a positive number.",call. =FALSE)}
@@ -46,7 +46,6 @@ if(MinCases>N){stop("'MinCases' must be an integer smaller than or equal to N.",
 if(MinCases<1){stop("'MinCases' must be an integer greater than zero.",call. =FALSE)}
 if(MinCases!=round(MinCases)){stop("'MinCases' must be an integer.",call. =FALSE)}
 
-if(alpha<=0|alpha>0.5){stop("alpha must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
 
 if(N<=0){stop("N must be a positive integer.",call. =FALSE)}
 if(N!=round(N)){stop("'N' must be an integer.",call. =FALSE)}

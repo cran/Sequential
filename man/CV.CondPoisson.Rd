@@ -6,7 +6,8 @@ The function \code{CV.CondPoisson} calculates critical values for the continuous
 which is flat with respect to the likelihood ratio function, and a pre-specified upper limit on surveillance length. 
 }
 \usage{
-CV.CondPoisson(Inference="exact", StopType="Cases",T="n",K="n",cc,D=0,M=1,alpha=0.05)
+CV.CondPoisson(Inference="exact", StopType="Cases",T="n",K="n",cc,
+D=0,M=1,alpha=0.05)
 }
 
 \arguments{
@@ -27,7 +28,7 @@ between the cumulative person-times in the surveillance population versus the hi
 
 The test is one-sided, so that the null hypothesis is only rejected when there are more events than expected. 
 
-The function offers three computation approaches which calculate liberal, exact, and conservative critical values respectively.
+Following the results of Silva et al. (2016), the function offers three computation approaches which calculate liberal, exact, and conservative critical values respectively.
 When the upper limit is medium (e.g., \eqn{K=50}) or large, the computational requirements for the exact approach can be high.
 The recommendation is to use the exact approach when the upper limit is small (e.g., \eqn{K=10}), use the conservative approach
 when the upper limit is medium (\eqn{K=50}) or large but \eqn{cc} is small, and use the liberal approach when \eqn{cc} is medium (e.g., 50)
@@ -45,7 +46,8 @@ approach, it is the smallest liberal vaue, for the conservative approach, it is 
 \author{Ivair Ramos Silva, Lingling Li}
 \references{
 Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for pharmacovigilance. \emph{Statistics in Medicine,} 30;29(2):284-95.\cr
-Silva IR, Li L, Kulldorff M. (2016). Exact conditional maximized sequential probability ratio test adjusting for covariates. Working paper.
+
+Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
 }
 \section{Acknowledgements}{
 Development of the \code{CV.CondPoisson} function was funded by:\cr
@@ -66,7 +68,8 @@ time of analysis for continuous CMaxSPRT.\cr
 # K=20 and a delayed start of a minimum of 2 cases, historical
 # data has 20 events, and for a statistical significance level
 # of 0.05. 
-# res<- CV.CondPoisson(Inference="exact", StopType="Cases",K=20,cc=20,M=2,alpha=0.05)
+# res<- CV.CondPoisson(Inference="exact", StopType="Cases",K=20,cc=20,
+# M=2,alpha=0.05)
 
 # which gives the results:
 # res
@@ -81,10 +84,11 @@ time of analysis for continuous CMaxSPRT.\cr
 # one-tenth of the total cumulative person-time in historical
 # data, historical data has 20 events, and for a statistical
 # significance level of 0.05. 
-res2<- CV.CondPoisson(Inference="liberal",StopType="Tal",T=0.5,cc=20,D=0.1,alpha=0.05)
+# res2<- CV.CondPoisson(Inference="liberal",StopType="Tal",T=0.5,cc=20,
+# D=0.1,alpha=0.05)
 
 # which gives the results:
-res2
+# res2
 # $Type_I_Error
 # [1] 0.05
 # $cv

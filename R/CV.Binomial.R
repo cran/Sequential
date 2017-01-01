@@ -16,7 +16,7 @@ if(z<=0){stop("'z' must be a number greater than zero.",call. =FALSE)}
 
 if(p!="n"){
 if(is.numeric(p)!=TRUE){stop("Symbols and texts are not applicable for 'p'. It must be a probability measure.",call. =FALSE)}
-if(z!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
+if(z!="n"&p!="n"){if(p!= 1/(1+z)){stop("Both z and p are specified, but the required relationship that p=1/(1+z) does not hold. Please remove either the definition of z or the definition of p. Only one of them is needed. .",call. =FALSE)}}
 if(p<=0|p>=1){stop("p must be a number greater than zero and smaller than 1.",call. =FALSE)}
            }
 

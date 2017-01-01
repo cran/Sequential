@@ -228,7 +228,7 @@ if(start==0){ # OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "-----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
 
 actualspent<- 0
 CV<- "NA"
@@ -268,7 +268,7 @@ message(c("                                ",title),domain = NULL, appendLF = TR
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE) 
                                               message("=>    H0 cannot be rejected yet because the cumulative events is still smaller than M.",domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -290,7 +290,7 @@ if(reject==0&reject_new==0&start>0&mu0+sum(mu0_old)<SampleSize){# OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
 
 
 result[test+1,1]<- test
@@ -328,7 +328,7 @@ message(c("                                ",title),domain = NULL, appendLF = TR
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
 message("=>   Do not reject H0. Proceed to a new test as soon as you have more data.", domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -407,7 +407,7 @@ if(start>0&mu0+sum(mu0_old)>=SampleSize&alpha-actualspent>0.00000001&reject==0&r
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "-----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
 
 
 result[test+1,1]<- test
@@ -452,7 +452,7 @@ message(c("You may now end the sequential analysis without rejecting H0."), doma
 message(c("There is still ",round(alpha-actualspent,6)," alpha to spend if you wish continue with more analyses."), domain = NULL, appendLF = TRUE)
 message(" ", domain = NULL, appendLF = TRUE)  
 message("-------------------------------------------------------------------------------------------", domain = NULL, appendLF = TRUE)                                                         
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -527,7 +527,7 @@ if(start>0&mu0+sum(mu0_old)>=SampleSize&alpha-actualspent<=0.00000001&start>0&re
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
 
 result[test+1,1]<- test
 result[test+1,2]<- round(mu0,2)
@@ -568,7 +568,7 @@ message(c("You should end the sequential analysis without rejecting H0."), domai
 message(c("There is no remaining alpha to spend in futures tests."), domain = NULL, appendLF = TRUE)
 message(" ", domain = NULL, appendLF = TRUE)  
 message("-------------------------------------------------------------------------------------------", domain = NULL, appendLF = TRUE)
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -643,7 +643,7 @@ if(reject==0&reject_new>0){# OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
 
 result[test+1,1]<- test
 result[test+1,2]<- round(mu0,2)
@@ -680,7 +680,7 @@ message(c("                                ",title),domain = NULL, appendLF = TR
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE) 
                                               message("=>    Reject H0. No further sequential analyses are needed.",domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
@@ -756,7 +756,7 @@ if(reject>0){# OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","H0 rejected")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
 
 
 result[test+1,1]<- test
@@ -794,7 +794,7 @@ message(c("                                ",title),domain = NULL, appendLF = TR
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)      
           message(paste(c("=>    H0 was rejected on test"," ",reject,". ","No further sequential analyses are needed.")),domain = NULL, appendLF = TRUE)  
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
-
+options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)

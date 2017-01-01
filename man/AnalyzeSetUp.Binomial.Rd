@@ -3,8 +3,8 @@
 \title{Function to Set Up the Input Parameters Before Using the Analyze.Binomial Function for the First Time.}
 \description{The function \code{AnalyzeSetUp.Binomial} must be run ahead of \code{Analyze.Binomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Binomial(name,N,alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="Wald",rho="n",
-title="n",address="n")
+AnalyzeSetUp.Binomial(name,N,alpha=0.05,zp="n",pp="n",M=1,
+AlphaSpendType="Wald",rho="n", title="n",address="n")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Binomial} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}

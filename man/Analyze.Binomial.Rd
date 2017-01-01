@@ -3,7 +3,8 @@
 \title{Function to Conduct Group Sequential Analyses for Binomial Data When the Goup Sizes are not Known a Priori.}
 \description{The function \code{Analyze.Binomial} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the binomial probability, p, can be different for different observations. In a matched case-control setting, this means that the matching ratios can be different for different matched sets.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Binomial} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function.}
 \usage{
-Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
+Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n",
+CIgamma="n",dplaces=3)
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.Binomial} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
@@ -13,6 +14,8 @@ Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
 \item{cases}{A number or a vector of the same length as z containing the number of cases.}
 \item{controls}{A number or a vector of the same length as z containing the number of controls.}
 \item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.Binomial} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the AlphaSpend parameter. AlphaSpend is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the binomial distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.Binomial} function.}
+\item{CIgamma}{The desired confidence coefficient for contructing the confidence interval for the relative risk after stopping the surveillance. It must be in the range (0.5,1]. The default CIgamma="n" means that "CIgamma=1-2*alpha".}
+\item{dplaces}{The number of decimal places that indicates the required precision when calculating the confidence interval limits.}
 }
 
 
@@ -74,7 +77,7 @@ the general parameter settings, the main conclusions concerning the acceptance o
 A table with the main analyses results is automatically printed in the R console. Each column of the table contains a historical characteristic,
 including the information for the current test. Each line of the table corresponds to a specific test organized by calendar time. The table is titled with the title
 input defined through the function \code{AnalyzeSetUp.Binomial}, and its columns are organized and labeled in the following way: "Test",
-"Cases", "Controls", "Cumulative Cases", "Cumulative Controls", "Cumulative E[Cases]", "RR", "LLR", "target", "actual", "CV", "H0 rejected". Here follows a short description of each column:
+"Cases", "Controls", "Cumulative Cases", "Cumulative Controls", "Cumulative E[Cases]", "RR", "LLR", "target", "actual", "CV", "Reject H0". Here follows a short description of each column:
 
 -	"Test" shows the order of the analysis, i.e., the arrival order of each chunk of data. 
 
@@ -94,7 +97,7 @@ input defined through the function \code{AnalyzeSetUp.Binomial}, and its columns
 
 -	"CV" is the critical value in the scale of the number of cases, showing how many casesa re needed to reject the null hypothesis at this test.
 
--	"H0 rejected" is a logical variable that is "Yes" when the null hypothesis is rejected, and the label "No" when H0 is not to be rejected
+-	"Reject H0" is a logical variable that is "Yes" when the null hypothesis is rejected, and the label "No" when H0 is not to be rejected
 
 
 Observe that, because the binomial distribution is discrete, the target alpha spending will rarely be reached. The actual alpha spending is then shown to facilitate
@@ -122,8 +125,7 @@ Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized 
 Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum
 events to signal. arxiv:1503.01978 [stat.ap].
 
-Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug
-Safety Surveillance. Biometrics, in press. 
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858. 
 }
 
 
@@ -153,31 +155,35 @@ We thank Claudia Coronel-Moreno for valuable editorial support, Bruce Fireman fo
 ### Firstly, it is necessary to set up the input parameters.
 ##  Here we use the Wald type alpha spending.
 ##  Note: cut off the "#" symbol before running the two lines below.
-#     AnalyzeSetUp.Binomial(name="VaccineA",N=200,alpha=0.05,zp=1,M=3,AlphaSpendType="Wald",
-#     title="Monitoring_vaccineA", address="C:/Users/Ivair/Documents")
+#     AnalyzeSetUp.Binomial(name="VaccineA",N=200,alpha=0.05,zp=1,M=3,
+#     AlphaSpendType="Wald", title="Monitoring_vaccineA",
+#     address="C:/Users/Ivair/Documents")
 
-### Now we can sequentially apply a test for each one of four chunks of data.
+### Now we apply sequential tests to each of four chunks of data.
 # -------------------------------------------------------------------------
   
-## Test 1 - Situation where each individual event came from a different matching ratio.
+## Test 1 - Situation where each individual event came from a different
+## matching ratio.
 ## This first test uses the default Wald type alpha spending (AlphaSpend="n").
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Binomial(name= "VaccineA",test=1,z=c(1.1,1.3,1.2,1),cases= c(1,0,0,0),
-#  controls= c(0,1,1,1))
+#  Analyze.Binomial(name= "VaccineA",test=1,z=c(1.1,1.3,1.2,1),
+#  cases= c(1,0,0,0), controls= c(0,1,1,1) )
 
-## Test 2 - Situation where some of the events came from the same matching ratio.
+## Test 2 - Situation where some of the events came from the same matching
+## ratio.
 ## Observe that here we use an arbitrary alpha spending of 0.02.
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Binomial(name= "VaccineA",test=2,z=c(1,1.5),cases= c(12,1),controls= c(0,10),
-#  AlphaSpend=0.02)
+#  Analyze.Binomial(name= "VaccineA",test=2,z=c(1,1.5),cases= c(12,1),
+#  controls= c(0,10), AlphaSpend=0.02)
 
 ## Test 3 - Situation of elevated number of events, but now the
 ## arbitrary alpha spending is of 0.04, and p is entered instead of z.
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Binomial(name= "VaccineA",test=3,p=c(0.4,0.5),cases= c(12,10),controls= c(10,14),
-#  AlphaSpend=0.04)
+#  Analyze.Binomial(name= "VaccineA",test=3,p=c(0.4,0.5),cases= c(12,10),
+#  controls= c(10,14), AlphaSpend=0.04)
  
-## Test 4 - Situation where all the events came from the same matching ratio.
+## Test 4 - Situation where all the events came from the same matching
+## ratio.
 ## Here the original target alpha spending is used.
 ## Note: cut off the "#" symbol before running the line below.
 #  Analyze.Binomial(name= "VaccineA",test=4,z=2,cases= 20,controls= 10)
