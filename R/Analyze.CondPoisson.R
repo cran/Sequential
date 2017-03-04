@@ -829,6 +829,10 @@ write.table(inputSetUp,name)
 
 if(start>0&reject==0){write.table(p,paste(name1,"p.txt",sep=""))}
 
+result2<- result[2:(test+1),]
+colnames(result2)<- c("Test","Person-timeR","events","Cum. Person-timeR","Cum. events","LLR","target alpha","actual alpha","CV","Reject H0")
+invisible(result2)
+
 #####################################
 }##### Close function Analyze.Poisson
 #####################################

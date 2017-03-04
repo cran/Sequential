@@ -175,9 +175,19 @@ return(list(alpha_I,Salpha,mu[1:(imax-1)]))
 #############################################################################################
 
 PRECISION<- 0.00000001
-c = 1:(2*SampleSize)
-
 CV1<- 0 ; CV2<- 10 ; trunc<- ceiling(log(1/PRECISION)/log(2))
+
+cc<- 0
+mum<- 0
+while(mum<T){
+cc<- cc+1
+zm = -exp(-1-CV2/cc)
+mum = -cc * ProdLog(zm)
+            }
+
+c = 1:cc
+
+
 cont<- 1
 alphaobs<- 0
 
@@ -259,7 +269,7 @@ setwd(safedir)
 } ## end function AnalyzeSetUp.Poisson
 
 
-
+# AnalyzeSetUp.Poisson(name="teste",SampleSize=2,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="C:/Users/Visitante/Ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO")
 
 
 

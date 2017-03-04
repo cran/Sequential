@@ -3,8 +3,7 @@
 \title{Function to Conduct Group Sequential Analyses for Binomial Data When the Goup Sizes are not Known a Priori.}
 \description{The function \code{Analyze.Binomial} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the binomial probability, p, can be different for different observations. In a matched case-control setting, this means that the matching ratios can be different for different matched sets.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Binomial} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function.}
 \usage{
-Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n",
-CIgamma="n",dplaces=3)
+Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.Binomial} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
@@ -14,8 +13,6 @@ CIgamma="n",dplaces=3)
 \item{cases}{A number or a vector of the same length as z containing the number of cases.}
 \item{controls}{A number or a vector of the same length as z containing the number of controls.}
 \item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.Binomial} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the AlphaSpend parameter. AlphaSpend is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the binomial distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.Binomial} function.}
-\item{CIgamma}{The desired confidence coefficient for contructing the confidence interval for the relative risk after stopping the surveillance. It must be in the range (0.5,1]. The default CIgamma="n" means that "CIgamma=1-2*alpha".}
-\item{dplaces}{The number of decimal places that indicates the required precision when calculating the confidence interval limits.}
 }
 
 
@@ -35,8 +32,7 @@ The function \code{Analyze.Binomial} calculates critical values to determine if 
 scale of the number of cases. This is done for a pre-specified overall statistical significance level (alpha), and for an upper limit on the sample size (N).
 The exact analytical solution is obtained through numerical calculations. Based on the data and the critical value, the function determines if the null hypothesis should
 be rejected or not, and if subsequent tests should be conducted. After each test, the function also provides information about the amount of alpha that has been spent,
-the cumulative number of cases and controls, and the estimated relative risk. When the null hypothesis is rejected, or when the sequential analysis ends without rejecting the null,
-then the function calculates a confidence interval for the relative risk. 
+the cumulative number of cases and controls, and the maximum likelihood estimate of the relative risk. 
 
 For binomial and Bernoulli data, there are a number of 0/1 observations that can either be a case or a control. Under the null hypothesis, the probability of being a case is p,
 and the probability of being a control is 1-p. If data comes from a self-control analysis, the observation is a case if the event occurred in the risk interval, and it is a control

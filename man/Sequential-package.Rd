@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.3\cr
-Date: \tab 2016-12-28\cr
+Version: \tab 2.3.1\cr
+Date: \tab 2017-03-04\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -259,7 +259,7 @@ Trials, London: Chapman and Hall/CRC.
 
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
 
-Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. arxiv:1503.01978 [stat.ap].
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. arxiv:1503.01978 [stat.ap]. Forthcoming paper of REVSTAT Statistical Journal.
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
@@ -297,6 +297,8 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland.\cr
 -	Andreia Leite, Department of Infectious Disease Epidemiology, London School of Hygiene and Tropical Medicine.\cr 
 -	Laura Hou, Harvard Pilgrim Health Care Institute, Boston, USA.\cr
+-	Abdurrahman Abdurrob, Division of Pharmacoepidemiology and Pharmacoeconomics, Department of Medicine, Brigham and Women's Hospital and Harvard Medical School.\cr
+-	Kirk Snyder, Information Management Services, Inc.\cr
 }
 
 \keyword{Sequential analysis}
@@ -374,10 +376,15 @@ Version 2.2.1, September 2016\cr
 -     Correction of bugs in \code{CV.Poisson} and \code{CV.G.Poisson} functions. \cr
 -     Updated user guide.\cr
 \cr
-Version 2.3, Dez 2016\cr
+Version 2.3, Dec 2016\cr
 -     Correction of bugs in the \code{SampleSize.Binomial} function.\cr
 -	Improvement of SampleSize functions for considering vectors for the input parameters R and power.\cr
 -	Inclusion of the new functions \code{AnalyzeSetUp.CondPoisson} and \code{Analyze.CondPoisson}.\cr
+-     Updated user guide.\cr
+\cr
+Version 2.3.1, Feb 2017\cr
+-     Correction of bugs in \code{Analyze.Binomial} and \code{AnalyzeSetUp.Poisson} functions.\cr
+-	Adjustment on the relative risk estimation method for \code{Analyze.Binomial} function.\cr
 -     Updated user guide.\cr
 \cr
 }

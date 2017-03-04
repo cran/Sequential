@@ -264,7 +264,17 @@ alphaold=1
 LLR=CVstart				#Smarter start vaules reduces computing time.
 alpha=0
 
-c = 1:max(round(2*T),1200)
+cc<- 0
+mum<- 0
+while(mum<T){
+cc<- cc+1
+zm = -exp(-1-10/cc)
+mum = -cc * ProdLog(zm)
+            }
+
+c = 1:cc
+
+
 CV1<- LLRold
 CV2<- LLR
 teste<- 0

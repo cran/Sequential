@@ -228,7 +228,7 @@ if(start==0){ # OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "-----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR estimate","LLR","target","actual","CV","Reject H0")
 
 actualspent<- 0
 CV<- "NA"
@@ -290,7 +290,7 @@ if(reject==0&reject_new==0&start>0&mu0+sum(mu0_old)<SampleSize){# OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR estimate","LLR","target","actual","CV","Reject H0")
 
 
 result[test+1,1]<- test
@@ -407,7 +407,7 @@ if(start>0&mu0+sum(mu0_old)>=SampleSize&alpha-actualspent>0.00000001&reject==0&r
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "-----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR estimate","LLR","target","actual","CV","Reject H0")
 
 
 result[test+1,1]<- test
@@ -527,7 +527,7 @@ if(start>0&mu0+sum(mu0_old)>=SampleSize&alpha-actualspent<=0.00000001&start>0&re
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR estimate","LLR","target","actual","CV","Reject H0")
 
 result[test+1,1]<- test
 result[test+1,2]<- round(mu0,2)
@@ -643,7 +643,7 @@ if(reject==0&reject_new>0){# OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR estimate","LLR","target","actual","CV","Reject H0")
 
 result[test+1,1]<- test
 result[test+1,2]<- round(mu0,2)
@@ -756,7 +756,7 @@ if(reject>0){# OPEN
 result<- data.frame(matrix(0,test+1,11))
 
 colnames(result)<- c(" "," "," ", "----","Cumulative----"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","mu0","Events","mu0","Events","RR","LLR","target","actual","CV","Reject H0")
+result[1,]<- c("Test","mu0","Events","mu0","Events","RR estimate","LLR","target","actual","CV","Reject H0")
 
 
 result[test+1,1]<- test
@@ -839,6 +839,10 @@ if(rho==0){write.table(alphaspend,paste(name1,"alphaspend.txt",sep=""))}
 write.table(inputSetUp,name)
 
 if(start>0&reject==0){write.table(p,paste(name1,"p.txt",sep=""))}
+
+result2<- result[2:(test+1),]
+colnames(result2)<- c("Test","mu0","Events","Cum. mu0","Cum. Events","RR estimate","LLR","target alpha","actual alpha","CV","Reject H0")
+invisible(result2)
 
 #####################################
 }##### Close function Analyze.Poisson

@@ -6,6 +6,9 @@
 AnalyzeSetUp.Binomial<- function(name,N,alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="Wald",rho="n",title="n",address="n")
 {
 
+Tailed<- 1
+
+
 # Example of address: "C:/Users/Ivair/Documents"
 
 if(address=="n"){stop(c("Please, provide a valid directory address to save the setup information."),call. =FALSE)}
@@ -52,8 +55,7 @@ name<- paste(name,".","txt",sep="")
 if(file.exists(name)==TRUE){
 stop(c("There already exists a file called"," ",name1,".
 ","You may want check if some test has been performed for this monitoring before. 
-If you really want to overwrite the existent file, please, go to ",address," 
-to delete the file '",name,"'. Alternatively, you can delete that file by using the 
+If you really want to overwrite the existent file, please, delete that file by using the 
 following commands: ", "setwd(","'",getwd(),"'",")","; ", "file.remove(","'",name,"'","), 
 then try 'AnalyzeSetUp.Binomial' again."),call. =FALSE)
                            }
@@ -234,25 +236,49 @@ if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb
 
 
 
-## inputSetUp matrix contains:
-# line 1: the index for the order of the test (zero entries if we did not have tests before), N, alpha, z, M, posi, base(the line of p where the looping will start in the next test),title, rejt (the index indicating if and when H0 was rejected), pho
-# line 2: sum_sa
-# line 3: absorb1
-# line 4: cases
-# line 5: controls
-# line 6: current alpha spent
-# line 7: absorb for the unpredictable test
-# line 8: matching ratio history
 
-inputSetUp<- as.data.frame(matrix(0,8,max(length(absorb1),length(sum_sa),9)))
+#############################################################################################################
+##   HERE WE SAVE THE KEY CONTENT TO SETUP THE SURVEILLANCE. THE CONTENT IS SAVED IN THE MATRIX  CALLED inputSetUp 
+#############################################################################################################
+## inputSetUp matrix contains:
+# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) SampleSize, (C13) alpha, (C14) M, (C15) base(the line of p where the looping will start in the next test), (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) pho (zero if Wald is used), (C19) Tailed (1 for one-sided test and 2 for two-sided), (C1,10) z (used for alpha spending=Wald)
+# line 2: says if the analysis has been started or not. 0 for not started. 1 for already started.
+# line 3: critical values in the scale of Sn
+# line 4: observed cases  
+# line 5: actual alpha spent
+# line 6: cumulative expected value of Sn E[sum(w*C)] under H0, test by test
+# line 7: has the target alpha spending until the (test-1)th look.
+# line 8: observed controls
+# line 9: CVl
+# line 10: the number of rows (different weights/z ) per test
+# line 11: matched case-control
+# line 12: Target alpha spending defined with AnalyzeSetUp
+# line 13: weight for each observation
+# line 14: test per weight
+
+if(AlphaSpendType=="power-type"){z<- 0}
+if(AlphaSpendType=="Wald"){rho<- 0}
+
+inputSetUp<- as.data.frame(matrix(0,14,max(length(absorb1),length(sum_sa),10)))
+
 inputSetUp[1,]<- 0
-inputSetUp[1,1:9]<- c(0,N,alpha,z,M,posi,1,0,pho) 
+inputSetUp[1,1:10]<- c(0,N,alpha,M,1,0,0,rho,Tailed,z) 
 inputSetUp[2,]<- 0
-inputSetUp[2,1:length(sum_sa)]<- sum_sa
-inputSetUp[3,]<- absorb1 
+inputSetUp[2,1]<- 0
+inputSetUp[3,]<- 0
+inputSetUp[4,]<- 0
+inputSetUp[5,]<- 0
 inputSetUp[6,]<- 0
 inputSetUp[7,]<- 0
 inputSetUp[8,]<- 0
+inputSetUp[9,]<- 0
+inputSetUp[10,]<- 0
+inputSetUp[11,]<- 0
+inputSetUp[12,]<- 0
+if(AlphaSpendType=="Wald"){inputSetUp[12,1:length(sum_sa)]<- sum_sa}
+inputSetUp[13,]<- 0
+inputSetUp[14,]<- 0
+
 write.table(inputSetUp,name)
 titlecheck<- data.frame(matrix(0,1,1))
 if(title!=0){titlecheck[1,1]<- title}
@@ -262,7 +288,7 @@ message(c("The temporary directory of your computer has the address of the direc
 Thus, do not clean the temporary directory before finishing this sequential analysis."),domain = NULL, appendLF = TRUE)
 
 if(AlphaSpendType=="Wald"&phoref!="n"){message(c("The value of 'rho' is ignored, as it is not used when AlphaSpendType='Wald'."),domain = NULL, appendLF = TRUE)}
-if(AlphaSpendType=="power-type"&zp!=1){message(c("The value of 'zp' is ignored, as it is not used when AlphaSpendType='power-type'."),domain = NULL, appendLF = TRUE)}
+if(AlphaSpendType=="power-type"&zp!=1){message(c("The values of 'zp' and 'pp' are ignored, as it is not used when AlphaSpendType='power-type'."),domain = NULL, appendLF = TRUE)}
 
 write.table(titlecheck,paste(name1,"title.txt",sep=""))
 
