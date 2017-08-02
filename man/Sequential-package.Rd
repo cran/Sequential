@@ -20,8 +20,8 @@ the package can calculate the required upper limit on the sample size, the criti
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.3.1\cr
-Date: \tab 2017-03-04\cr
+Version: \tab 2.3.2\cr
+Date: \tab 2017-08-02\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -259,7 +259,7 @@ Trials, London: Chapman and Hall/CRC.
 
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
 
-Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. arxiv:1503.01978 [stat.ap]. Forthcoming paper of REVSTAT Statistical Journal.
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
@@ -385,6 +385,10 @@ Version 2.3, Dec 2016\cr
 Version 2.3.1, Feb 2017\cr
 -     Correction of bugs in \code{Analyze.Binomial} and \code{AnalyzeSetUp.Poisson} functions.\cr
 -	Adjustment on the relative risk estimation method for \code{Analyze.Binomial} function.\cr
+-     Updated user guide.\cr
+\cr
+Version 2.3.2, Aug 2017\cr
+-     Correction of bugs in \code{Analyze.Binomial}.\cr
 -     Updated user guide.\cr
 \cr
 }

@@ -51,7 +51,7 @@ Otherwise, an error message will appear to remind that such condition must be co
 \author{Ivair Ramos Silva and Martin Kulldorff
 }
 \references{
-Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, in press.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 }
 \section{Acknowledgements}{
 Development of the Performance.G.Binomial function was funded by:\cr

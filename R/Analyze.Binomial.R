@@ -472,8 +472,8 @@ statesOld<- res[[5]]
 
 # Surveillance started?
 if(start>0){Sn<- sum(cases*w)+sum(cases_old*w_old)}else{if(test==1){Sn<- sum(cases*w)}else{Sn<- sum(cases*w)+sum(cases_old*w_old)}}
-
-if(start==0){if(actualspent>0){start<- test}}             
+totalevents<- sum(cases)+sum(cases_old)+sum(controls)+sum(controls_old)
+if(start==0){if(actualspent>0|totalevents>=M){start<- test}}             
 
 # H0 rejected?
 if(Tailed==1){
@@ -743,7 +743,7 @@ lines(seq(1,test), result[2:(test+1),6],col="black",lty=1)
 
 ini<- 1
 if(is.na(result[2,11])==TRUE){
-while(is.na(result[ini+1,11])==TRUE){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
+while(is.na(result[ini+1,11])==TRUE&ini<test){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
 cvs<- as.numeric(cvs)
 points(seq(ini,test),cvs ,col="red",pch=20)
 lines(seq(ini,test), cvs,col="red",lty=1) 
@@ -978,7 +978,7 @@ lines(seq(1,test), result[2:(test+1),6],col="black",lty=1)
 
 ini<- 1
 if(is.na(result[2,11])==TRUE){
-while(is.na(result[ini+1,11])==TRUE){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
+while(is.na(result[ini+1,11])==TRUE&ini<test){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
 cvs<- as.numeric(cvs)
 points(seq(ini,test),cvs ,col="red",pch=20)
 lines(seq(ini,test), cvs,col="red",lty=1) 
@@ -1214,7 +1214,7 @@ lines(seq(1,test), result[2:(test+1),6],col="black",lty=1)
 
 ini<- 1
 if(is.na(result[2,11])==TRUE){
-while(is.na(result[ini+1,11])==TRUE){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
+while(is.na(result[ini+1,11])==TRUE&ini<test){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
 cvs<- as.numeric(cvs)
 points(seq(ini,test),cvs ,col="red",pch=20)
 lines(seq(ini,test), cvs,col="red",lty=1) 
@@ -1454,7 +1454,7 @@ lines(seq(1,test), result[2:(test+1),6],col="black",lty=1)
 
 ini<- 1
 if(is.na(result[2,11])==TRUE){
-while(is.na(result[ini+1,11])==TRUE){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
+while(is.na(result[ini+1,11])==TRUE&ini<test){ini<- ini+1}; if(ini==test){cvs<- result[ini+1,11]}else{cvs<- rep(0,test-ini+1) ; cvs[1]<- result[ini+1,11]; g1<- 1; for(gg in (ini+1):test){g1<- g1+1; if(is.na(result[gg+1,11])==TRUE){cvs[g1]<-result[gg,11]}else{cvs[g1]<-result[gg+1,11] }}}
 cvs<- as.numeric(cvs)
 points(seq(ini,test),cvs ,col="red",pch=20)
 lines(seq(ini,test), cvs,col="red",lty=1) 

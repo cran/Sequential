@@ -36,7 +36,7 @@ For example, for RR=1.1 and alpha=0.01, the statistical power is approximately 1
 \author{Ivair Ramos Silva and Martin Kulldorff
 }
 \references{
-Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, in press.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 }
 \section{Acknowledgements}{
 Development of the Performance.G.Poisson function was funded by:\cr

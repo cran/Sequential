@@ -36,7 +36,7 @@ it is not possible to have a type I error that is exactly equal to alpha.}
 \author{ Ivair Ramos Silva, Ned Lewis, Martin Kulldorff.
 }
 \references{
-Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum events to signal. arxiv:1503.01978 [stat.ap].
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 }
 \section{Acknowledgements}{
 Development of the CV.G.Poisson function was funded by:\cr

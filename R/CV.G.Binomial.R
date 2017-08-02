@@ -41,22 +41,22 @@ if(z!="n"){z<- z}else{z<- 1/p-1}
 
 alpha1<- alpha
 if(length(Groups)==1){
-if(is.numeric(Groups)==FALSE){stop("'Groups' must be an integer smaller than or equal to 'N'.",call. =FALSE)}
-if(sum(Groups<=0)>0){stop("'Groups' must be a positive integer or a vector with positive integers.",call. =FALSE)}
-if(sum(Groups==round(Groups))!=length(Groups)){stop("'Groups' must be a positive integer smaller than or equal to 'N'.",call. =FALSE)}
+if(is.numeric(Groups)==FALSE){stop("'GroupSizes' must be an integer smaller than or equal to 'N'.",call. =FALSE)}
+if(sum(Groups<=0)>0){stop("'GroupSizes' must be a positive integer or a vector with positive integers.",call. =FALSE)}
+if(sum(Groups==round(Groups))!=length(Groups)){stop("'GroupSizes' must be a positive integer smaller than or equal to 'N'.",call. =FALSE)}
 
-if(Groups==0){stop("'Groups' must be a positive integer or a vector with positive integers.",call. =FALSE)}
-if(N/Groups!=round(N/Groups)){stop("The maximum length of surveillance, 'N', must be a multiple of 'Groups'.",call. =FALSE)}
-if(Groups>N){stop("The maximum length of surveillance, 'N', must be a multiple of 'Groups'.",call.=FALSE)}
+if(Groups==0){stop("'GroupSizes' must be a positive integer or a vector with positive integers.",call. =FALSE)}
+if(N/Groups!=round(N/Groups)){stop("The maximum length of surveillance, 'N', must be a multiple of 'GroupSizes'.",call. =FALSE)}
+if(Groups>N){stop("The maximum length of surveillance, 'N', must be a multiple of 'GroupSizes'.",call.=FALSE)}
 }
 
 if(length(Groups)>1){
-if(sum(is.numeric(Groups))==0){stop("'Groups' must be a vector of positive integers.",call. =FALSE)}else{
+if(sum(is.numeric(Groups))==0){stop("'GroupSizes' must be a vector of positive integers.",call. =FALSE)}else{
 if(is.numeric(N)==FALSE){stop("The maximum length of surveillance, 'N', must be a positive integer.",call. =FALSE)}
 if(N!=round(N)){stop("The maximum length of surveillance, 'N', must be a positive integer.",call. =FALSE)}
-if(sum(Groups<=0)>0){stop("'Groups' must be a positive integer or a vector with positive integers.",call. =FALSE)}
-if(sum(Groups==round(Groups))!=length(Groups)){stop("'Groups' must be a positive integer or a vector with positive integers.",call. =FALSE)}
-if(sum(Groups)!=N){stop("'Groups' must sum up equal to 'N'.",call. =FALSE)}
+if(sum(Groups<=0)>0){stop("'GroupSizes' must be a positive integer or a vector with positive integers.",call. =FALSE)}
+if(sum(Groups==round(Groups))!=length(Groups)){stop("'GroupSizes' must be a positive integer or a vector with positive integers.",call. =FALSE)}
+if(sum(Groups)!=N){stop("'GroupSizes' must sum up equal to 'N'.",call. =FALSE)}
 }
 }
 

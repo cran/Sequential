@@ -38,7 +38,7 @@ for RR=1.1 and alpha=0.01, the statistical power is approximately 1 for a maximu
 }
 \references{
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Vaccine Safety Surveillance. Sequential Analysis, 30: 58--78.
-Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum events to signal. arxiv:1503.01978 [stat.ap].
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 }
 \section{Acknowledgements}{
 Development of the Performance.Poisson function was funded by:\cr

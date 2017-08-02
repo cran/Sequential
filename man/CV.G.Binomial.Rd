@@ -15,13 +15,13 @@ this is not a major restriction. For example, for "RR=1.1" and "alpha=0.01" and 
 \item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
 \item{p}{The probability of having a case under the null hypothesis. There is no default value.}
 \item{GroupSizes}{Vector with the number of events (cases+controls) between two consecutive looks (tests) at the data, i.e, the group sizes. The
-length of this vector is equal to the maximum number of looks. The entries do not have the same, but they sum up to "N".
+length of this vector is equal to the maximum number of tests. The entries do not have to be the same, but they must sum up "N".
 If the group sizes is an integer instead of a vector, then that integer is the group size for all looks at the data, and the number of looks is "N/GroupSizes".}
 }
 \details{
 For group sequential analysis with binomial data, the function \code{CV.G.Binomial} calculates critical value for the decision of accepting/rejecting
 the null hypothesis. This is done for a pre-defined significance level (alpha) and an upper limit on the sample size (N), as well as other parameter settings.
-When the length of 'Groups' is equal to one, N must be a multiple of Groups.
+When the length of 'GroupSizes' is equal to one, N must be a multiple of GroupSizes.
 
 The input z represents the number of controls matched to each case. For example, if there are 3 controls matched to each case, "z=3". 
 In a self-control analysis, z is the ratio of the control interval to the risk interval.
@@ -32,7 +32,7 @@ Alternatively, instead of z the user can specify p directly.
 Note that only one of these inputs, z or p, has to be specified, but if both are entered the code will only work if z and p are such that p=1/(1+z).
 Otherwise, an error message will appear to remind that such condition must be complied.
 
-For several configurations of N, Groups and M, there are no critical values for a true Type I error probability strictly equal to alpha. The is
+For several configurations of N, GroupSizes and M, there are no critical values for a true Type I error probability strictly equal to alpha. The is
 because of the discrete nature of binomial data. For such cases, the function \code{CV.G.Binomial} returns the greatest critical value that will guarantee a
 type I error probability that is smaller than 'alpha', so that the sequential analysis is conservative.  
 }
@@ -48,7 +48,7 @@ Fireman B, et al. (2013) Exact sequential analysis for binomial data with timeva
 
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
 
-Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum events to signal. arxiv:1503.01978 [stat.ap].
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 }
 \section{Acknowledgements}{
 Development of the CV.G.Binomial function was funded by:\cr
