@@ -1,6 +1,6 @@
 \name{Performance.G.Binomial}
 \alias{Performance.G.Binomial}
-\title{Statistical Power, Expected Signal Time and Expected Length of Surveillance for Group Sequential Analysis for Binomial Data.}
+\title{Statistical power, expected time to signal and expected sample size for group sequential analysis for binomial data.}
 \description{The function \code{Performance.G.Binomial} calculates several performance 
 metrics for the group binomial MaxSPRT for fixed upper limit on the sample 
 size ("N"), critical value ("cv"), maximum number of tests to be perfomed, minimum number of events 

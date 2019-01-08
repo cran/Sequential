@@ -8,20 +8,20 @@
 on accumulating data that gradually increases the sample size. This is different from standard statistical analysis, where a single analysis is performed
 using a fixed sample size. It is possible to analyze either Poisson type data or binomial 0/1 type data. For binomial data, it is possible to incorporate an
 off-set term to account for variable matching ratios. For Poisson data, the critical value is based on a Wald-type upper boundary, which is flat on the scale
-of the log-likelihood ratio, and on a predetermined maximum sample size. For data distributions, it is also possible to apply a user defined alpha spending function.
-For group sequential analyses, there are functions for pre-specified group sizes and for the situation when the group sizes are not known a priori.
-It is also possible to perform mixed continuous/group sequential analysis, where, for example, there is at first a big batch of data that arrives in one group,
-followed by continuous sequential analysis. All results are exact, based on iterative numerical calculations, rather than asymptotic theory or computer simulations.  
-
-In the package, there are functions to calculate critical values, statistical power, expected time to signal when the null hypothesis is rejected, and expected
-sample size at the end of the sequential analyses whether the null hypothesis was rejected or not. For example, for any desired power, relative risk and alpha level,
-the package can calculate the required upper limit on the sample size, the critical value needed, and the corresponding expected time to signal when the null hypothesis is rejected.}
+of the log-likelihood ratio, and on a predetermined maximum sample size. Alternatively, it is also possible to apply a user defined alpha spending function
+in order to specify non-flat signaling thresholds. For group sequential analyses, there are functions for pre-specified group sizes and for the situation when
+the group sizes are not known a priori. It is also possible to perform mixed continuous/group sequential analysis, where, for example, there is at first a big
+batch of data that arrives in one group, followed by continuous sequential analysis. All results are exact, based on iterative numerical calculations, rather
+than asymptotic theory or computer simulations. In the \code{Sequential} package, there are functions to calculate critical values, statistical power,
+expected time to signal, and expected sample size at the end of the sequential analyses whether the null hypothesis was rejected or not.
+For example, for any desired power, relative risk and alpha level, the package can calculate the required upper limit on the sample size (maximum length of surveillance),
+the critical value needed, and the corresponding expected time to signal when the null hypothesis is rejected.}
 \details{
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 2.3.2\cr
-Date: \tab 2017-08-02\cr
+Version: \tab 3.0\cr
+Date: \tab 2019-01-05\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -31,6 +31,10 @@ Index: \tab \cr
                                            \tab Data When the Goup Sizes are not Known a Priori.\cr
 \code{\link[Sequential]{AnalyzeSetUp.Binomial}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.Binomial} Function for the First Time.\cr
+\code{\link[Sequential]{Analyze.wBinomial}} \tab Function for group sequential analyses of multiple\cr
+                                           \tab weighted binomial endpoints.\cr
+\code{\link[Sequential]{AnalyzeSetUp.wBinomial}} \tab Function to set up input parameters before using the\cr
+                                                \tab \code{Analyze.wBinomial} function for the first time.\cr
 \code{\link[Sequential]{Analyze.Poisson}} \tab Function to Conduct Group Sequential Analyses for Poisson\cr
                                            \tab Data When the Goup Sizes are not Known a Priori.\cr
 \code{\link[Sequential]{AnalyzeSetUp.Poisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
@@ -47,6 +51,8 @@ Index: \tab \cr
                                      \tab Poisson Data.\cr
 \code{\link[Sequential]{CV.CondPoisson}} \tab Critical Values for continuous sequential CMaxSPRT for\cr
                                      \tab Poisson data with limited information from historical cohort.\cr
+\code{\link[Sequential]{Optimal.Binomial}} \tab Optimal alpha spending for continuous and group sequential\cr
+                                     \tab analysis with binomial data.\cr
 \code{\link[Sequential]{Performance.Binomial}}  \tab Power, Expected Signal Time and Sample Size for Continuous Sequen-\cr
                                                \tab tial Analysis with Binomial Data.\cr
 \code{\link[Sequential]{Performance.G.Binomial}}  \tab Power, Expected Signal Time and Sample Size for Group Sequential\cr
@@ -142,6 +148,12 @@ The main assumptions behind the method above are: (i) the monitoring is truly pe
 and (iii) it uses a Wald type rejection boundary that is flat in terms of the likelihood function. Relaxing these assumptions, Fireman et al. (2013) developed exact sequential
 analysis for group sequential data with varying matching ratios, and for any user specified alpha rejection plan.
 
+\bold{Multiple Weighted Binomial Endpoints}
+
+When there are multiple different outcomes, one can use weights reflecting practical interpretations, such as an outcome
+severity in comparison to the others. For example, for two different outcomes, the first with weight w, and the second with weight 1.
+This way, a single event of the first outcome is equivalent to w outcomes of the second type. This type of analysis is treated by Silva et al (2019).
+
 \bold{Conditional Poisson data with limited information from historical cohort - CMaxSPRT}
 
 In Poisson MaxSPRT, the expected mean \eqn{\mu_t} is assumed to be a known function reflecting the baseline adverse event risk
@@ -189,20 +201,23 @@ Denote the single probability of rejecting the null hypothesis at the \eqn{j}-th
 
 There is a vast number of proposals for choosing the shape of the alpha spending function.
 Jennison and Turnbull (2000) present a rich discussion about this topic. They dedicated a special attention to the alpha spending of the form:
-\eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>1}, and \eqn{t} represents a fraction of the maximum length of surveillance.
+\eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>1}, and \eqn{t} represents a fraction of the maximum length of surveillance. 
 
-To run continuous or group sequential analysis with a user defined alpha spending function, and/or, when the group sizes are not known a prior,
-\code{Analyze.Binomial}, \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} should be used for binomial and Poisson, and conditional Poisson data, respectively. 
+A new aproach for alpha spending selection is the optimal solution, introduced by Silva and Kulldorff (2018).
+The optimal solution is based on exact calculations through linear programing, and it is operated through the function \code{Optimal.Binomial}.
+
+To run continuous or group sequential analysis with an user defined alpha spending function, and/or, when the group sizes are not known a prior,
+\code{Analyze.Binomial}, \code{Analyze.wBinomial} (for multiple weighted binomial endpoints), \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} should be used for binomial and Poisson, and conditional Poisson data, respectively. 
 These functions work differently than the other functions mentioned above.
 Those other functions are designed to be used before the start of the sequential analysis, in order to determine what the maximum sample size
 and critical value should be. Once the sequential analysis is under way, the test statistic is then calculated using a hand calculator or an
 excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial}, \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} work very differently, in that they are run at each look at
 the accumulating data, whenever a new group of data arrives, and it is meant to perform the test itself, i.e., there is no need to use hand calculators or
 excel spread sheets or any other auxiliar code. The results and conclusions, including a descriptive table and illustrative graphics, are automatically
-provided after running \code{Analyze.Binomial}, \code{Analyze.Poisson}, or \code{Analyze.CondPoisson}.
+provided after running \code{Analyze.Binomial}, \code{Analyze.wBinomial}, \code{Analyze.Poisson}, or \code{Analyze.CondPoisson}.
 
 Important: before using these functions, though, it is necessary to first run the
-functions \code{AnalyzeSetup.Binomial}, \code{AnalyzeSetup.Poisson}, or \code{AnalyzeSetup.CondPoisson} once in order to set everything up for the sequential analysis.
+functions \code{AnalyzeSetup.Binomial}, \code{AnalyzeSetup.wBinomial}, \code{AnalyzeSetup.Poisson}, or \code{AnalyzeSetup.CondPoisson} once in order to set everything up for the sequential analysis.
 
 }
 
@@ -236,7 +251,6 @@ accomplish with target statistical powers through the functions \code{SampleSize
 }
 
 
-
 \author{ Ivair Ramos Silva, Martin Kulldorff.\cr
 Maintainer: Ivair Ramos Silva <jamesivair@yahoo.com.br>
 }
@@ -259,13 +273,21 @@ Trials, London: Chapman and Hall/CRC.
 
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
 
-Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. arxiv:1503.01978 [stat.ap]. Forthcoming paper of REVSTAT Statistical Journal.
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
+Silva, I.R. and Kulldorff, M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+
+Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2019). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Working paper.
+
 Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
+
+Silva IR. (2018a). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107-118.
+
+Silva IR. (2018b). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739-750.
 
 Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
@@ -389,6 +411,10 @@ Version 2.3.1, Feb 2017\cr
 \cr
 Version 2.3.2, Aug 2017\cr
 -     Correction of bugs in \code{Analyze.Binomial}.\cr
+-     Updated user guide.\cr
+\cr
+Version 3.0, Feb 2018\cr
+-     Functions  \code{Optimal.Binomial} and \code{Analyze.wBinomial}.\cr
 -     Updated user guide.\cr
 \cr
 }

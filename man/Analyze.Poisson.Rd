@@ -1,6 +1,6 @@
 \name{Analyze.Poisson}
 \alias{Analyze.Poisson}
-\title{Function to Conduct Group Sequential Analyses for Poisson Data When the Goup Sizes are not Known a Priori.}
+\title{Function to conduct group sequential analyses for Poisson data without the need to know group sizes a priori.}
 \description{The function \code{Analyze.Poisson} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Poisson} and \code{CV.G.Poisson}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the expected number of events, mu0, can be different for different observations.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Poisson} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Poisson}} function.}
 \usage{
 Analyze.Poisson(name,test,mu0,events,AlphaSpend="n")
@@ -35,7 +35,7 @@ the cumulative number of events, and the estimated relative risk.
 
 Before running \code{Analyze.Poisson}, it is necessary to specify a planned default alpha spending function, which is done using the AlphaSpendType parameter in the
 \code{AnalyzeSetUp.Poisson} function. The default alpha spending plan can be either, (i) the polynomial power-type alpha spending plan, which is parameterized with rho,
-or (ii) the alpha spending associated to the Wald-type rejection boundary, which is flat with respect to the likelihood ratio. See the \code{\link[Sequential]{AnalyzeSetUp.Poisson}}
+and the default is rho=0.5 as suggested by Silva (2018), or (ii) the alpha spending associated to the Wald-type rejection boundary, which is flat with respect to the likelihood ratio. See the \code{\link[Sequential]{AnalyzeSetUp.Poisson}}
 for more details. 
 
 In most cases, this pre-specified alpha spending function is used throughout the analysis, but if needed, it is possible to override it at any or each of the sequential tests.
@@ -99,6 +99,9 @@ Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized 
 Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
+
+Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739-750.
+
 }
 
 

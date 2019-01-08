@@ -3,11 +3,12 @@
 # Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Binomial<- function(name,N,alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="Wald",rho="n",title="n",address="n")
+AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n")
 {
 
 Tailed<- 1
 
+if(AlphaSpendType!="optimal"){if(is.numeric(N)==FALSE){stop("Select a positive integer for 'N'.",call. =FALSE)}}
 
 # Example of address: "C:/Users/Ivair/Documents"
 
@@ -29,13 +30,14 @@ if(zp!="n"){z<- zp}else{z<- 1/pp-1}
 
 phoref<- rho
 
-if(AlphaSpendType!="Wald"&AlphaSpendType!="power-type"){stop("Set AlphaSpendType= 'Wald' or AlphaSpendType= 'power-type'.",call. =FALSE)}
+if(AlphaSpendType!="Wald"&AlphaSpendType!="power-type"&AlphaSpendType!="optimal"){stop("Set AlphaSpendType= 'Wald', AlphaSpendType= 'power-type', or AlphaSpendType='optimal'.",call. =FALSE)}
 if(AlphaSpendType=="power-type"&is.numeric(pho)!=TRUE){stop("Symbols and texts are not applicable for 'rho'. It must be a positive number.",call. =FALSE)}
-if(pho<=0&AlphaSpendType=="power-type"){stop("rho must be greater than zero or equal to the default (rho='n')",call. =FALSE)}
+if(pho<=0&AlphaSpendType=="power-type"){stop("rho must be greater than zero or equal to the default (rho='n').",call. =FALSE)}
+if(AlphaSpendType=="optimal"&N>300&N!="n"){stop("For N>300 you must select AlphaSpendType= 'Wald', or AlphaSpendType= 'power-type'.",call. =FALSE)}
 
 if(pho=="n"){pho<- 0}
 
-if(AlphaSpendType=="Wald"){pho<- 0}
+if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){pho<- 0}
 
 safedir<- getwd()
 if(title== "n"){title<- 0}
@@ -63,10 +65,10 @@ MinCases<- M
 
 if( sum(is.numeric(alpha))!=1){stop("Symbols and texts are not applicable for 'alpha'. It must be a number in the (0,0.5) interval.",call. =FALSE)}
 if( sum(is.numeric(MinCases))!=1){stop("Symbols and texts are not applicable for 'M'. It must be an integer greater than zero.",call. =FALSE)}
-if(is.numeric(N)==FALSE){stop("Symbols and texts are not applicable for 'N'. It must be an integer greater than zero.",call. =FALSE)}
+if(is.numeric(N)==FALSE&N!="n"){stop("Symbols and texts are not applicable for 'N'. It must be an integer greater than zero or equal to the default 'n'.",call. =FALSE)}
 
 
-if(N<=0){stop("'N' must be an integer greater than zero.",call. =FALSE)}
+if(N<=0){stop("'N' must be an integer greater than zero or equal to the default 'n'.",call. =FALSE)}
 
 if(alpha<=0|alpha>0.5||is.numeric(alpha)==FALSE){stop("'alpha' must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
 if(MinCases>N||is.numeric(MinCases)==FALSE){stop("'M' must be an integer smaller than or equal to 'N'.",call. =FALSE)}
@@ -219,20 +221,33 @@ return(result)
 
 ##############################################################################################################
 
-if(pho==0){
+if(pho==0){ #1
+
+if(AlphaSpendType=="Wald"){#2
 result<- SalphafLAtcv(N,alpha=alpha1,MinCases,z)
 sa<- result$salpha
 absorb1<- result$absorb
 if(sum(sa)==0){stop("Choose larger N. It is not possible to find a solution for the desired alpha with the current N choice.",call. =FALSE)}
 sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
-            }else{
+                          }#2
+
+if(AlphaSpendType=="optimal"){#3
+
+res<- Optimal.Binomial(Objective=ObjectiveMin,N,z,p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper"); sum_sa<- res$optimal_alpha_spending; N<- length(sum_sa)
+
+y<- qbinom(1-alpha,N,1/(1+z)); y<- y+1 # auxiliar variable
+if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb1<- c(absorb1,0,0)
+                             }#3
+
+
+            }else{ #1
 x<- seq(1/N,by=1/N,1)
 sum_sa<- alpha*(x^pho)
 
 y<- qbinom(1-alpha,N,1/(1+z)); y<- y+1 # auxiliar variable
 if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb1<- c(absorb1,0,0)
 
-          }
+           }# close if
 
 
 
@@ -257,9 +272,11 @@ if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb
 # line 14: test per weight
 
 if(AlphaSpendType=="power-type"){z<- 0}
-if(AlphaSpendType=="Wald"){rho<- 0}
+if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){rho<- 0}
 
 inputSetUp<- as.data.frame(matrix(0,14,max(length(absorb1),length(sum_sa),10)))
+
+N<- length(sum_sa)
 
 inputSetUp[1,]<- 0
 inputSetUp[1,1:10]<- c(0,N,alpha,M,1,0,0,rho,Tailed,z) 
@@ -275,7 +292,7 @@ inputSetUp[9,]<- 0
 inputSetUp[10,]<- 0
 inputSetUp[11,]<- 0
 inputSetUp[12,]<- 0
-if(AlphaSpendType=="Wald"){inputSetUp[12,1:length(sum_sa)]<- sum_sa}
+if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){inputSetUp[12,1:length(sum_sa)]<- sum_sa}
 inputSetUp[13,]<- 0
 inputSetUp[14,]<- 0
 

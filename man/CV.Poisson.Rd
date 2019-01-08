@@ -1,6 +1,6 @@
 \name{CV.Poisson}
 \alias{CV.Poisson}
-\title{Critical Values for Continuous Sequential Analysis with Poisson Data.}
+\title{Critical values for continuous sequential analysis with Poisson data.}
 \description{The function \code{CV.Poisson} obtains critical values for the continuous sequential MaxSPRT test with Poisson data, using a Wald 
 type upper boundary, which is flat with respect to the likelihood ratio function, and with a pre-specified upper limit on the sample size.}
 \usage{

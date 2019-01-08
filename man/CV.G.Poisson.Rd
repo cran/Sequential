@@ -1,6 +1,6 @@
 \name{CV.G.Poisson}
 \alias{CV.G.Poisson}
-\title{Critical Values for Group Sequential Analysis with Poisson Data.}
+\title{Critical values for group sequential analysis with Poisson data.}
 \description{The function \code{CV.G.Poisson} calculates exact critical values for group sequential analysis with Poisson data, using a Wald 
 type upper boundary, which is flat with respect to the likelihood ratio function, and with a pre-specified upper limit on the sample size.}
 \usage{

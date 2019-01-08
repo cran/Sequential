@@ -1,6 +1,6 @@
 \name{Performance.G.Poisson}
 \alias{Performance.G.Poisson}
-\title{Calculates Statistical Power, Expected Time to Signal and Expected Sample Size for Group Sequential Analysis with Poisson Data.}
+\title{Calculates statistical power, expected time to signal and expected sample size for group sequential analysis with Poisson data.}
 \description{The \code{Performance.G.Poisson} function calculates statistical power, expected time to signal and the expected sample size
 for group sequential analysis with Poisson data. It is required that the number of looks at the data is pre-specified, and equally spaced in terms of the sample size.
 This function can also be used to  calculate the statistical significance level alpha, by setting RR=1, in which case the power output value is the alpha level.}

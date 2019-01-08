@@ -1,6 +1,6 @@
 \name{CV.G.Binomial}
 \alias{CV.G.Binomial}
-\title{Calculates Exact Critical Values for Group Sequential Analysis with Binomial Data.}
+\title{Calculates exact critical values for group sequential analysis with binomial data.}
 \description{The function \code{CV.G.Binomial} calculates the critical values for the group sequential MaxSPRT test with Binomial data, using a Wald-type
 upper boundary, which is flat with respect to the likelihood ratio function, and with a pre-specified upper limit on the sample size (N).}
 \usage{

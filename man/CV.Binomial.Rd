@@ -1,6 +1,6 @@
 \name{CV.Binomial}
 \alias{CV.Binomial}
-\title{Calculates Exact Critical Values for Continuous Sequential Analysis with Binomial Data.}
+\title{Calculates exact critical values for continuous sequential analysis with binomial data.}
 \description{The function \code{CV.Binomial} obtains critical values for the continuous sequential MaxSPRT test with binomial data, using a Wald-type upper boundary,
 which is flat with respect to the likelihood ratio function, and an pre-specified upper limit on the sample size.}
 \usage{

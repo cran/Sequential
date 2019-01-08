@@ -1,6 +1,6 @@
 \name{AnalyzeSetUp.CondPoisson}
 \alias{AnalyzeSetUp.CondPoisson}
-\title{Function to Set Up the Input Parameters Before Using the Analyze.CondPoisson Function for the First Time.}
+\title{Function to set up input parameters before using the \code{Analyze.CondPoisson} function for the first time.}
 \description{The function \code{AnalyzeSetUp.CondPoisson} must be run ahead of \code{Analyze.CondPoisson} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.CondPoisson(name,SampleSizeType="Events",T="n",K="n",cc,

@@ -1,6 +1,6 @@
 \name{Performance.Binomial}
 \alias{Performance.Binomial}
-\title{Statistical Power, Expected Signal Time and Sample Size for Continuous Sequential Analysis with Binomial Data.}
+\title{Statistical power, expected time to signal and expected sample size for continuous sequential analysis with binomial data.}
 \description{The function \code{Performance.Binomial} calculates several performance 
 metrics for the continuous binomial MaxSPRT for fixed upper limit on the sample 
 size ("N"), minimum number of events required before rejecting the null hypothesis ("M"), critical value ("cv") and a relative risk ("RR").

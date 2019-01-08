@@ -1,6 +1,6 @@
 \name{SampleSize.Binomial}
 \alias{SampleSize.Binomial}
-\title{Sample Size Calculation for Continuous Sequential Analysis with Binomial Data.}
+\title{Sample size calculation for continuous sequential analysis with binomial data.}
 \description{The function \code{SampleSize.Binomial} obtains the sample size needed to guarantee a desired statistical power, for a fixed true relative risk, when doing continuous sequential analysis for binomial data with a Wald-type upper boundary, which is flat with respect to the log-likelihood ratio. It can also be used to approximate the sample size needed when doing group sequential analysis for binomial data.}
 \usage{
 SampleSize.Binomial(RR,alpha=0.05,power=0.9,M=1,z="n",p="n")

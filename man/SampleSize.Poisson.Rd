@@ -1,6 +1,6 @@
 \name{SampleSize.Poisson}
 \alias{SampleSize.Poisson}
-\title{Sample Size Calculation for Continuous Sequential Analysis with Poisson Data.}
+\title{Sample size calculation for continuous sequential analysis with Poisson data.}
 \description{The function \code{SampleSize.Poisson} obtains the required sample size (length of surveillance) needed to guarantee a desired statistical
 power for a pre-specified relative risk, when doing continuous sequential analysis for Poisson data with a Wald type upper boundary, which is flat with
 respect to the log-likelihood ratio. It can also be used to approximate the sample size needed when doing group sequential analysis for Poisson data.

@@ -1,6 +1,6 @@
 \name{Analyze.Binomial}
 \alias{Analyze.Binomial}
-\title{Function to Conduct Group Sequential Analyses for Binomial Data When the Goup Sizes are not Known a Priori.}
+\title{Function for group sequential analyses for binomial data, without the need to know group sizes a priori.}
 \description{The function \code{Analyze.Binomial} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the binomial probability, p, can be different for different observations. In a matched case-control setting, this means that the matching ratios can be different for different matched sets.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Binomial} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function.}
 \usage{
 Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
@@ -57,9 +57,11 @@ Note that only one of these inputs, z or p, has to be specified, but if both are
 Otherwise, an error message will appear to remind that such condition must be complied.
 
 Before running \code{Analyze.Binomial}, it is necessary to specify a planned default alpha spending function, which is done using the AlphaSpendType parameter in the
-\code{AnalyzeSetUp.Binomial} function. The default alpha spending plan can be either, (i) the polynomial power-type alpha spending plan, which is parameterized with rho,
-or (ii) the alpha spending associated to the Wald-type rejection boundary, which is flat with respect to the likelihood ratio. See the \code{\link[Sequential]{AnalyzeSetUp.Binomial}}
-for more details. 
+\code{AnalyzeSetUp.Binomial} function. The default alpha spending plan can be either, (i) the optimal alpha spending derived by Silva and Kulldorff (2018), which
+demands users to choose between minimizing expected time to signal or expected sample size, or (ii) the polynomial power-type alpha spending plan, which is
+parameterized with rho, which, according to Silva (2018), 'rho=0.5' is indicated when expected time to signal is the design criterion, hence the default in \code{AnalyzeSetUp.Binomial},
+or (iii) the alpha spending associated to the Wald-type rejection boundary, which is flat with respect to the likelihood ratio. See the
+\code{\link[Sequential]{AnalyzeSetUp.Binomial}} for more details. 
 
 In most cases, this pre-specified alpha spending function is used throughout the analysis, but if needed, it is possible to override it at any or each of the sequential tests.
 This is done using the AlphaSpend parameter, which specifies the maximum amount of alpha to spend up to and including the current test. In this way, it is possible to use any
@@ -118,9 +120,14 @@ Jennison C, Turnbull B. (2000). Group Sequential Methods with Applications to Cl
 
 Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30, 58--78.
 
-Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
+Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum
+events to signal. arxiv:1503.01978 [stat.ap].
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858. 
+
+Silva IR, Kulldorff M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+
+Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107-118.
 }
 
 

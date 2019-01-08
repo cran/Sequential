@@ -1,6 +1,6 @@
 \name{AnalyzeSetUp.Poisson}
 \alias{AnalyzeSetUp.Poisson}
-\title{Function to Set Up the Input Parameters Before Using the Analyze.Poisson Function for the First Time.}
+\title{Function to set up input parameters before using the \code{Analyze.Poisson} function for the first time.}
 \description{The function \code{AnalyzeSetUp.Poisson} must be run ahead of \code{Analyze.Poisson} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.Poisson(name,SampleSize,alpha=0.05,M=1,
@@ -43,6 +43,8 @@ Wald type upper rejection boundary, which is flat with respect to the likelihood
 
 Another alpha spending option is the power-type alpha spending plan (Kim and DeMetz 1987, p150; Jennison and Turnbull 2000, p148), with parameter rho: \eqn{F(t)= alpha*t^{rho}}, 
 where \eqn{alpha} is the overall significance level and \eqn{t} is a fraction of SampleSize, the maximum length of sequential analysis.
+According to Silva (2018), the choice 'rho=1' is indicated when minimization of expected time to signal is a design criterion,
+which is then the default in \code{AnalyzeSetUp.Poisson.}. 
 
 }
 
@@ -69,6 +71,8 @@ Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized 
 Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
+
+Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739-750.
 }
 
 \keyword{Poisson sequential analysis}

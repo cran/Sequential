@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-14-2015
+# Function to perform CMaxSPRT surveillance
 # -------------------------------------------------------------------------
 
 

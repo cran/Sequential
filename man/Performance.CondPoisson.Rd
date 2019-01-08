@@ -1,6 +1,6 @@
 \name{Performance.CondPoisson}
 \alias{Performance.CondPoisson}
-\title{Statistical Power, Expected Signal Time and Sample Size for the continuous sequential CMaxSPRT for Poisson data with limited information from historical cohort.}
+\title{Statistical power, expected time to signal and expected sample size for the continuous sequential CMaxSPRT for Poisson data with limited information from historical cohort.}
 \description{
 The function \code{Performance.CondPoisson} calculates several performance metrics for the continuous CMaxSPRT for selected computation approach,
 the type of upper limit definition and its value, critical value, number of historical data events, criteria of delayed start, the Type I error rate,

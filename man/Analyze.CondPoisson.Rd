@@ -1,6 +1,6 @@
 \name{Analyze.CondPoisson}
 \alias{Analyze.CondPoisson}
-\title{Function to Conduct Group Sequential Analyses for Conditional Poisson Data When the Goup Sizes are not Known a Priori.}
+\title{Function to conduct group sequential analyses for conditional Poisson data without the need to know group sizes a priori.}
 \description{The function \code{Analyze.CondPoisson} is used for either continuous, group, or mixed continuous-group sequential analysis for Poisson data conditioned on observed historical data. Unlike \code{CV.CondPoisson}, it is not necessary that data arrives in a near-continuous fashion. It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.CondPoisson} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.CondPoisson}} function.}
 \usage{
 Analyze.CondPoisson(name,test,events,PersonTimeRatio,AlphaSpend="n")

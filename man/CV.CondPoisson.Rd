@@ -1,6 +1,6 @@
 \name{CV.CondPoisson}
 \alias{CV.CondPoisson}
-\title{Critical Values for continuous sequential CMaxSPRT for Poisson data with limited information from historical cohort.}
+\title{Critical values for continuous sequential CMaxSPRT for Poisson data with limited information from historical cohort.}
 \description{
 The function \code{CV.CondPoisson} calculates critical values for the continuous sequential CMaxSPRT, using a Wald-type upper boundary,
 which is flat with respect to the likelihood ratio function, and a pre-specified upper limit on surveillance length. 

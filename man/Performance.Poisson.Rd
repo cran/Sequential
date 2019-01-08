@@ -1,6 +1,6 @@
 \name{Performance.Poisson}
 \alias{Performance.Poisson}
-\title{Calculates Statistical Power, Expected Time to Signal and Expected Sample Size for Continuous Sequential Analysis with Poisson Data.}
+\title{Calculates statistical power, expected time to signal and expected sample size for continuous sequential analysis with Poisson data.}
 \description{The \code{Performance.Poisson} function calculates three different performance metrics for the continuous sequential analysis with Poisson data:
 the statistical power, the expected time to signal when the null hypothesis is rejected and the expected sample size at the end of the analysis whether the
 null hypothesis was rejected or not. The user specifies the relative risk under the alternative hypothesis (RR), as well as the sequential analysis parameters. 
