@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.0\cr
-Date: \tab 2019-01-05\cr
+Version: \tab 3.0.1\cr
+Date: \tab 2019-02-08\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -279,15 +279,17 @@ Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva, I.R. and Kulldorff, M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+Silva, IR, and Kulldorff, M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
 
 Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2019). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Working paper.
 
-Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
+Silva IR, Li L, Kulldorff M. (2019). Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
 
-Silva IR. (2018a). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107-118.
+Silva IR. (2018a). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107--118.
 
-Silva IR. (2018b). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739-750.
+Silva IR. (2018b). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739--750.
+
+Silva IR., Lopes LM., Dias P., Yih WK. (2019). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, DOI: 10.1002/sim.8097, 1--13. 
 
 Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
@@ -413,8 +415,11 @@ Version 2.3.2, Aug 2017\cr
 -     Correction of bugs in \code{Analyze.Binomial}.\cr
 -     Updated user guide.\cr
 \cr
-Version 3.0, Feb 2018\cr
--     Functions  \code{Optimal.Binomial} and \code{Analyze.wBinomial}.\cr
+Version 3.0, Jan 2019\cr
+-     Functions \code{Optimal.Binomial} and \code{Analyze.wBinomial}.\cr
+-     Updated user guide.\cr
+\cr
+Version 3.0.1, Feb 2019\cr
 -     Updated user guide.\cr
 \cr
 }

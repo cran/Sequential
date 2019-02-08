@@ -47,7 +47,10 @@ approach, it is the smallest liberal vaue, for the conservative approach, it is 
 \references{
 Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for pharmacovigilance. \emph{Statistics in Medicine,} 30;29(2):284-95.\cr
 
-Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
+Silva IR, Li L, Kulldorff M. (2019). Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
+
+Silva IR., Lopes LM., Dias P., Yih WK. (2019). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, DOI: 10.1002/sim.8097, 1--13. 
+
 }
 \section{Acknowledgements}{
 Development of the \code{CV.CondPoisson} function was funded by:\cr

@@ -87,7 +87,10 @@ KKulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveil
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Li L, Kulldorff M. (2016). Exact Conditional Sequential Testing for Poisson Data. Working paper.
+Silva IR, Li L, Kulldorff M. (2019), Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
+
+Silva IR., Lopes LM., Dias P., Yih WK. (2019). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, DOI: 10.1002/sim.8097, 1--13. 
+
 }
 
 \keyword{Poisson sequential analysis}
