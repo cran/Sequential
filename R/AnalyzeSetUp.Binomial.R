@@ -3,8 +3,10 @@
 # Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n")
+AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
 {
+
+if(Tailed!="upper"){stop("For this version of the Sequential package, AnalyzeSetUp.Binomial works only for 'Tailed=upper'.",call. =FALSE)}
 
 Tailed<- 1
 

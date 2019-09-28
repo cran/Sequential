@@ -1,5 +1,5 @@
 
-AnalyzeSetUp.wBinomial<- function(name,N,alpha=0.05,M=1,rho=0.5,title="n",address="n",Tailed=1)
+AnalyzeSetUp.wBinomial<- function(name,N,alpha=0.05,M=1,rho=0.5,title="n",address="n",Tailed="upper")
 {
 
 # Example of address: "C:/Users/Ivair/Documents"

@@ -7,7 +7,7 @@ respect to the log-likelihood ratio. It can also be used to approximate the samp
 }
 \usage{
 SampleSize.Poisson(alpha=0.05,power=0.9,M=1,D=0,RR=2,
-precision=0.000001)
+precision=0.000001,Tailed="upper")
       }
 \arguments{
 \item{alpha}{The significance level. The default value is alpha=0.05. Must be in the range (0,0.5].}
@@ -20,8 +20,8 @@ can reject the null hypothesis if it occurs sufficiently early.}
 This is used when there is an initial large chunk of data arriving, followed by continuous sequential analysis. The default value is D=0, which is
 also the best choice. This means that there is no delay in the start of the sequential analyses. If D is very large, the maximum 
 sample size will be set equal to D if a non-sequential analysis provides the desired power.}
-
 \item{precision}{The tolerance for the difference between the requested and actual statistical power. Should be very small. The default value is precision=0.000001.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 \details{
 When using the MaxSPRT and the \code{CV.Poisson} function to conduct continuous sequential analysis for Poisson data, the null
@@ -58,7 +58,6 @@ Development of the \code{SampleSize.Poisson} function was funded by:\cr
 
 \section{See also}{ 
 \code{\link[Sequential]{CV.Poisson}}: for calculating critical values for continuous sequential analysis with Poisson data.\cr
-\code{\link[Sequential]{CV.G.Poisson}}: for calculating critical values for group sequential analysis with Poisson data.\cr
 \code{\link[Sequential]{Performance.Poisson}}: for calculating the statistical power, expected time to signal and expected sample size for continuous sequential analysis with Poisson data\cr
 \code{\link[Sequential]{SampleSize.Binomial}}: for calculating the minimum sample size given a target power in continuous sequential analysis with binomial data. 
 }

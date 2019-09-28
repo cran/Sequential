@@ -6,7 +6,7 @@ The function \code{SampleSize.CondPoisson} obtains the required sample size (len
 to guarantee a desired statistical power for a pre-specified relative risk, when doing continuous sequential CMaxSPRT, using a Wald-type upper boundary,
 which is flat with respect to the likelihood ratio function.}
 \usage{
-SampleSize.CondPoisson(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2)
+SampleSize.CondPoisson(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2,Tailed="upper")
 }
 \arguments{
 \item{cc}{The total number of observed adverse events in the historical data. There is no default.}
@@ -15,9 +15,10 @@ SampleSize.CondPoisson(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2)
 \item{alpha}{The significance level. It must be in the range (0,0.5]. The default value is alpha=0.05.}
 \item{power}{The target vector of overall statistical powers to detect an increased relative risk (RR). The default value is power=0.90.}
 \item{RR}{The target vector of relative risks to be detected with the requested vector of statistical powers. The default value is RR=2.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 \details{
-When using the CMaxSPRT and the \code{CV.CondPoisson} function to conduct continuous sequential analysis
+When using the CMaxSPRT (Li and Kulldorff, 2010) and the \code{CV.CondPoisson} function to conduct continuous sequential analysis
 for Poisson data and limited historical data, the null hypothesis is rejected when the log likelihood ratio
 exceeds the predetermined critical value calculated by \code{CV.CondPoisson}. The sequential analysis ends
 without rejecting the null hypothesis when a predetermined upper limit on the sample size is reached, expressed 
@@ -40,7 +41,7 @@ is used in \code{SampleSize.CondPoisson} to find the solution.
 
 \author{Ivair Ramos Silva, Lingling Li}
 \references{
-Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for pharmacovigilance. Statistics in Medicine, 30;29(2):284-95.\cr
+Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
 
 Silva IR, Li L, Kulldorff M. (2019). Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
 

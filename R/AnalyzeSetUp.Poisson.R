@@ -3,8 +3,10 @@
 # Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n")
+AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
 {
+
+if(Tailed!="upper"){stop("For this version of the Sequential package, CV.Binomial works only for 'Tailed=upper'.",call. =FALSE)}
 
 # Example of address: "C:/Users/Ivair/Documents"
 

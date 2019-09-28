@@ -113,9 +113,7 @@ Development of the \code{Analyze.Poisson} function was funded by:
 
 \section{See also}{
 \code{\link[Sequential]{AnalyzeSetUp.Poisson}}: for setting up sequential analysis with the \code{Analyze.Poisson} function, before the first look at the data.\cr 
-\code{\link[Sequential]{Performance.G.Poisson}}: for calculating the statistical power, expected time to signal and expected sample size for group sequential analysis with Poisson data.\cr
 \code{\link[Sequential]{SampleSize.Poisson}}: for calculating the needed sample size to achieve the desired statistical power for continuous sequential analysis with Poisson data.\cr 
-\code{\link[Sequential]{CV.G.Poisson}}: for calculating critical values for group sequential analysis with Poisson data.
 }
 
 

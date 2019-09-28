@@ -143,10 +143,7 @@ We thank Claudia Coronel-Moreno for valuable editorial support, Bruce Fireman fo
 
 \section{See also}{
 \code{\link[Sequential]{AnalyzeSetUp.Binomial}}: for setting up sequential analysis with the \code{Analyze.Binomial} function, before the first look at the data.\cr 
-\code{\link[Sequential]{Performance.G.Binomial}}: for calculating the statistical power, expected time to signal and expected sample size for group sequential analysis with binomial data.\cr
 \code{\link[Sequential]{SampleSize.Binomial}}: for calculating the needed sample size to achieve the desired statistical power for continuous sequential analysis with binomial data.\cr 
-\code{\link[Sequential]{CV.G.Binomial}}: for calculating critical values for group sequential analysis with binomial data.\cr
-\code{\link[Sequential]{CV.G.Poisson}}: for calculating critical values for group sequential analysis with Poisson data.
 }
 
 

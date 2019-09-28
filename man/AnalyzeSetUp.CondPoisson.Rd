@@ -4,7 +4,7 @@
 \description{The function \code{AnalyzeSetUp.CondPoisson} must be run ahead of \code{Analyze.CondPoisson} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.CondPoisson(name,SampleSizeType="Events",T="n",K="n",cc,
-alpha=0.05,M=1, AlphaSpendType="Wald",rho="n",title="n",address="n")
+alpha=0.05,M=1, AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.CondPoisson} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
@@ -18,6 +18,7 @@ alpha=0.05,M=1, AlphaSpendType="Wald",rho="n",title="n",address="n")
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=1".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
 \item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 
 
@@ -51,14 +52,14 @@ where \eqn{alpha} is the overall significance level and \eqn{t} is a fraction of
 Attention is required for the input parameter "SampleSizeType". With this parameter, the user can choose the scale of the maximum sample size
 at which the surveillance is stoped without rejecting the null hypothesis. The idea of having two options for defining the scale of the maximum sample size,
 "SampleSizeType=PersonTimeRatio" or "SampleSizeType=Events",
-was introduced by Silva et al. (2016). With SampleSizeType="PersonTimeRatio", the upper limit on the time of surveillance is given in the scale of the ratio
-between the cumulative person-time from the surveillance data up to the kth event, \eqn{P_{k}} in the notation of Silva et al. (2016), by the person-time from
-the historical data, which was denoted with \eqn{V} by Silva et al. (2016).
+was introduced by Silva et al. (2019a). With SampleSizeType="PersonTimeRatio", the upper limit on the time of surveillance is given in the scale of the ratio
+between the cumulative person-time from the surveillance data up to the kth event, \eqn{P_{k}}, by the person-time from
+the historical data, denoted by \eqn{V}. These are the notations used  by Silva et al. (2019a) and Silva et al. (2019b).
 
 If SampleSizeType="PersonTimeRatio", then the user has to inform a positive value for the input parameter "T". Usually, choices between 2 and 5 are adequate.
 With SampleSizeType="Events", the upper limit is given in the scale of the number of events observed during the surveillance, and hence the user must
-specify a positive integer for the input parameter "K", such as e.g. "K=50" or "K=150". For more details on the exact calculations of critical values
-implemented in this package, and of all the other statistical performance measures also available, see the work of Silva et al. (2016). 
+specify a positive integer for the input parameter "K", such as e.g. "K=50" or "K=150". For more details on the exact calculations of critical values and alpha spending
+implemented in this package, and of all the other statistical performance measures also available, see the works of Silva et al. (2019a) and Silva et al. (2019b). 
 
 }
 
@@ -81,15 +82,17 @@ Trials, \emph{no. ISBN 0-8493-0316-8, London: Chapman and Hall/CRC}.
 
 Kim K, DeMets DL. (1987), Design and Analysis of Group Sequential Tests Based on the Type I Error Spending Rate Function. Biometrika, \bold{74}, n.1: 149--154.
 
-Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. \emph{Sequential Analysis}, \bold{30}: 58--78.
+Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
 
-KKulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
+Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 
-Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
+Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
 
-Silva IR, Li L, Kulldorff M. (2019), Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71(3), 851--858.
 
-Silva IR., Lopes LM., Dias P., Yih WK. (2019). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, DOI: 10.1002/sim.8097, 1--13. 
+Silva IR, Li L, Kulldorff M. (2019a), Exact conditional maximized sequential probability ratio test adjusted for covariates. Sequential Analysis, 38(1), 115--133.
+
+Silva IR., Lopes LM., Dias P., Yih WK. (2019b). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, 38(12), 2126--2138. 
 
 }
 

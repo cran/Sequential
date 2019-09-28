@@ -2,8 +2,10 @@
 
 # Version of Dez/2016
 
-SampleSize.CondPoisson<- function(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2)
-{                                
+SampleSize.CondPoisson<- function(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2,Tailed="upper")
+{
+
+if(Tailed!="upper"){stop("For this version of the Sequential package, SampleSize.CondPoisson works only for 'Tailed=upper'.",call. =FALSE)}                                
 
 # ------------------- INPUT VARIABLE ----------------------------------------------------------
 # cc = number of adverse events observed in the historical period

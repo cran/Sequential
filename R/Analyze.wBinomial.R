@@ -99,7 +99,7 @@ M<- inputSetUp[1,4]
 start<- inputSetUp[2,1]
 reject<- inputSetUp[1,7]
 rho<- inputSetUp[1,8]
-Tailed<- inputSetUp[1,9]
+Tailed<- inputSetUp[1,9] ; Tailedor<- Tailed; if(Tailed=="lower"|Tailed=="upper"){Tailed<- 1}else{Tailed<- 2}
 maxspent<- max(inputSetUp[5,])
 actual_alpha_old<- inputSetUp[5,]
 target_alpha_old<- inputSetUp[7,]
@@ -599,7 +599,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailed,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailedor,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -812,7 +812,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailed,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailedor,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -1024,7 +1024,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailed,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailedor,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
                                             
@@ -1233,7 +1233,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailed,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailedor,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
@@ -1443,7 +1443,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailed,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailedor,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -1649,7 +1649,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailed,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", Tailed= ", Tailedor,", and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 

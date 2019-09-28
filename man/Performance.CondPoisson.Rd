@@ -8,7 +8,7 @@ and a relative risk. The metrics calculated are the statistical power, the expec
 is rejected, and the expected sample size at the end of the analysis whether the null hypothesis was rejected or not.}
 \usage{
 Performance.CondPoisson(Inference="exact",cv,StopType="Cases",
-T="n",K="n",cc,D=0,M=1,RR=2)
+T="n",K="n",cc,D=0,M=1,RR=2,Tailed="upper")
 }
 
 \arguments{
@@ -22,9 +22,10 @@ usually obtained by first running \code{CV.CondPoisson}. It must be a positive n
 \item{D}{The minium number for the ratio \eqn{P_k/V} before the null hypothesis can be rejected. This argument is used together with StopType='Tal'. The default value is \eqn{D=0}.}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. This argument is used together with StopType='Cases'. The default value is M=1.}
 \item{RR}{The target relative risk for which statistical power, expected signal time and expected length of surveillance are calculated. The default is 'RR=2'.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 \details{
-For continuous sequential analysis with Poisson data with limited historical information, the \code{Performance.CondPoisson} function calculates the
+For continuous sequential analysis with Poisson data with limited historical information, (Li and Kulldorff, 2010), the \code{Performance.CondPoisson} function calculates the
 statistical power, the expected time to signal when the null hypothesis is rejected and the expected sample size until the analysis ends whether the
 null is rejected or not. The sample size (i.e., the upper limit) can be expressed either in terms of the ratio "T" of the cumulative person-time in the surveillance population
 divided by the total cumulative person-time in historical data (StopType="Tal"), i.e., \eqn{P_k/V \leq T}, or in terms of the observed number of events "K" in the surveillance
@@ -44,7 +45,7 @@ be available to judge whether the signal is more likely to be a true signal or c
 }
 \author{Ivair Ramos Silva, Lingling Li}
 \references{
-Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for pharmacovigilance. Statistics in Medicine, 30;29(2):284--95.\cr
+Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
 
 Silva IR, Li L, Kulldorff M. (2019). Exact conditional maximized sequential probability ratio test adjusting for covariates. Sequential Analysis, in press.
 

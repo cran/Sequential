@@ -7,8 +7,9 @@
 # Function produces critical value for the continuous Sequential Binomial MaxSPRT
 # -------------------------------------------------------------------------------------------
 
-SampleSize.Binomial<- function(RR,alpha=0.05,power=0.9,M=1,z="n",p="n"){
+SampleSize.Binomial<- function(RR,alpha=0.05,power=0.9,M=1,z="n",p="n",Tailed="upper"){
 
+if(Tailed!="upper"){stop("For this version of the Sequential package, SampleSize.Binomial works only for 'Tailed=upper'.",call. =FALSE)}
 
 MinCases<- M
 

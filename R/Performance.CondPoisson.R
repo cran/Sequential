@@ -1,5 +1,7 @@
 Performance.CondPoisson <-
-function(Inference="exact",cv,StopType="Cases",T="n",K="n",cc,D=0,M=1,RR=2){
+function(Inference="exact",cv,StopType="Cases",T="n",K="n",cc,D=0,M=1,RR=2,Tailed="upper"){
+
+if(Tailed!="upper"){stop("For this version of the Sequential package, Performance.CondPoisson works only for 'Tailed=upper'.",call. =FALSE)}
 
 if(Inference!="exact"&Inference!="liberal"&Inference!="conservative"){stop("'Inference' must be settled as 'exact', 'conservative', or 'liberal'.",call. =FALSE)}
 
@@ -13,7 +15,7 @@ if(Inference!="exact"&Inference!="liberal"&Inference!="conservative"){stop("'Inf
 # cc = number of adverse events observed in the historical period
 # M = The minimum number of cases for which a signal is allowed to occur
 # D = Time < T for first look at the data, defined in terms of the expected counts under H0
-
+# Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1
 # Tests
 if(length(Inference)>1|length(StopType)>1|length(T)>1|length(K)>1|length(cc)>1|length(D)>1|length(M)>1){stop("The inputs cannot be vectors.",call. =FALSE)}
 if(sum(StopType==c("Tal","Cases"))==0){stop("StopType must contain a label equal to 'Tal' and 'Cases'.",call. =FALSE)}

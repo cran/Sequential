@@ -1,12 +1,12 @@
 \name{Performance.Poisson}
 \alias{Performance.Poisson}
-\title{Calculates statistical power, expected time to signal and expected sample size for continuous sequential analysis with Poisson data.}
-\description{The \code{Performance.Poisson} function calculates three different performance metrics for the continuous sequential analysis with Poisson data:
+\title{Calculates statistical power, expected time to signal and expected sample size for group and continuous sequential analysis with Poisson data.}
+\description{The \code{Performance.Poisson} function calculates three different performance metrics for group and continuous sequential analysis with Poisson data:
 the statistical power, the expected time to signal when the null hypothesis is rejected and the expected sample size at the end of the analysis whether the
 null hypothesis was rejected or not. The user specifies the relative risk under the alternative hypothesis (RR), as well as the sequential analysis parameters. 
 To calculate the statistical significance level alpha, RR=1, in which case the power output value is the alpha level.}
 \usage{
-Performance.Poisson(SampleSize, D = 0, M = 1, cv, RR = 2)
+Performance.Poisson(SampleSize, D = 0, M = 1, cv, RR = 2,GroupSizes="n",Tailed="upper")
 }
 \arguments{
 \item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the expected number of events under the null hypothesis.
@@ -18,9 +18,11 @@ which means that even a single event can reject the null hypothesis if it occurs
 (Kulldorff and Silva, 2015).}
 \item{cv}{The critical value constituting the upper rejection boundary. This can be calculated using the \code{\link[Sequential]{CV.Poisson}} function.}
 \item{RR}{The relative risk under the alternative hypothesis. It is required that RR\eqn{\geq 1}. The default value is RR=2.}
+\item{GroupSizes}{Vector containing the expected number of events under H0 for each test. The values must be positive numbers. The dimension of this vector must be equal to the maximum number of sequential tests. Thus, the sum of the entries in GroupSizes has to be equal to SampleSize. The default is GroupSizes="n" for continuous sequential analysis.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 \details{
-For continuous sequential analysis with Poisson data, the \code{Performance.Poisson} function calculates the statistical power, the expected time to signal when
+For group and continuous sequential analysis with Poisson data, the \code{Performance.Poisson} function calculates the statistical power, the expected time to signal when
 the null hypothesis is rejected and the expected sample size until the analysis ends whether the null is rejected or not. The sample size is expressed in terms of
 the expected number of events under the null hypothesis. Large values of the SampleSize, greater than say 1000, may leads to long computing times.
 When the statistical power is close to 1, then the expected time to signal will be very close to the expected sample size, since both are measured in information time,
@@ -50,11 +52,12 @@ Development of the Performance.Poisson function was funded by:\cr
 
 \section{See also}{
 \code{\link[Sequential]{CV.Poisson}}: Calculates critical values for continuous sequential analysis with Poisson data.\cr 
-\code{\link[Sequential]{SampleSize.Poisson}}: Sample size calculations for continuous sequential analysis with Poisson data.\cr
-\code{\link[Sequential]{Performance.G.Poisson}}: Calculates the statistical power, expected time to signal and expected sample size for group sequential analysis with Poisson data.
+\code{\link[Sequential]{SampleSize.Poisson}}: Sample size calculations for continuous sequential analysis with Poisson data.
 }
 
 \examples{
+
+# Example 1:
 ## Suppose we want to find the statistical power to detect a relative risk
 ## of 2 when doing up to at most 20 months of surveillance, as well as the
 ## expected time to signal when the null hypothesis is rejected. During 
@@ -76,7 +79,7 @@ Development of the Performance.Poisson function was funded by:\cr
 ## equal to 2:
 # Performance.Poisson(SampleSize=10,cv=cvt,RR=2)
 #         Power    ESignalTime    ESampleSize 
-# [1,] 0.6850634     4.130985      5.979353)
+# [1,] 0.6850634     4.130985      5.979353
 
 ## From the results, we see that the statistical power is 68.5%. When the null
 ## is rejected, the expected time to signal is 4.13 in the unit of events
@@ -89,4 +92,17 @@ Development of the Performance.Poisson function was funded by:\cr
 #  Performance.Poisson(SampleSize=10,cv=CV.Poisson(SampleSize=10,alpha=0.05),RR=2)
 #         Power    ESignalTime    ESampleSize
 #  [1,] 0.6850634     4.130985      5.979353
+
+# Example 2:
+## First use the CV.Poisson function to calculate the critical value for
+## 5 sequential looks  at the data, spaced six units apart, and with a
+## statistical significance level of 0.05:
+
+cvt<- CV.Poisson(SampleSize=30,alpha=0.05,GroupSizes=c(6,6,6,6,6))
+
+## For an alternative hypothesis of a relative risk of RR=1.5, calculates the
+## statistical power, the expected time to signal, and the expected sample size
+## at the end of the sequential analysis.
+
+(Performance.Poisson(SampleSize=30,cv=cvt,GroupSizes=c(6,6,6,6,6),RR=1.5))
 }

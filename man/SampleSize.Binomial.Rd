@@ -3,7 +3,7 @@
 \title{Sample size calculation for continuous sequential analysis with binomial data.}
 \description{The function \code{SampleSize.Binomial} obtains the sample size needed to guarantee a desired statistical power, for a fixed true relative risk, when doing continuous sequential analysis for binomial data with a Wald-type upper boundary, which is flat with respect to the log-likelihood ratio. It can also be used to approximate the sample size needed when doing group sequential analysis for binomial data.}
 \usage{
-SampleSize.Binomial(RR,alpha=0.05,power=0.9,M=1,z="n",p="n")
+SampleSize.Binomial(RR,alpha=0.05,power=0.9,M=1,z="n",p="n",Tailed="upper")
       }
 \arguments{
 \item{RR}{A target vector of relative risks to be detected with the requested statistical powers.}
@@ -12,6 +12,7 @@ SampleSize.Binomial(RR,alpha=0.05,power=0.9,M=1,z="n",p="n")
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".}
 \item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
 \item{p}{The probability of having a case under the null hypothesis. There is no default value.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 \details{
 The function \code{SampleSize.Binomial} calculates the sample size N, to be used for the continuous binomial MaxSPRT in order to provide the desired statistical power for a user-specified relative risk RR. The required sample size (Required_N) is expressed in terms of the total number of observations, and it is the number of observations by which the sequential analysis will end without rejected the null hypothesis. The solution is  exact using iterative numerical calculations. 

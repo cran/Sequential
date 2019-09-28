@@ -16,7 +16,7 @@ Analyze.CondPoisson(name,test,events,PersonTimeRatio,AlphaSpend="n")
 
 \details{
 
-The function \code{Analyze.CondPoisson} performs continuous or group sequential analysis for Poisson data conditioned on observed historical data.
+The function \code{Analyze.CondPoisson} performs continuous or group sequential analysis for Poisson data conditioned on observed historical data, (Li and Kulldorff, 2010).
 It can also be used for mixed continuous-group sequential analysis where some data arrives continuously while other data arrives in groups.
 Unlike \code{CV.CondPoisson}, there is a variety of alpha spending functions are available.
 
@@ -103,9 +103,11 @@ Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized 
 
 Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 
-Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
+Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
 
-Silva IR, Li L, Kulldorff M. (2019). Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71(3), 851--858.
+
+Silva IR, Li L, Kulldorff M. (2019). Exact conditional maximized sequential probability ratio test adjusted for covariates. Sequential Analysis, 38(1), 115--133.
 
 Silva IR., Lopes LM., Dias P., Yih WK. (2019). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, DOI: 10.1002/sim.8097, 1--13. 
 
@@ -122,9 +124,7 @@ Development of the \code{Analyze.CondPoisson} function was funded by:
 \section{See also}{
 \code{\link[Sequential]{AnalyzeSetUp.CondPoisson}}: for setting up sequential analysis with the \code{Analyze.CondPoisson} function, before the first look at the data.\cr
 \code{\link[Sequential]{AnalyzeSetUp.Poisson}}: for setting up sequential analysis with the \code{Analyze.Poisson} function, before the first look at the data.\cr 
-\code{\link[Sequential]{Performance.G.Poisson}}: for calculating the statistical power, expected time to signal and expected sample size for group sequential analysis with Poisson data.\cr
-\code{\link[Sequential]{SampleSize.Poisson}}: for calculating the needed sample size to achieve the desired statistical power for continuous sequential analysis with Poisson data.\cr 
-\code{\link[Sequential]{CV.G.Poisson}}: for calculating critical values for group sequential analysis with Poisson data.
+\code{\link[Sequential]{SampleSize.Poisson}}: for calculating the needed sample size to achieve the desired statistical power for continuous sequential analysis with Poisson data.\cr
 }
 
 

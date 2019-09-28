@@ -1,6 +1,7 @@
 CV.CondPoisson<-
-function(Inference="exact",StopType="Cases",T="n",K="n",cc,D=0,M=1,alpha=0.05){
+function(Inference="exact",StopType="Cases",T="n",K="n",cc,D=0,M=1,alpha=0.05,Tailed="upper"){
 
+if(Tailed!="upper"){stop("For this version of the Sequential package, CV.CondPoisson works only for 'Tailed=upper'.",call. =FALSE)}
 
 # ------------------- INPUT VARIABLE ----------------------------------------------------------
 # Inference="exact, conservative, liberal"

@@ -3,9 +3,10 @@
 # Function to perform the unpredictable conditional Poisson MaxSPRT surveillance - Version edited at Dez-12-2016
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.CondPoisson<- function(name,SampleSizeType="Events",T="n",K="n",cc,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n")
+AnalyzeSetUp.CondPoisson<- function(name,SampleSizeType="Events",T="n",K="n",cc,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
 {
 
+if(Tailed!="upper"){stop("For this version of the Sequential package, AnalyzeSetUp.CondPoisson works only for 'Tailed=upper'.",call. =FALSE)}
 
 # SampleSizeType = "PersonTimeRatio" or "Events". With SampleSizeType="PersonTimeRatio", the upper limit on the time of surveillance
 # is given in the scale of the ratio Pk/V, and the parameter is "T". With SampleSizeType="Events", the upper limit is given in the scale 

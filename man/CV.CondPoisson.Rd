@@ -7,7 +7,7 @@ which is flat with respect to the likelihood ratio function, and a pre-specified
 }
 \usage{
 CV.CondPoisson(Inference="exact", StopType="Cases",T="n",K="n",cc,
-D=0,M=1,alpha=0.05)
+D=0,M=1,alpha=0.05,Tailed="upper")
 }
 
 \arguments{
@@ -19,9 +19,10 @@ D=0,M=1,alpha=0.05)
 \item{D}{The minium number for the ratio \eqn{P_k/V} before the null hypothesis can be rejected. This argument is used together with \eqn{T}. The default value is \eqn{D=0}. A delayed start with \eqn{D>0} is recommended to avoid signaling very early on such that very little information would be available to judge whether the signal is more likely to be a true signal or chance finding.}
 \item{M}{The minimum number of events needed before the null hypothesis can be rejected. This argument is used together with \eqn{K}. A delayed start with \eqn{M>1} is recommended to avoid signaling very early on such that very little information would be available to judge whether the signal is more likely to be a true signal or chance finding. The default value is M=1.}
 \item{alpha}{The significance level, or the type 1 error probability, which is the probability of rejecting the null hypothesis when it is true. The alpha level  must be in the range (0,0.5]. The default value is alpha=0.05.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 }
 \details{
-For continuous sequential analysis with CMaxSPRT for Poisson data and limited historical data, \code{CV.CondPoisson} calculates the critical
+For continuous sequential analysis with CMaxSPRT by Li and Kulldorff (2010) for Poisson data and limited historical data, \code{CV.CondPoisson} calculates the critical
 value that constitutes the upper boundary used to determine if the null hypothesis should be rejected. This is done for pre-specified values
 of the statistical significance level (alpha) and an upper limit which can be defined based on either the observed number of events, "K", or the ratio "T"
 between the cumulative person-times in the surveillance population versus the historical data, as well as other parameter settings.
@@ -45,7 +46,7 @@ approach, it is the smallest liberal vaue, for the conservative approach, it is 
 }
 \author{Ivair Ramos Silva, Lingling Li}
 \references{
-Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for pharmacovigilance. \emph{Statistics in Medicine,} 30;29(2):284-95.\cr
+Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
 
 Silva IR, Li L, Kulldorff M. (2019). Exact Conditional Sequential Testing for Poisson Data. Sequential Analysis, in press.
 

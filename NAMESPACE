@@ -1,6 +1,6 @@
 exportPattern("^[[:alpha:]]+")
 importFrom("graphics", "axis", "legend", "lines", "par", "plot","points")
-importFrom("stats", "dbinom", "dpois", "pbinom", "ppois", "qbinom","qexp", "qpois")
+importFrom("stats", "dbinom", "dpois", "pbinom", "ppois", "qbinom","qexp", "qpois","pnorm", "qnorm")
 importFrom("utils", "read.table", "write.table")
 importFrom("stats", "aggregate")
 importFrom("boot", "simplex")
