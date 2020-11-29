@@ -4,14 +4,17 @@
 \description{The function \code{Performance.AlphaSpend.Binomial} calculates power, expected time to signal, expected sample size and signaling threshold (critical values) associated to any user-specified alpha spending for continuous or group sequential analysis with binomial data.
 The user can select the scale for the signaling threshold among MaxSPRT, Pocock, OBrien-Fleming, or Wang-Tsiatis test statistics, all for a pre-specified upper limit on the sample size.}
 \usage{
-Performance.AlphaSpend.Binomial(N,alpha,AlphaSpend="n",z="n",p="n",GroupSizes="n",
-Tailed="upper",rho="n",gamma="n",RR=2,Statistic=c("MaxSPRT", "Pocock",
+Performance.AlphaSpend.Binomial(N,alpha,AlphaSpend=1,AlphaSpendLower="n",
+AlphaSpendUpper="n",z="n",p="n",GroupSizes="n",
+Tailed="upper",rho=0.5,gamma="n",RR=2,Statistic=c("MaxSPRT", "Pocock",
 "OBrien-Fleming", "Wang-Tsiatis"),Delta="n")
       }
 \arguments{
 \item{N}{The upper limit on the sample size (length of surveillance) expressed in terms of the total number of events (cases plus controls). There is no default value.}
 \item{alpha}{Overall significance level. Must be a number in the (0, 0.5] interval. There is no default value.}
-\item{AlphaSpend}{A vector with the cummulative Type I error probabiliy to be spent up to each test. Alternatively, one can use an integer between 1 to 4. Default is 1. See Details.}
+\item{AlphaSpend}{A vector with the cummulative Type I error probabiliy to be spent up to each test when "Tailed=lower" or "Tailed=upper". Alternatively, one can use an integer between 1 to 4. Default is 1. See Details.}
+\item{AlphaSpendLower}{A vector with the cummulative Type I error probabiliy regarding the lower signaling threshold to be spent up to each test when "Tailed=two". Alternatively, one can use an integer between 1 to 4. Default is "n", which means the specified "AlphaSpend" divided by 2.}
+\item{AlphaSpendUpper}{A vector with the cummulative Type I error probabiliy regarding the upper signaling threshold to be spent up to each test when "Tailed=two". Alternatively, one can use an integer between 1 to 4. Default is "n", which means the specified "AlphaSpend" divided by 2.}
 \item{z}{For a matched case-control analysis, z is the number of controls matched to each case under the null hypothesis. There is no default value.}
 \item{p}{The probability of having a case under the null hypothesis. If just a single number is given, then it will be used as a constant probability for all groups. Otherwise, the dimension of p must coincide with the dimension of GroupSizes. There is no default value.}
 \item{GroupSizes}{Vector with the total number of events (cases+controls) between two looks at the data with regular and irregular group sizes. Important: Must sums up N. For continuos sequential analysis, specify GroupSizes=1. There is no default value.}

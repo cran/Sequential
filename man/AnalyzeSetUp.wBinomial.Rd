@@ -69,11 +69,11 @@ Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized 
 
 Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveillance with minimum events to signal. arxiv:1503.01978 [stat.ap].
 
-Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2019). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Working paper.
+Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2020). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Statistics in Medicine, 39(3), 340--351.
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Kulldorff M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+Silva, IR and Kulldorff, M. and Yih, W. Katherine (2020). Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 
 Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107-118.
 

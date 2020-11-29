@@ -105,7 +105,7 @@ Thus, messages will appear when mistakes and inconsistencies are detected, and i
 
 
 \references{
-Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2019). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Working paper.
+Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2020). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Statistics in Medicine, 39(3), 340--351.
 
 Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107--118.
 }

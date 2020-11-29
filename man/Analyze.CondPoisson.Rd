@@ -8,7 +8,7 @@ Analyze.CondPoisson(name,test,events,PersonTimeRatio,AlphaSpend="n")
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.CondPoisson} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
 \item{test}{An integer indicating the number of hypothesis tests performed up to and including the current test. For example, if there were four prior looks at the data, and this is the fifth one, then "test=5". This number should be increased by one each time that the \code{Analyze.CondPoisson} function is run for a new group of data, when it is part of the same sequential analysis.  If not, there is an error message.}
-\item{events}{The number of observed events during the surveillance period.}
+\item{events}{The test-specific number of events, instead of the cumulative number, observed during the surveillance period.}
 \item{PersonTimeRatio}{The observed ratio between the punctual, instead of cumulative from previous tests, person-time observed in the current test, by the total person-time observed in the historical period.}
 \item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.CondPoisson} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the AlphaSpend parameter. AlphaSpend is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the Poisson distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.CondPoisson} function.}
 }
@@ -130,7 +130,8 @@ Development of the \code{Analyze.CondPoisson} function was funded by:
 
 \examples{
 
-### Example. Four chunks of data.
+### Example. Three chunks of data with a total person time
+#   in the historical period equal to 10,000. 
 
 ### Firstly, it is necessary to set up the input parameters.
 ##  Here we use the Wald type alpha spending.
@@ -143,21 +144,21 @@ Development of the \code{Analyze.CondPoisson} function was funded by:
 ### Now we apply a test for each one of three chunks of data.
 # -------------------------------------------------------------------------
   
-## Test 1 - Situation where the expected number of events is equal to 5.
-## The observed hypothetical information is "PersonTimeRatio=0.5".
+## Test 1 - Situation where the fixed number of events is equal to 5.
+## The observed information is "PersonTimeRatio=5000/10000=0.5".
 ## Note: cut off the "#" symbol before running the line below.
 
 #  Analyze.CondPoisson(name="TestA",test=1,events=5,PersonTimeRatio=0.5)
 
 
-## Test 2 - Situation where the expected number of events is equal to 6.
-## The observed hypothetical information is "PersonTimeRatio=0.3".
+## Test 2 - Situation where the fixed number of new events is equal to 6.
+## The observed information is "PersonTimeRatio=3000/10000=0.3".
 
 #Analyze.CondPoisson(name="TestA",test=2,events=6,PersonTimeRatio=0.3)
 
 
-## Test 3 - Situation where the expected number of events is equal to 10.
-## The observed hypothetical information is "PersonTimeRatio=0.1".
+## Test 3 - Situation where the fixed number of events is equal to 10.
+## The observed information is "PersonTimeRatio=1000/10000=0.1".
 
 #Analyze.CondPoisson(name="TestA",test=3,events=10,PersonTimeRatio=0.1)
  

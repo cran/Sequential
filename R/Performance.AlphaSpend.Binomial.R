@@ -9,7 +9,7 @@
 # Function produces performance and threshold for a user-defined alpha spending
 # -------------------------------------------------------------------------
 
-Performance.AlphaSpend.Binomial<- function(N,alpha,AlphaSpend="n",z="n",p="n",GroupSizes="n",Tailed="upper",rho="n",gamma="n",RR=2,Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n")
+Performance.AlphaSpend.Binomial<- function(N,alpha,AlphaSpend=1,AlphaSpendLower="n",AlphaSpendUpper="n",z="n",p="n",GroupSizes="n",Tailed="upper",rho=0.5,gamma="n",RR=2,Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n")
 {
 
 R<- RR
@@ -138,7 +138,7 @@ if(length(AlphaSpend2)==1){
 
 
 
-
+if(length(AlphaSpendLower)==1&length(AlphaSpendUpper)==1&Tailed=="two"){if(AlphaSpendLower=="n"&AlphaSpendLower=="n"){AlphaSpendLower<- AlphaSpend/2; AlphaSpendUpper<- AlphaSpend/2}}
 
 
 if(length(p)==1&length(z)==1){if(p=="n"&z=="n"){stop("Please, at least one of the inputs, z or p, must be provided.",call. =FALSE)}}
@@ -600,14 +600,14 @@ actual<- rep(0,N)
 # --------------------------------------------------------------------------------------
 
 
-if(AlphaSpend[1]==0){
+if(AlphaSpendLower[1]+AlphaSpendUpper[1]==0){
 absorb2[1]<- 2; absorb1[1]<- -1
 for(s in absorb1[1]:absorb2[1]){ p[1,s]=dbinom(s-1,1,ps[1])}		# Probability of having s-1 cases at time mu[1]
 pabs2<- 1-pbinom(absorb2[1]-1,1,ps[1])			# probability of rejecting H0 at time mu[1]
 pabs1<- pbinom(absorb1[1],1,ps[1])
 p[1,absorb2[1]+1]=pabs2+pabs1
 
-                                                 }else{# OPEN ELSE
+                                            }else{# OPEN ELSE
 absorb2[1]<- 0
 absorb1[1]<- 1
 
@@ -615,12 +615,12 @@ for(s in absorb1[1]:absorb2[1]){ p[1,s]=dbinom(s-1,1,ps[1])}		# Probability of h
 pabs2<- 1-pbinom(absorb2[1]-1,1,ps[1])			# probability of rejecting H0 at time mu[1]
 pabs1<- pbinom(absorb1[1],1,ps[1])
 
-while(pabs2> AlphaSpend[1]/2){
+while(pabs2> AlphaSpendUpper[1]){
 pabs2<- 0
 absorb2[1]<- absorb2[1]+1
 pabs2 =1-pbinom(absorb2[1]-1,1,ps[1])			# probability of rejecting H0 by the upper side
                              }
-while(pabs1> AlphaSpend[1]/2){
+while(pabs1> AlphaSpendLower[1]){
 pabs1<- 0
 absorb1[1]<- absorb1[1]-1
 pabs1 =pbinom(absorb1[1],1,ps[1])			# probability of rejecting H0 by the lower side
@@ -649,7 +649,7 @@ i<- i+1
 
 alphai<- 1
 teste<- 0
-while(alphai> AlphaSpend[jj]/2&teste==0){
+while(alphai> AlphaSpendUpper[jj]&teste==0){
 if(sum(i==an)==0){teste<- 1; absorb2[i]<- i}
 alphai<- cumalpha2
        absorb2[i]<- absorb2[i]+1 ; uc2[i]<- absorb2[i]-1       	
@@ -660,7 +660,7 @@ cumalpha2<- alphai
 
 alphai<- 1
 teste<- 0
-while(alphai> AlphaSpend[jj]/2&teste==0){
+while(alphai> AlphaSpendLower[jj]&teste==0){
 if(sum(i==an)==0){teste<- 1; absorb1[i]<- 0}
 alphai<- cumalpha1
        absorb1[i]<- absorb1[i]-1 ; uc1[i]<- absorb1[i]+1       	
@@ -730,16 +730,12 @@ return(res)
 
 #### EXAMPLES
 
-#res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=1,z=c(1,1.5,2,1.3),p="n",GroupSizes=c(15,15,10,10),Tailed="upper",rho=0.5,gamma="n",RR=2,Statistic= "MaxSPRT",Delta="n")
 
-#res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=1,z=c(1,1.5,2,1.3),p="n",GroupSizes=c(15,15,10,10),Tailed="upper",RR=2,rho=0.5)
+#system.time(res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend="n",AlphaSpendLower=c(0.01,0.012,0.015,0.025),AlphaSpendUpper=c(0.01,0.015,0.02,0.025), z=c(1,1.5,2,1),p="n",GroupSizes=c(15,15,10,10),Tailed="two",rho=0.5,gamma="n",RR=2,Statistic= "MaxSPRT",Delta="n"))
+#system.time(res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=1,AlphaSpendLower=1,AlphaSpendUpper=1, z=c(1,1.5,2,1),p="n",GroupSizes=c(15,15,10,10),Tailed="two",rho=0.5,gamma="n",RR=2,Statistic= "MaxSPRT",Delta="n"))
 
-#res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=c(0.03,0.04,0.05),z=c(1,2,1.5),p="n",GroupSizes=c(20,20,10),Tailed="two",RR=2,Statistic="MaxSPRT")
 
-#res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=c(0.03,0.04,0.05),z=c(1,2,1.5),p="n",GroupSizes=c(20,20,10),Tailed="two",RR=2,Statistic="Pocock")
 
-#res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=c(0.03,0.04,0.05),z=c(1,1,1),p="n",GroupSizes=c(20,20,10),Tailed="two",RR=2,Statistic="Pocock")
 
-#res<- Performance.AlphaSpend.Binomial(N=55,alpha=0.05,AlphaSpend=1,z=c(1,1.5,2),p="n",GroupSizes=c(20,20,15),Tailed="lower",RR=c(1.5,1.2),Statistic="MaxSPRT",rho=2)
 
 

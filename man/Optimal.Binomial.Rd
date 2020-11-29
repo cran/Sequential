@@ -4,7 +4,8 @@
 \description{The function \code{Optimal.Binomial} obtains the optimal alpha spending function that minimizes the expected time to signal for target statistical power and fixed relative risk, when doing continuous or group sequential analysis for binomial data.}
 \usage{
 Optimal.Binomial(Objective="ETimeToSignal",N="n",
-z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper")
+z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",
+ConfIntWidth=3,gama=0.9,R0=1)
       }
 \arguments{
 \item{Objective}{Statistical performance measure to minimize. Options are "ETimeToSignal", for minimizing expected time to signal, and "ESampleSize", for minimizing expected sample size. Default is "ETimeToSignal".}
@@ -16,6 +17,9 @@ z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper")
 \item{RR}{A target relative risk to be detected with the requested statistical power.}
 \item{GroupSizes}{Vector with the number of events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N. The default 'n' means continuous sequential testing.}
 \item{Tailed}{Defines between one-tailed and two-tailed testing. Possible entries are "lower", "upper", and "two".  Default is "upper".}
+\item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. Default is 3.}
+\item{gama}{Confidence coefficient. Default is 0.9.}
+\item{R0}{A positive real-valued number for the relative risk under H0, where R0<=1 if "Tailed=lower", R0>=1 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 }
 \details{
 The function \code{Optimal.Binomial} elicits the optimal alpha spending for continuous and group binomial sequential testing
@@ -61,7 +65,7 @@ These execution times were estimated using a regular PC(Windows 7, Intel(R) Core
 \author{Ivair Ramos Silva, Martin Kulldorff.
 }
 \references{
-Silva, I.R. and Kulldorff, M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+Silva, I.R. and Kulldorff, M. and Yih, W. Katherine (2020). Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 }
 \section{Acknowledgements}{
 Development of the Optimal.Binomial function was funded by:\cr

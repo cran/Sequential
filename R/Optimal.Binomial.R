@@ -1,7 +1,7 @@
 
 ###### This code finds optimal alpha spending to minimize expected lenght of surveillance restricted to expcted time to signal with binomial data
 
-Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper")
+Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth=3,gama=0.9,R0=1)
 {
 
 
@@ -14,7 +14,9 @@ Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,po
 # power: target power. It will be a vector of length 2 in case of "Tailed=two", where power[1] is the target power under RR[1], and power[2] under RR[2].
 # GroupSizes:  Vector with the number of adverse events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N. The default is continuous sequential testing.
 # Tailed= "lower", "upper", "two".  Default is "upper".
-
+# ConfIntWidth: a positive value indicating that the actual relative risk R will belong to the rang [Rhat-ConfIntWidth/2, Rhat+ConfIntWidth/2], where Rhat is the maximum likelihood estimator of R. Default is 3. 
+# gama: confidence coefficient. Default is 0.9.
+# R0: one number (>0) for the relative risk under H0, or a two-dimensional vector for H0: R0[1]<= R <= R0[2].
 
 if(p=="n"&z=="n"){stop("Please, at least z or p must be provided.",call. =FALSE)}
 
@@ -166,6 +168,25 @@ if(length(GroupSizes)==1){
 posi<- function(ii,jj){return( ii*(ii-1)/2+jj )}
 
 
+#################
+################# Function for relative risk estimate  <<<<IMPORTANT: NEEDS NOTATION ADJUSTMENTS
+#################
+
+### MAXIMUM LILKELIHOOD ESTIMATE FOR R
+MLE_R<- function(cases,SampleSizes,z)
+{
+recand<- matrix(seq(0.01,10,0.01),,1)
+lr<- function(rr){
+return(prod( choose(SampleSizes,cases)*((1/(1+z/rr))^(cases))*((1-1/(1+z/rr))^(SampleSizes-cases)) ))
+}
+veccand<- apply(recand,1,lr)
+Rhat<- seq(0.01,10,0.01)[veccand==max(veccand)]
+return(Rhat)
+} 
+
+
+
+
 
 #################
 ################# Function that calculates parameters order
@@ -211,7 +232,7 @@ N<- N+1
 
 M<- (1+N)*N/2
 
-p0<- 1/(1+z)
+if(length(R0)==1){p0<- 1/(1+z/R0)}else{p0<- 1/(1+z/R0[1]); p02<- 1/(1+z/R0[2])}
 if(Tailed=="two"){pA<- 1/(1+z/RR[2]) ; pA_inf<- 1/(1+z/RR[1])}else{pA<- 1/(1+z/RR)}
 
 
@@ -243,11 +264,12 @@ if(Tailed!="two"){M2<- (imin+N)*(N-imin+1)/2 - sum(apply(matrix(seq(imin,N),,1),
 
 Ar1s<- matrix(0,M,M2)
 
-Ar1<- matrix(0,M2+1,M2)
-a1<- rep(1,M2+1)
+Ar1<- matrix(0,M2+2,M2)
+a1<- rep(1,M2+2)
 
 prob0<- rep(0,M2) # prob0[posi(i,j)] probability of having, at time i, exactly j cases.
 probA<- rep(0,M2); if(Tailed=="two"){probA_inf<- rep(0,M2)}
+probINT<- rep(0,M2) 
 auxETS<- rep(0,M2); if(Tailed=="two"){auxETS2<- rep(0,M2)}
 
 if(Tailed=="two"){jin<- 0}else{jin<- 1}
@@ -257,10 +279,14 @@ for(i in 1:N){
 
 
             if( i==imin & (j>=ks(i)|j<=ks_inf(i)+1) &sum(i==GroupSizes)>0){
+      
+                if(j<i){Ru<- z*j/(i-j)+ConfIntWidth/2 ; Rl<- z*j/(i-j)-ConfIntWidth/2}else{Ru<- z+ConfIntWidth/2; Rl<- z-ConfIntWidth/2}
+                    pRu<- 1/(1+z/Ru) ; pRl<- 1/(1+z/Rl)
 
                     auxETS[posi2(i,j)]<- i  ; if(Tailed=="two"){auxETS2[posi2(i,j)]<- j}
-                    prob0[posi2(i,j)]<-  dbinom(j,i,p0)
+                    if(length(R0)==1){prob0[posi2(i,j)]<-  dbinom(j,i,p0)}else{prob0[posi2(i,j)]<-  max(dbinom(j,i,p0),dbinom(j,i,p02))}
                     probA[posi2(i,j)]<-  dbinom(j,i,pA) ; if(Tailed=="two"){probA_inf[posi2(i,j)]<-  dbinom(j,i,pA_inf)}
+                    if(pRl>0&Rl>0){probINT[posi2(i,j)]<-  dbinom(j,i,pRu)+dbinom(j,i,pRl)}else{probINT[posi2(i,j)]<-  dbinom(j,i,pRu)}
                     Ar1s[posi(i,j),posi2(i,j)]<- 1 
                         Ar1[posi2(i,j),]<- Ar1s[posi(i,j),]
                         a1[posi2(i,j)]<- 1
@@ -269,14 +295,17 @@ for(i in 1:N){
 
 
             if(i>imin){
+         if(j<i){Ru<- z*j/(i-j)+ConfIntWidth/2 ; Rl<- z*j/(i-j)-ConfIntWidth/2}else{Ru<- z+ConfIntWidth/2; Rl<- z-ConfIntWidth/2}
+                    pRu<- 1/(1+z/Ru) ; pRl<- 1/(1+z/Rl)
 
      Ar1s[posi(i,j),]<- (choose(i-1,j-1)*Ar1s[posi(i-1,j-1), ]+choose(i-1,j)*Ar1s[posi(i-1,j), ])/choose(i,j)
 
               if( (j>=ks(i)|j<=ks_inf(i)+1) &sum(i==GroupSizes)>0){
 
                     auxETS[posi2(i,j)]<- i ; if(Tailed=="two"){auxETS2[posi2(i,j)]<- j}
-                    prob0[posi2(i,j)]<-  dbinom(j,i,p0)
-                    probA[posi2(i,j)]<-  dbinom(j,i,pA) ; if(Tailed=="two"){probA_inf[posi2(i,j)]<-  dbinom(j,i,pA_inf)}                  
+                    if(length(R0)==1){prob0[posi2(i,j)]<-  dbinom(j,i,p0)}else{prob0[posi2(i,j)]<-  max(dbinom(j,i,p0),dbinom(j,i,p02))}
+                    probA[posi2(i,j)]<-  dbinom(j,i,pA) ; if(Tailed=="two"){probA_inf[posi2(i,j)]<-  dbinom(j,i,pA_inf)}
+                     if(pRl>0&Rl>0){probINT[posi2(i,j)]<-  dbinom(j,i,pRu)+dbinom(j,i,pRl)}else{probINT[posi2(i,j)]<-  dbinom(j,i,pRu)}                  
                         Ar1s[posi(i,j),posi2(i,j)]<- 1 
                         Ar1[posi2(i,j),]<- Ar1s[posi(i,j),]
                         a1[posi2(i,j)]<- 1
@@ -292,12 +321,14 @@ for(i in 1:N){
 
 ## Restriction of the type <=
 
-Ar1[M2+1,]<-prob0
+Ar1[M2+1,]<- prob0
+Ar1[M2+2,]<- probINT
 a1[M2+1]<- alpha
+a1[M2+2]<- 1-gama
 
 ## Restriction of the type ==
 
-Ar3<- probA; a3<- power; if(Tailed=="two"){Ar3<- rbind(probA,probA_inf); a3<- c(a3,power_inf)}
+Ar3<- probA; a3<- max(power); if(Tailed=="two"){Ar3<- rbind(probA,probA_inf); a3<- c(a3,power_inf)}
 
 ## Coefficients of the objective function
 
@@ -405,14 +436,9 @@ return(res)
 }# CLOSE FUNCTION FOR OPTIMAL ALPHA SPENDING
 
 
-#system.time(resESS<- Optimal.Binomial(Objective="ESampleSize",N=300,z=1,p="n",alpha=0.05,power=0.8,RR=2,GroupSizes=rep(15,20),Tailed= "upper"))
 
-#system.time(resESS<- Optimal.Binomial(Objective="ESampleSize",N="n",z=1,p="n",alpha=0.05,power=c(0.8,0.8),RR=c(0.5,2),GroupSizes=rep(20,15),Tailed= "upper"))
 
-#system.time(resESS2<- Optimal.Binomial(Objective="ETimeToSignal",N=80,z=1,p="n",alpha=0.05,power=c(0.8,0.8),RR=c(0.5,2),GroupSizes="n",Tailed= "two"))
 
- #optTS_L<- resESS2$optimal_alpha_spending_lower
- #optTS_U<- resESS2$optimal_alpha_spending_upper
- #optSS_U<- resESS$optimal_alpha_spending_upper
- #optSS_L<- resESS$optimal_alpha_spending_lower
+
+
 

@@ -304,7 +304,8 @@ cc<- 0
 mum<- 0
 while(mum<T){
 cc<- cc+1
-if(RR0==1){zm = -exp(-1-10/cc)}else{zm = -exp(-1-40/cc)}
+#if(RR0==1){zm = -exp(-1-10/cc)}else{zm = -exp(-1-40/cc)}
+zm = -exp(-1-40/cc)
 mum = -cc * ProdLog(zm)
 mum<- mum
             }

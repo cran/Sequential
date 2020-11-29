@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.1\cr
-Date: \tab 2019-09-20\cr
+Version: \tab 3.2\cr
+Date: \tab 2020-11-26\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -448,7 +448,7 @@ Version 3.0.1, Feb 2019\cr
 -     Updated user guide.\cr
 \cr
 Version 3.1, Sept 2019\cr
--     New Functions \code{Performance.Threshold.Binomial}, \code{Performance.Threshold.CondPoisson},\cr
+-      New Functions \code{Performance.Threshold.Binomial}, \code{Performance.Threshold.CondPoisson},\cr
       \code{Performance.Threshold.Poisson}, \code{Performance.AlphaSpend.Binomial},\cr
       \code{Performance.AlphaSpend.CondPoisson}, \code{Performance.AlphaSpend.Poisson}.\cr
 -     Implemented two-tailed testing for the functions: \code{CV.Poisson}, \code{Performance.Poisson},\cr
@@ -457,5 +457,11 @@ Version 3.1, Sept 2019\cr
       \code{Performance.Threshold.Poisson}.\cr
 -     Updated user guide.\cr
 -	Concatenation of functions for continuous and group fashions for critical values and performance.\cr 
+\cr
+Version 3.2, Nov 2020\cr
+-     Function \code{Analyze.Binomial} improved for fixed-width and fixed-accuracy confidence intervals,\cr
+-     Function \code{Performance.AlphaSpend.Binomial} improved for new inputs having lower and upper alpha spending in two tailed testing,\cr
+-     Correction of bugs in \code{Analyze.Poisson} and \code{CV.Poisson} functions,\cr
+-     Updated user guide.\cr
 \cr
 }

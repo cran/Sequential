@@ -152,21 +152,22 @@ critical_value<- function(pold,current_alpha,CVold)
 
 alphas<- current_alpha-max(actual_alpha_old)
 
-CV1<- CVold ; CV2<- CV1+ qpois(1-alphas,mu0)+1
-
-while(CV2-CV1>1){
-
+CV1<- CVold-1 ; CV2<- CV1+ qpois(1-alphas,mu0)+1
+alphat<- 1
+count<- 0
+while(abs(alphat-alphas)>10^(-6)&count<30){
+count<- count+1
 CVm<- ceiling((CV1+CV2)/2)
 
 p<- rep(0,CVm+1) # p[y+1] is the probability of having y events in the current test
 
 for(y in 0:(CVm-1)){for(x in 0:min(CVold-1,y)){p[y+1]<- p[y+1]+dpois(y-x,mu0)*pold[x+1,1]}}
 
-for(xx in 0:(CVold-1)){p[CVm+1]<- p[CVm+1]+ (1-ppois(CVm-1-x,mu0))*pold[x+1,1]}
-
+for(xx in 0:(CVold-1)){p[CVm+1]<- p[CVm+1]+ (1-ppois(CVm-1-xx,mu0))*pold[xx+1,1]}
+alphat<- p[CVm+1]
 if(p[CVm+1]>alphas){CV1<- CVm}else{CV2<- CVm; alphahere<- p[CVm+1];CVf<- CVm; pf<- p}
 
-                }
+                                  }
                 
 return(list(CVf,alphahere,pf))
 }
@@ -183,13 +184,22 @@ return(list(CVf,alphahere,pf))
 
 if(events+sum(inputSetUp[4,]) >= M & reject==0 & max(inputSetUp[5,])<alpha-0.00000001 ){
 
-if(test==1|start==0){
+if(test==1){
 alphas<- current_alpha
 CV<- qpois(1-alphas,mu0)+1
 p<- rep(0,CV)
 for(x in 0:(CV-1)){p[x+1]<- dpois(x,mu0)}
 actualspent<- 1-ppois(CV-1,mu0)
-                    }
+           }
+
+if(test>1&start==0){
+mu0h<- sum(mu0_old)+mu0
+alphas<- current_alpha
+CV<- qpois(1-alphas,mu0h)+1
+p<- rep(0,CV)
+for(x in 0:(CV-1)){p[x+1]<- dpois(x,mu0)}
+actualspent<- 1-ppois(CV-1,mu0h)
+                   }
 
 if(test>1&start>0){
 pold<- read.table(paste(name1,"p.txt",sep=""))
@@ -200,9 +210,8 @@ res<- critical_value(pold,current_alpha,CVold)
 CV<- res[[1]]
 actualspent<- res[[2]]+max(actual_alpha_old)
 p<- res[[3]]
+
                  }
-
-
 
 # Surveillance started?
 if(start==0){start<- test}
@@ -341,11 +350,17 @@ x<- seq(start,test,1) ; observed<- as.numeric(result[2:(test+1),5]) ; critical_v
 target<- as.numeric(result[(start+1):(test+1),8]) ; actual<- as.numeric(result[(start+1):(test+1),9])
 loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1),6])
 
+#########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
+
+MaxSPRT_critical_values<- rep(0,length(critical_values))
+mu0h<- c(as.numeric(mu0_old),mu0)
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+
 
 # Graphic 1
 par(mfrow=c(2,2))
 plot(seq(1,test,1),rep(max(observed,critical_values),test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Cumulative Events"),main=title,ylim=c(0,5+max(observed,critical_values)))
+ylab=c("Cumulative Events"),main="Number of events scale",sub=title,ylim=c(0,5+max(observed,critical_values)))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -384,14 +399,20 @@ lines(seq(1,test,1),RRest,col="blue",lty=1)
 
 # Graphic 4
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Observed log-likelihood"),main="Observed Log-likelihood",ylim=c(0,max(loglike)+1))
+ylab=c("Log-likelihood ratio"),main="MaxSPRT scale",ylim=c(0,max(MaxSPRT_critical_values)+5))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
 axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
 
 points(seq(1,test,1),loglike,col="blue",pch=20)
-lines(seq(1,test,1),loglike,col="blue",lty=1)                                              
+lines(seq(1,test,1),loglike,col="blue",lty=1)  
+
+points(seq(start,test,1),MaxSPRT_critical_values,col="red",pch=20)
+lines(seq(start,test,1),MaxSPRT_critical_values,col="red",lty=2)
+
+legend("topleft",c("Needed to reject H0 (CV)","Observed"),col=c("red","blue"),pch=c(18,20),lty=c(2,1),bty="n")
+
 
 
                                                                                 }# CLOSE
@@ -464,10 +485,18 @@ x<- seq(start,test,1) ; observed<- as.numeric(result[2:(test+1),5]) ; critical_v
 target<- result[(start+1):(test+1),8] ; actual<- result[(start+1):(test+1),9]
 loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1),6])
 
+#########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
+
+MaxSPRT_critical_values<- rep(0,length(critical_values))
+mu0h<- c(as.numeric(mu0_old),mu0)
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+
+
+
 # Graphic 1
 par(mfrow=c(2,2))
 plot(seq(1,test,1),rep(max(observed,critical_values),test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Cumulative Events"),main=title,ylim=c(0,5+max(observed,critical_values)))
+ylab=c("Cumulative Events"),main="Number of events scale",sub=title,ylim=c(0,5+max(observed,critical_values)))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -506,7 +535,7 @@ lines(seq(1,test,1),RRest,col="blue",lty=1)
 
 # Graphic 4
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Observed log-likelihood"),main="Observed Log-likelihood",ylim=c(0,max(loglike)+1))
+ylab=c("Observed log-likelihood"),main="MaxSPRT scale",ylim=c(0,max(MaxSPRT_critical_values)+5))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -514,6 +543,11 @@ axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
 
 points(seq(1,test,1),loglike,col="blue",pch=20)
 lines(seq(1,test,1),loglike,col="blue",lty=1)                                              
+
+points(seq(start,test,1),MaxSPRT_critical_values,col="red",pch=20)
+lines(seq(start,test,1),MaxSPRT_critical_values,col="red",lty=2)
+
+legend("topleft",c("Needed to reject H0 (CV)","Observed"),col=c("red","blue"),pch=c(18,20),lty=c(2,1),bty="n")
 
 
                                                                   } # CLOSE
@@ -580,10 +614,17 @@ x<- seq(start,test,1) ; observed<- as.numeric(result[2:(test+1),5]) ; critical_v
 target<- result[(start+1):(test+1),8] ; actual<- result[(start+1):(test+1),9]
 loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1),6])
 
+#########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
+
+MaxSPRT_critical_values<- rep(0,length(critical_values))
+mu0h<- c(as.numeric(mu0_old),mu0)
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+
+
 # Graphic 1
 par(mfrow=c(2,2))
 plot(seq(1,test,1),rep(max(observed,critical_values),test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Cumulative Events"),main=title,ylim=c(0,5+max(observed,critical_values)))
+ylab=c("Cumulative Events"),main="Number of events scale",sub=title,ylim=c(0,5+max(observed,critical_values)))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -622,7 +663,7 @@ lines(seq(1,test,1),RRest,col="blue",lty=1)
 
 # Graphic 4
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Observed log-likelihood"),main="Observed Log-likelihood",ylim=c(0,max(loglike)+1))
+ylab=c("Observed log-likelihood"),main="MaxSPRT scale",ylim=c(0,max(MaxSPRT_critical_values)+5))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -631,6 +672,10 @@ axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
 points(seq(1,test,1),loglike,col="blue",pch=20)
 lines(seq(1,test,1),loglike,col="blue",lty=1)                                              
 
+points(seq(start,test,1),MaxSPRT_critical_values,col="red",pch=20)
+lines(seq(start,test,1),MaxSPRT_critical_values,col="red",lty=2)
+
+legend("topleft",c("Needed to reject H0 (CV)","Observed"),col=c("red","blue"),pch=c(18,20),lty=c(2,1),bty="n")
 
                                                                                                    } # CLOSE
 
@@ -692,10 +737,17 @@ x<- seq(start,test,1) ; observed<- as.numeric(result[2:(test+1),5]) ; critical_v
 target<- result[(start+1):(test+1),8] ; actual<- result[(start+1):(test+1),9]
 loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1),6])
 
+#########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
+
+MaxSPRT_critical_values<- rep(0,length(critical_values))
+mu0h<- c(as.numeric(mu0_old),mu0)
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+
+
 # Graphic 1
 par(mfrow=c(2,2))
 plot(seq(1,test,1),rep(max(observed,critical_values),test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Cumulative Events"),main=title,ylim=c(0,5+max(observed,critical_values)))
+ylab=c("Cumulative Events"),main="Number of events scale",sub=title,ylim=c(0,5+max(observed,critical_values)))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -734,7 +786,7 @@ lines(seq(1,test,1),RRest,col="blue",lty=1)
 
 # Graphic 4
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Observed log-likelihood"),main="Observed Log-likelihood",ylim=c(0,max(loglike)+1))
+ylab=c("Observed log-likelihood"),main="MaxSPRT scale",ylim=c(0,max(MaxSPRT_critical_values)+5))
 
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
@@ -742,6 +794,11 @@ axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
 
 points(seq(1,test,1),loglike,col="blue",pch=20)
 lines(seq(1,test,1),loglike,col="blue",lty=1)                                              
+
+points(seq(start,test,1),MaxSPRT_critical_values,col="red",pch=20)
+lines(seq(start,test,1),MaxSPRT_critical_values,col="red",lty=2)
+
+legend("topleft",c("Needed to reject H0 (CV)","Observed"),col=c("red","blue"),pch=c(18,20),lty=c(2,1),bty="n")
 
 
             }# CLOSE
@@ -838,7 +895,7 @@ if(rho==0){write.table(alphaspend,paste(name1,"alphaspend.txt",sep=""))}
 
 write.table(inputSetUp,name)
 
-if(start>0&reject==0){write.table(p,paste(name1,"p.txt",sep=""))}
+if(start>0&reject==0&actualspent>0){write.table(p,paste(name1,"p.txt",sep=""))}
 
 result2<- result[2:(test+1),]
 colnames(result2)<- c("Test","mu0","Events","Cum. mu0","Cum. Events","RR estimate","LLR","target alpha","actual alpha","CV","Reject H0")
