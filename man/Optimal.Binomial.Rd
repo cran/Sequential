@@ -5,7 +5,7 @@
 \usage{
 Optimal.Binomial(Objective="ETimeToSignal",N="n",
 z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",
-ConfIntWidth=3,gama=0.9,R0=1)
+ConfIntWidth="n",gama=0.9,R0=1)
       }
 \arguments{
 \item{Objective}{Statistical performance measure to minimize. Options are "ETimeToSignal", for minimizing expected time to signal, and "ESampleSize", for minimizing expected sample size. Default is "ETimeToSignal".}
@@ -17,7 +17,7 @@ ConfIntWidth=3,gama=0.9,R0=1)
 \item{RR}{A target relative risk to be detected with the requested statistical power.}
 \item{GroupSizes}{Vector with the number of events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N. The default 'n' means continuous sequential testing.}
 \item{Tailed}{Defines between one-tailed and two-tailed testing. Possible entries are "lower", "upper", and "two".  Default is "upper".}
-\item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. Default is 3.}
+\item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. The default ConfIntWidth="n" means no constraint for ensuring the confidence interval.}
 \item{gama}{Confidence coefficient. Default is 0.9.}
 \item{R0}{A positive real-valued number for the relative risk under H0, where R0<=1 if "Tailed=lower", R0>=1 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 }

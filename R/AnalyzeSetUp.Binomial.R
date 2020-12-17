@@ -3,7 +3,7 @@
 # Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
+AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",gama=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
 {
 
 if(Tailed!="upper"){stop("For this version of the Sequential package, AnalyzeSetUp.Binomial works only for 'Tailed=upper'.",call. =FALSE)}
@@ -235,7 +235,7 @@ sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
 
 if(AlphaSpendType=="optimal"){#3
 
-res<- Optimal.Binomial(Objective=ObjectiveMin,N,z,p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper"); sum_sa<- res$optimal_alpha_spending; N<- length(sum_sa)
+res<- Optimal.Binomial(Objective=ObjectiveMin,N,z,p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth,gama,R0); sum_sa<- res$optimal_alpha_spending; N<- length(sum_sa)
 
 y<- qbinom(1-alpha,N,1/(1+z)); y<- y+1 # auxiliar variable
 if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb1<- c(absorb1,0,0)

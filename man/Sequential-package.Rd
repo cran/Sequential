@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.2\cr
-Date: \tab 2020-11-26\cr
+Version: \tab 3.2.1\cr
+Date: \tab 2020-12-16\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -462,6 +462,10 @@ Version 3.2, Nov 2020\cr
 -     Function \code{Analyze.Binomial} improved for fixed-width and fixed-accuracy confidence intervals,\cr
 -     Function \code{Performance.AlphaSpend.Binomial} improved for new inputs having lower and upper alpha spending in two tailed testing,\cr
 -     Correction of bugs in \code{Analyze.Poisson} and \code{CV.Poisson} functions,\cr
+-     Updated user guide.\cr
+\cr
+Version 3.2.1, Dez 2020\cr
+-     Correction of bugs in the \code{Analyze.Poisson} function,\cr
 -     Updated user guide.\cr
 \cr
 }

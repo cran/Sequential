@@ -1,7 +1,7 @@
 
 ###### This code finds optimal alpha spending to minimize expected lenght of surveillance restricted to expcted time to signal with binomial data
 
-Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth=3,gama=0.9,R0=1)
+Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth="n",gama=0.9,R0=1)
 {
 
 
@@ -14,9 +14,11 @@ Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,po
 # power: target power. It will be a vector of length 2 in case of "Tailed=two", where power[1] is the target power under RR[1], and power[2] under RR[2].
 # GroupSizes:  Vector with the number of adverse events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N. The default is continuous sequential testing.
 # Tailed= "lower", "upper", "two".  Default is "upper".
-# ConfIntWidth: a positive value indicating that the actual relative risk R will belong to the rang [Rhat-ConfIntWidth/2, Rhat+ConfIntWidth/2], where Rhat is the maximum likelihood estimator of R. Default is 3. 
+# ConfIntWidth: a positive value indicating that the actual relative risk R will belong to the rang [Rhat-ConfIntWidth/2, Rhat+ConfIntWidth/2], where Rhat is the maximum likelihood estimator of R. Default is without confidence interval restriction. 
 # gama: confidence coefficient. Default is 0.9.
 # R0: one number (>0) for the relative risk under H0, or a two-dimensional vector for H0: R0[1]<= R <= R0[2].
+
+if(ConfIntWidth=="n"){ConfIntWidth<- 500}
 
 if(p=="n"&z=="n"){stop("Please, at least z or p must be provided.",call. =FALSE)}
 

@@ -353,8 +353,8 @@ loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1)
 #########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
 
 MaxSPRT_critical_values<- rep(0,length(critical_values))
-mu0h<- c(as.numeric(mu0_old),mu0)
-for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+if(test==1){mu0h<- mu0}else{mu0h<- c(as.numeric(mu0_old),mu0)}
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:i]))}
 
 
 # Graphic 1
@@ -488,9 +488,8 @@ loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1)
 #########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
 
 MaxSPRT_critical_values<- rep(0,length(critical_values))
-mu0h<- c(as.numeric(mu0_old),mu0)
-for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
-
+if(test==1){mu0h<- mu0}else{mu0h<- c(as.numeric(mu0_old),mu0)}
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:i]))}
 
 
 # Graphic 1
@@ -617,8 +616,8 @@ loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1)
 #########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
 
 MaxSPRT_critical_values<- rep(0,length(critical_values))
-mu0h<- c(as.numeric(mu0_old),mu0)
-for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+if(test==1){mu0h<- mu0}else{mu0h<- c(as.numeric(mu0_old),mu0)}
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:i]))}
 
 
 # Graphic 1
@@ -740,8 +739,8 @@ loglike<- as.numeric(result[2:(test+1),7]); RRest<- as.numeric(result[2:(test+1)
 #########>>>>>>>>>>>>>> critical_values in the scale of MaxSPRT
 
 MaxSPRT_critical_values<- rep(0,length(critical_values))
-mu0h<- c(as.numeric(mu0_old),mu0)
-for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:(i+1)]))}
+if(test==1){mu0h<- mu0}else{mu0h<- c(as.numeric(mu0_old),mu0)}
+for(i in 1:length(critical_values)){MaxSPRT_critical_values[i]<- LLR(critical_values[i],sum(mu0h[1:i]))}
 
 
 # Graphic 1

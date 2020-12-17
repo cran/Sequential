@@ -4,7 +4,7 @@
 \description{The function \code{AnalyzeSetUp.Binomial} must be run ahead of \code{Analyze.Binomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.Binomial(name,N="n",alpha=0.05,zp="n",pp="n",
-M=1,AlphaSpendType="optimal",power=0.9,RR=2,
+M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",gama=0.9,R0=1,
 ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
       }
 \arguments{
@@ -17,11 +17,14 @@ ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
 \item{AlphaSpendType}{The type of alpha spending function to be used. The options are AlphaSpendType= "optimal", the default, AlphaSpendType= "Wald", AlphaSpendType= "power-type". With the 'Wald' option, the Wald type upper rejection boundary is used, which is flat with respect to the likelihood ratio. With the power-type option, the alpha spending uses a power function with parameter rho, with rho defined by the user. With the optimal option, the code uses the alpha spending that minimizes expected time to signal or expected sample size. For more information, see Details. The alpha spending setting is automatically used when the \code{Analyze.Binomial} function is run, but, during the sequential analysis, and before each test, the user can always specify an arbitrary amount of alpha spending to be used up until and including that test. See below for details. The default is "optimal".}
 \item{power}{The target power to be used as a constraint in the optimal alpha spending soluation. It is only applicable for 'AlphaSpendType=optimal'.}
 \item{RR}{The relative risk for the target power. It is only applicable for 'AlphaSpendType=optimal'.}
+\item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. Default is without confidence coeficient.}
+\item{gama}{Confidence coefficient for the interval estimator of the relative risk. Default is 0.9. It has no effect when ConfIntWidth="n".}
+\item{R0}{A positive real-valued number for the relative risk under H0, where R0<=1 if "Tailed=lower", R0>=1 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 \item{ObjectiveMin}{The objective function to minimize in case of 'AlphaSpendType=optimal'. The default is 'ObjectiveMin=ETimeToSignal'. The other option is 'ObjectiveMin=ESampleSize'.}
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=0.5".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
 \item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
-\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1. For this version of the package, only Tailed="upper" is active.}
 }
 
 
