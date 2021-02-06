@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.2.1\cr
-Date: \tab 2020-12-16\cr
+Version: \tab 3.3\cr
+Date: \tab 2021-02-05\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -466,6 +466,10 @@ Version 3.2, Nov 2020\cr
 \cr
 Version 3.2.1, Dez 2020\cr
 -     Correction of bugs in the \code{Analyze.Poisson} function,\cr
+-     Updated user guide.\cr
+\cr
+Version 3.3, Feb 2021\cr
+-     Optimized \code{Analyze.Poisson} function for running three times faster than earlier versions.\cr
 -     Updated user guide.\cr
 \cr
 }

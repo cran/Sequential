@@ -135,17 +135,17 @@ Development of the \code{Analyze.Poisson} function was funded by:
 ## Test 1 - Situation where the expected number of events under H0 is equal to 2.
 ## This first test uses the default Wald type alpha spending (AlphaSpend="n").
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Poisson(test=1,mu0=2,events=1,AlphaSpend="n")
+#  Analyze.Poisson(name="VaccineA",test=1,mu0=2,events=1,AlphaSpend="n")
 
 ## Test 2 - Situation where the expected number of events under H0 is equal to 0.8.
 ## Observe that here we use an arbitrary alpha spending of 0.02.
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Poisson(test=2,mu0=0.8,events=2, AlphaSpend=0.02)
+#  Analyze.Poisson(name="VaccineA",test=2,mu0=0.8,events=2, AlphaSpend=0.02)
 
 ## Test 3 - Situation of elevated number of events, but now the
 ## arbitrary alpha spending is of 0.04.
 ## Note: cut off the "#" symbol before running the line below.
-#  Analyze.Poisson(test=3,mu0=9,events=10, AlphaSpend=0.04)
+#  Analyze.Poisson(name="VaccineA",test=3,mu0=9,events=10, AlphaSpend=0.04)
  
 }
 

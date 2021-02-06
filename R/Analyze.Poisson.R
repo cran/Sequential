@@ -145,34 +145,36 @@ LLR <- function(cc,uu) {
 
 
 
+
 #----- Function that calculates critical values
 
 critical_value<- function(pold,current_alpha,CVold)
 {
+
+# auxiliary function
+sumspx<- function(x,y){return(dpois(y-x,mu0)*pold[x+1,1])}
+sumspx2<- function(xx){return((1-ppois(CVm-1-xx,mu0))*pold[xx+1,1])}
+sumspy<- function(y){x<- matrix(seq(0,min(CVold-1,y)),,1); return(sum(apply(x,1,sumspx,y)))}
 
 alphas<- current_alpha-max(actual_alpha_old)
 
 CV1<- CVold-1 ; CV2<- CV1+ qpois(1-alphas,mu0)+1
 alphat<- 1
 count<- 0
-while(abs(alphat-alphas)>10^(-6)&count<30){
-count<- count+1
 CVm<- ceiling((CV1+CV2)/2)
 
-p<- rep(0,CVm+1) # p[y+1] is the probability of having y events in the current test
-
-for(y in 0:(CVm-1)){for(x in 0:min(CVold-1,y)){p[y+1]<- p[y+1]+dpois(y-x,mu0)*pold[x+1,1]}}
-
-for(xx in 0:(CVold-1)){p[CVm+1]<- p[CVm+1]+ (1-ppois(CVm-1-xx,mu0))*pold[xx+1,1]}
+limc<- ceiling(log(CV2-CV1)/log(2))
+while(CVm-CV1>=1&count<limc){
+count<- count+1
+y<- matrix(seq(0,CVm-1),,1); p<- apply(y,1,sumspy) 
+xx<- matrix(seq(0,CVold-1),,1); p<- c(p, sum(apply(xx,1,sumspx2)))
 alphat<- p[CVm+1]
 if(p[CVm+1]>alphas){CV1<- CVm}else{CV2<- CVm; alphahere<- p[CVm+1];CVf<- CVm; pf<- p}
-
-                                  }
-                
+CVm<- ceiling((CV1+CV2)/2)
+                            }
 return(list(CVf,alphahere,pf))
 }
 #--------------------------
-
 
 
 
