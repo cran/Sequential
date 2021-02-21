@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.3\cr
-Date: \tab 2021-02-05\cr
+Version: \tab 3.3.1\cr
+Date: \tab 2021-02-20\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -470,6 +470,10 @@ Version 3.2.1, Dez 2020\cr
 \cr
 Version 3.3, Feb 2021\cr
 -     Optimized \code{Analyze.Poisson} function for running three times faster than earlier versions.\cr
+-     Updated user guide.\cr
+\cr
+Version 3.3.1, Feb 2021\cr
+-     Adjusted \code{Analyze.Binomial} function for a flexible H0:R<=R0 under the null hypothesis.\cr
 -     Updated user guide.\cr
 \cr
 }

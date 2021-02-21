@@ -151,6 +151,7 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 # line 12: Target alpha spending defined with AnalyzeSetUp
 # line 13: weight for each observation (old w)
 # line 14: test associated to each weight 
+# lines 15: the first column has R0
 
 #### 
 
@@ -174,6 +175,7 @@ alphaspend<- inputSetUp[12,]        #
 w_old<- as.numeric(inputSetUp[13,1:sum(row_old)])         # w_old   
 test_old<- as.numeric(inputSetUp[14,1:sum(row_old)])      # test indexes
 z_setup<- inputSetUp[1,10] ; if(z_setup==0){z_setup<- "n"}
+R0<- inputSetUp[15,1]
 
 if(test>1){
 cases_current<- as.numeric(c(cases_old,cases))
@@ -244,9 +246,9 @@ if(AlphaSpend=="n"){
 
 LLR <- function(cc,n,z){
 
-       if(cc==n){x = n*log(1+z)}else{
-         if(z*cc/(n-cc)<=1){x=0}else{
-	       x = cc*log(cc/n)+(n-cc)*log((n-cc)/n)  -cc*log(1/(z+1))-(n-cc)*log(z/(z+1))
+       if(cc==n){x = n*log(1+z/R0)}else{
+         if((z/R0)*cc/(n-cc)<=1){x=0}else{
+	       x = cc*log(cc/n)+(n-cc)*log((n-cc)/n)  -cc*log(1/(z/R0+1))-(n-cc)*log((z/R0)/(z/R0+1))
                                     }
                                   } 	
       	x
@@ -258,7 +260,7 @@ LLR <- function(cc,n,z){
 Exp<- function(ord){
 cum.events<- cases_current[1:sum(rows_current[1:ord])]+controls_current[1:sum(rows_current[1:ord])]
 zs<- z_current[1:sum(rows_current[1:ord])]
-return(sum(cum.events/(1+zs))) 
+return(sum(cum.events/(1+zs/R0))) 
 } 
 
 ###########################################
@@ -274,7 +276,7 @@ counta<- 1
 rrest<- 0
 for(yy in 1:sum(rows_current[1:ord])){rrest<- max(rrest,max(z_current[1:yy])*sum(cases_current[1:yy])/sum(controls_current[1:yy]))}
 
-LR<- function(Rcand){return(prod( dbinom(cases_current[1:sum(rows_current[1:ord])],cases_current[1:sum(rows_current[1:ord])]+controls_current[1:sum(rows_current[1:ord])],1/(1+z_current[1:sum(rows_current[1:ord])]/Rcand))) )}
+LR<- function(Rcand){return(prod( dbinom(cases_current[1:sum(rows_current[1:ord])],cases_current[1:sum(rows_current[1:ord])]+controls_current[1:sum(rows_current[1:ord])],1/(1+(z_current[1:sum(rows_current[1:ord])])/Rcand))) )}
 if(rrest<Inf){Rsup<- rrest}else{Rsup<- 200} 
 if(max(controls_current[1:sum(rows_current[1:ord])])==0){rrest<- Inf}else{
 tesaux<- 0 ; Rinf<- 0
@@ -293,10 +295,10 @@ return(rrest)
 LLRcum<- function(ord)
 {
 Rest<- RelRisk(ord)
-LR<- function(Rcand){return(prod( dbinom(cases_current[1:sum(rows_current[1:ord])],cases_current[1:sum(rows_current[1:ord])]+controls_current[1:sum(rows_current[1:ord])],1/(1+z_current[1:sum(rows_current[1:ord])]/Rcand))) )}
-if(max(controls_current[1:sum(rows_current[1:ord])])==0){llrcum<- -log(LR(1))}
-if(max(cases_current[1:sum(rows_current[1:ord])])==0|Rest<=1){llrcum<- 0}else{
-llrcum<- log(LR(Rest))-log(LR(1))
+LR<- function(Rcand){return(prod( dbinom(cases_current[1:sum(rows_current[1:ord])],cases_current[1:sum(rows_current[1:ord])]+controls_current[1:sum(rows_current[1:ord])],1/(1+(z_current[1:sum(rows_current[1:ord])])/Rcand))) )}
+if(max(controls_current[1:sum(rows_current[1:ord])])==0){llrcum<- -log(LR(R0))}
+if(max(cases_current[1:sum(rows_current[1:ord])])==0|Rest<=R0){llrcum<- 0}else{
+llrcum<- log(LR(Rest))-log(LR(R0))
                                                                              }
 return(llrcum)
 }
@@ -305,7 +307,7 @@ return(llrcum)
 # Function to calculate the marginal distribution of Sn for an unique group of data
 ##########################################
 
-sn_marginal<- function(z,w,cases,controls,R=1)
+sn_marginal<- function(z,w,cases,controls,R=R0)
 {
 z_w_levels<- names(table(paste(z,w)))
 data_matrix<- matrix(0,length(z_w_levels),5)
@@ -668,7 +670,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailed,", and M= ",M, ", H0: RR<= 1", "."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailed,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -901,7 +903,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,",zp= ", z_setup,", and M= ",M, ", H0: RR<= 1", "."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,",zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -1140,7 +1142,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<= 1", "."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
                                             
@@ -1376,7 +1378,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<= 1", "."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
@@ -1613,7 +1615,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<= 1", "."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -1779,7 +1781,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<= 1", "."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -1830,7 +1832,7 @@ inputSetUp[14,(sum(row_old)+1):(sum(row_old)+length(z_w_levels))]<- test
 
 
 ############################################################
-## SAVING INFORMATION FOR FUTURE TESTES
+## SAVING INFORMATION FOR FUTURE TESTS
 ############################################################
 
 write.table(inputSetUp,name)

@@ -19,7 +19,7 @@ ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
 \item{RR}{The relative risk for the target power. It is only applicable for 'AlphaSpendType=optimal'.}
 \item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. Default is without confidence coeficient.}
 \item{gama}{Confidence coefficient for the interval estimator of the relative risk. Default is 0.9. It has no effect when ConfIntWidth="n".}
-\item{R0}{A positive real-valued number for the relative risk under H0, where R0<=1 if "Tailed=lower", R0>=1 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
+\item{R0}{A positive real-valued number for the relative risk under H0, where R<=R0 if "Tailed=lower", R>=R0 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 \item{ObjectiveMin}{The objective function to minimize in case of 'AlphaSpendType=optimal'. The default is 'ObjectiveMin=ETimeToSignal'. The other option is 'ObjectiveMin=ESampleSize'.}
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=0.5".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}

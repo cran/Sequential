@@ -87,9 +87,9 @@ rejt<- 0
 
 LLR <- function(cc,n,z){
 
-       if(cc==n){x = n*log(1+z)}else{
-         if(z*cc/(n-cc)<=1){x=0}else{
-	       x = cc*log(cc/n)+(n-cc)*log((n-cc)/n)-cc*log(1/(z+1))-(n-cc)*log(z/(z+1))
+       if(cc==n){x = n*log(1+z/R0)}else{
+         if((z/R0)*cc/(n-cc)<=1){x=0}else{
+	       x = cc*log(cc/n)+(n-cc)*log((n-cc)/n)-cc*log(1/(z/R0+1))-(n-cc)*log((z/R0)/(z/R0+1))
                                     }
                                   } 	
       	x
@@ -130,7 +130,7 @@ for(i in 1:N){if(absorb[i]<MinCases&i>=MinCases){absorb[i]<- MinCases};if(absorb
 
 uc<- absorb-1
 
-ps<- 1/(1+z)
+ps<- 1/(1+z/R0)
 
 
 # Auxiliar functions to run the binomial Markov Chain in a fast way:
@@ -237,7 +237,7 @@ if(AlphaSpendType=="optimal"){#3
 
 res<- Optimal.Binomial(Objective=ObjectiveMin,N,z,p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth,gama,R0); sum_sa<- res$optimal_alpha_spending; N<- length(sum_sa)
 
-y<- qbinom(1-alpha,N,1/(1+z)); y<- y+1 # auxiliar variable
+y<- qbinom(1-alpha,N,1/(1+z/R0)); y<- y+1 # auxiliar variable
 if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb1<- c(absorb1,0,0)
                              }#3
 
@@ -246,7 +246,7 @@ if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb
 x<- seq(1/N,by=1/N,1)
 sum_sa<- alpha*(x^pho)
 
-y<- qbinom(1-alpha,N,1/(1+z)); y<- y+1 # auxiliar variable
+y<- qbinom(1-alpha,N,1/(1+z/R0)); y<- y+1 # auxiliar variable
 if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb1<- c(absorb1,0,0)
 
            }# close if
@@ -272,11 +272,12 @@ if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb
 # line 12: Target alpha spending defined with AnalyzeSetUp
 # line 13: weight for each observation
 # line 14: test per weight
+# line 15: the first column has R0
 
 if(AlphaSpendType=="power-type"){z<- 0}
 if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){rho<- 0}
 
-inputSetUp<- as.data.frame(matrix(0,14,max(length(absorb1),length(sum_sa),10)))
+inputSetUp<- as.data.frame(matrix(0,15,max(length(absorb1),length(sum_sa),10)))
 
 N<- length(sum_sa)
 
@@ -297,6 +298,7 @@ inputSetUp[12,]<- 0
 if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){inputSetUp[12,1:length(sum_sa)]<- sum_sa}
 inputSetUp[13,]<- 0
 inputSetUp[14,]<- 0
+inputSetUp[15,1]<- R0
 
 write.table(inputSetUp,name)
 titlecheck<- data.frame(matrix(0,1,1))
@@ -306,8 +308,7 @@ message(c("The parameters were successfully set at '",address,"'."),domain = NUL
 message(c("The temporary directory of your computer has the address of the directory where the settings information of this sequential analysis is saved.
 Thus, do not clean the temporary directory before finishing this sequential analysis."),domain = NULL, appendLF = TRUE)
 
-if(AlphaSpendType=="Wald"&phoref!="n"){message(c("The value of 'rho' is ignored, as it is not used when AlphaSpendType='Wald'."),domain = NULL, appendLF = TRUE)}
-if(AlphaSpendType=="power-type"&zp!=1){message(c("The values of 'zp' and 'pp' are ignored, as it is not used when AlphaSpendType='power-type'."),domain = NULL, appendLF = TRUE)}
+if(AlphaSpendType=="power-type"&zp!=1){message(c("The values of 'zp' and 'pp' are ignored, as it is not used when AlphaSpendType='power-type'. The value of 'z' must be specified when running the Analyze.Binommial function."),domain = NULL, appendLF = TRUE)}
 
 write.table(titlecheck,paste(name1,"title.txt",sep=""))
 

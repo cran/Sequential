@@ -1,10 +1,10 @@
-0bf91e789e47c4c9057f4f9edb5d1bcf *DESCRIPTION
+f14e9de69a5176fb3e831ec900bfad86 *DESCRIPTION
 aa576ffe7229b7026dd1f1d8a24688e0 *NAMESPACE
-7b9e2d14c07f2619a6ef064004354d64 *R/Analyze.Binomial.R
+781f678e6e3c3bcd3e7e689c0744ac9d *R/Analyze.Binomial.R
 de6dd0a0512efbfece347015d8446f73 *R/Analyze.CondPoisson.R
 f647efa3f50c025a8087adb5fdfec824 *R/Analyze.Poisson.R
 42ae221d4ab98200e9c119a8685e578b *R/Analyze.wBinomial.R
-cd977123468a02ab7021afa28128f84e *R/AnalyzeSetUp.Binomial.R
+28752ebfdf59da0c0e7813b02bdaaafd *R/AnalyzeSetUp.Binomial.R
 b844820eb2cdd62783b3ba9c5a1fdd6f *R/AnalyzeSetUp.CondPoisson.R
 176d4b43e1df54fcbefa57d180e87562 *R/AnalyzeSetUp.Poisson.R
 d5e0384991952741c8ce6821e7f64432 *R/AnalyzeSetUp.wBinomial.R
@@ -28,7 +28,7 @@ b77dcd45cdfafaffa7186c38ae24976f *R/Performance.Threshold.Binomial.R
 2466b89996be931af8b32d686c15b7cf *man/Analyze.CondPoisson.Rd
 da4f5c55cd5294f641737d97e85f913b *man/Analyze.Poisson.Rd
 39f4e38a840560efa5c8e7a6c794a0cd *man/Analyze.wBinomial.Rd
-aad1a7da5d9f53e357e79567cdf9f543 *man/AnalyzeSetUp.Binomial.Rd
+1ac88124e42634f43582e1abfacec9cb *man/AnalyzeSetUp.Binomial.Rd
 e11c3b815de0898ec330474fc17e91c4 *man/AnalyzeSetUp.CondPoisson.Rd
 7d8826b1c05294bdd26d8c750a1a8012 *man/AnalyzeSetUp.Poisson.Rd
 1d6620337ec8586c19a14cc93421b876 *man/AnalyzeSetUp.wBinomial.Rd
@@ -48,4 +48,4 @@ f5cd188a0d60af1cd94b364a36dd21f9 *man/Performance.Threshold.Binomial.Rd
 d9c5580b6aa541962476a16974da84ab *man/SampleSize.Binomial.Rd
 d0f9834cc7ad04d851b4417dd03d758a *man/SampleSize.CondPoisson.Rd
 b958e69b9770a9d480d36705d8c3a269 *man/SampleSize.Poisson.Rd
-91fa8a81b29c4bd6611377d928dbae9f *man/Sequential-package.Rd
+d5cec1a92262e41f54cc1fc5f7e63d85 *man/Sequential-package.Rd
