@@ -4,14 +4,23 @@
 \description{The function \code{Performance.Threshold.Poisson} calculates power, expected time to signal and alpha spending associated to any user-specified signaling threshold, flat or non-flat, for continuous or group sequential analysis with Poisson data.
 The user can select the scale for the signaling threshold among MaxSPRT, Pocock, OBrien-Fleming, or Wang-Tsiatis test statistics, all for a pre-specified upper limit on the sample size.}
 \usage{
-Performance.Threshold.Poisson(SampleSize,CV.lower="n",CV.upper="n",GroupSizes="n",
-Tailed="upper",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),
+Performance.Threshold.Poisson(SampleSize,CV.lower="n",CV.upper="n",
+CV.events.upper="n",M=1,D=0,GroupSizes="n",Tailed="upper",
+Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),
 Delta="n",RR)
       }
 \arguments{
 \item{SampleSize}{The upper limit on the sample size (length of surveillance) expressed in terms of the expected number of events under the null hypothesis. There is no default value.}
 \item{CV.lower}{Signaling threshold for evidence of "RR<1". It is given in the scale of the selected test statistic infomed in "Statistic". There is no default value.}
 \item{CV.upper}{Signaling threshold for evidence of "RR>1". It is given in the scale of the selected test statistic infomed in "Statistic". There is no default value.}
+\item{CV.events.upper}{Signaling threshold for evidence of "RR>1". It is given in the scale of the events. The is no default value unless when one uses "CV.upper" instead.}
+\item{M}{The minimum number of events needed before the null hypothesis can be rejected. It must be a positive integer.
+A good rule of thumb is to set M=4 (Kulldorff and Silva, 2015). The default value is M=1, which means that even a single event
+can reject the null hypothesis if it occurs sufficiently early.}
+\item{D}{The expected number of events under the null hypothesis at the first look at the data.
+This is used when there is an initial large chunk of data arriving, followed by continuous sequential analysis. The default value is D=0, which is
+also the best choice. This means that there is no delay in the start of the sequential analyses. If D is very large, the maximum 
+sample size will be set equal to D if a non-sequential analysis provides the desired power.}
 \item{GroupSizes}{Vector with the test-specific expected number of events under the null hypothesis between two looks at the data. Important: Must sums up "SampleSize". There is no default value.}
 \item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
 \item{Statistic}{The test statistic scale used for "CV.lower" and "CV.upper". There is no default.}
@@ -60,7 +69,7 @@ Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vac
 
 Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Maro J, Kulldorff M. (2019). Exact Sequential Analysis Using R Sequential. Working Paper.
+Silva IR, Maro J, Kulldorff M. (2021). Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, DOI: 10.1002/sim.9094.
 }
 
 
@@ -82,8 +91,9 @@ Development of the Performance.Threshold.Poisson function was funded by:\cr
 
 \examples{
 
-## Performance and alpha spending of group Poisson sequential analysis
-#   with a maximum sample size of 90 expected events for two-tailed
+## Example 1
+#  Performance and alpha spending of group Poisson sequential analysis
+#  with a maximum sample size of 90 expected events for two-tailed
 #  testing, i.e. H0:RR=1, with irregular group sizes and different
 #  and lower and upper thresholds with irregular
 #  sample sizes 25, 20, 20, and 25. 
@@ -94,6 +104,24 @@ Development of the Performance.Threshold.Poisson function was funded by:\cr
 # CV.upper=c(3,3.1,3.2,3.3),GroupSizes=c(25,20,20,25),Tailed="two",
 # Statistic="MaxSPRT",Delta="n",RR=c(2,1.2,1,3))
 
+## Example 2
+#  Suppose that the Analyze.Poisson function was used for an actual analysis.
+#  For evaluating the cumulative power after a certain number of subsequent tests,
+#  one can enter with the critical values delivered by Analyze.Poisson in the
+#  Performance.Threshold.Poisson.
+#  For example, suppose that the following thresholds in the scale of the events
+#  were printed by Analyze.Poisson for the first three tests:
+#     cv.events<- c(1,2,4)
+#  which were obtained for the following specific sample sizes:
+#     mus<- c(0.05,0.5,1.2)
+#  Calculating the cumulative power, the expected time to signal, and 
+#  the expected sample size for RR=2:
+
+# res<-Performance.Threshold.Poisson(SampleSize=sum(mus),CV.events.upper=cv.events,
+# GroupSizes=mus, Statistic="MaxSPRT",RR=2)
+
+
+# This returns a power about 25%.
 
 }
 

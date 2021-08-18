@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.3.1\cr
-Date: \tab 2021-02-20\cr
+Version: \tab 3.3.2\cr
+Date: \tab 2021-08-14\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -98,6 +98,9 @@ and a predetermined upper limit on the sample size. For a desired statistical po
 The motivation for this package is post-market near real-time drug and vaccine safety surveillance, where the goal is to detect rare
 but serious safety problems as early as possible, in many cases after only a hand full of adverse events. The package can also be used
 in other application areas, such as clinical trials.
+
+A tutorial paper by Silva et al. (2021) explains the main features of the package up to version 3.3.1, where sequential test designing and
+real data analyses are dicussed in more details. 
 
 The basis for this package is the Maximized Sequential Probability Ratio Test (MaxSPRT) statistic (Kulldorff et al., 2011), which is a variant of
 Wald's Sequential Probability Ratio Test (SPRT) (Wald, 1945,47). MaxSPRT uses a composite alternative hypothesis, and upper boundary to reject the
@@ -192,14 +195,14 @@ approach with the upper limit defined in terms of the maximum number of observed
 via a Monte Carlo approach. A large number of Monte Carlo simulations (e.g., 10 million) might be needed to calculate the critical values with
 a reasonable precision. 
 
-In Silva et al. (2016), the method was extended i) with another option of defining the surveillance length in terms of
+In Silva et al. (2019a), the method was extended i) with another option of defining the surveillance length in terms of
 the maximum cumulative person-time divided by the total cumulative person-time in the historical cohort, i.e., \eqn{P_k/V \le T}, ii) with an exact
 calculation of the critical values for both surveillance length definitions, and iii) for group sequential analysis with data updated and analyzed
 intermittently instead of continuously. The exact critical values are calculated using the interval havling method to solve for the root of a complex,
 non-linear equation such that the overall Type I error rate is preserved at the nominal level. As \eqn{K} increases, the computing time for the exact
 critical values increases exponentially. 
 
-Silva et al. (2016) also proposed two approximation methods to calculate the critical values that require
+Silva et al. (2019a) also proposed two approximation methods to calculate the critical values that require
 substantially less computing time. One approch may overestimate the critical values and thus is referred to as the conservative approach as it may
 yield lower-than-nominal Type I error rates; the other approach may underestmate the critical values and thus is referred to as the liberal approach
 as it may yield higher-than-nominal Type I error rates. The recommendation is to use the exact approach when \eqn{K} is small (e.g., 10),
@@ -224,8 +227,11 @@ There is a vast number of proposals for choosing the shape of the alpha spending
 Jennison and Turnbull (2000) present a rich discussion about this topic. They dedicated a special attention to the alpha spending of the form:
 \eqn{F_{\alpha}(t)=\alpha t^{\rho}}, where \eqn{\rho>0}, and \eqn{t} represents a fraction of the maximum length of surveillance. 
 
-A new aproach for alpha spending selection is the optimal solution, introduced by Silva and Kulldorff (2018).
+A new aproach for alpha spending selection is the optimal solution, introduced by Silva and Kulldorff (2020).
 The optimal solution is based on exact calculations through linear programing, and it is operated through the function \code{Optimal.Binomial}.
+
+For MaxSPRT with Poisson data, Silva (2018b) presents a rule of thumb for a near-optimal alpha spending shape. Likewise, Silva et al. (2019b) discuss
+the choice of alpha spending shapes for CMaxSPRT.
 
 To run continuous or group sequential analysis with an user defined alpha spending function, and/or, when the group sizes are not known a prior,
 \code{Analyze.Binomial}, \code{Analyze.wBinomial} (for multiple weighted binomial endpoints), \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} should be used for binomial and Poisson, and conditional Poisson data, respectively. 
@@ -281,7 +287,7 @@ Chin R. (2012), Adaptive and Flexible Clinical Trials, Boca Raton, FL: Chapman a
 
 Cook TD, DeMets DL. (2007), Introduction to Statistical Methods for Clinical Trials: Chapman and Hall/CRC Texts in Statistical Science. 
 
-Fireman B, et al. (2013) Exact sequential analysis for binomial data with timevarying probabilities. Manuscript in Preparation.
+Fireman B, et al. (2013), Exact sequential analysis for binomial data with timevarying probabilities. Manuscript in Preparation.
 
 Friedman LM, Furberg CD, DeMets D. (2010), Fundamentals of Clinical Trials, 4th ed.: Springer. 
 
@@ -292,29 +298,29 @@ Ghosh M, Mukhopadhyay N, Sen PK. (2011), Sequential Estimation: Wiley.
 Jennison C, Turnbull B. (2000), Group Sequential Methods with Applications to Clinical
 Trials, London: Chapman and Hall/CRC.
 
-Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011). A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
+Kulldorff M, Davis RL, Kolczak M, Lewis E, Lieu T, Platt R. (2011), A Maximized Sequential Probability Ratio Test for Drug and Safety Surveillance. Sequential Analysis, 30: 58--78.
 
-Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. arxiv:1503.01978 [stat.ap]. Forthcoming paper of REVSTAT Statistical Journal.
+Kulldorff M, Silva IR. (2015), Continuous Post-market Sequential Safety Surveillance with Minimum Events to Signal. REVSTAT Statistical Journal, 15(3): 373--394.
 
-Li L, Kulldorff M. (2010). A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
+Li L, Kulldorff M. (2010), A conditional maximized sequential probability ratio test for Pharmacovigilance. Statistics in Medicine, 29 (2), 284--295. 
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Maro J, Kulldorff M. (2019). Exact Sequential Analysis Using R Sequential. Working Paper.
+Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, DOI: 10.1002/sim.9094.
 
-Silva, IR, and Kulldorff, M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+Silva IR, Kulldorff M, Yih W. Katherine. (2020), Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 
-Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2019). Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Working paper.
+Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2020), Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Statistics in Medicine, 39(3), 340--351.
 
-Silva IR, Li L, Kulldorff M. (2019), Exact conditional maximized sequential probability ratio test adjusted for covariates. Sequential Analysis, 38(1), 115--133.
+Silva IR, Li L, Kulldorff M. (2019a), Exact conditional maximized sequential probability ratio test adjusted for covariates. Sequential Analysis, 38(1), 115--133.
 
-Silva IR. (2018a). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107--118.
+Silva IR. (2018a), Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107--118.
 
-Silva IR. (2018b). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739--750.
+Silva IR. (2018b), Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739--750.
 
-Silva IR., Lopes LM., Dias P., Yih WK. (2019). Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, 38(12), 2126--2138. 
+Silva IR, Lopes LM, Dias P, Yih WK. (2019b), Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, 38(12), 2126--2138. 
 
 Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
@@ -330,7 +336,7 @@ Development of the R Sequential package has been funded and supported by:\cr
 -	Food and Drug Administration, USA, through the Mini-Sentinel Project (v1.0,1.1,2.0).\cr
 -	National Institute of General Medical Sciences, NIH, USA, through grant number R01GM108999 (v2.0 to 3.1).\cr
 -	Federal University of Ouro Preto (UFOP), through contract under internal UFOP's resolution CEPE 4600 (v2.0 to 3.1).\cr
--	National Council of Scientific and Technological Development (CNPq), Brazil (v1.0).\cr
+-	National Council of Scientific and Technological Development (CNPq), Brazil, process number 301391/2019-0. (v1.0).\cr
 -	Bank for Development of the Minas Gerais State (BDMG), Brazil (v1.0).\cr
 \cr
 Feedback from users is greatly appreciated. Very valuable suggestions concerning the R Sequential package have been received from various individuals, including:\cr
@@ -348,6 +354,9 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -	Laura Hou, Harvard Pilgrim Health Care Institute, Boston, USA.\cr
 -	Abdurrahman Abdurrob, Division of Pharmacoepidemiology and Pharmacoeconomics, Department of Medicine, Brigham and Women's Hospital and Harvard Medical School.\cr
 -	Kirk Snyder, Information Management Services, Inc.\cr
+-     Joselito M. Montalban, Active Living, Population and Public Health Branch, Winnipeg, Manitoba, Canada.\cr 
+-     Sarah Spruin and Vaccine Safety Surveillance, Public Health Agency of Canada.\cr
+-     Lola Adewale, Stateam LLC, New Jersey, United States.\cr
 }
 
 \keyword{Sequential analysis}
@@ -474,6 +483,10 @@ Version 3.3, Feb 2021\cr
 \cr
 Version 3.3.1, Feb 2021\cr
 -     Adjusted \code{Analyze.Binomial} function for a flexible H0:R<=R0 under the null hypothesis.\cr
+-     Updated user guide.\cr
+\cr
+Version 3.3.2, Aug 2021\cr
+-     Adjusted functions: \code{Analyze.Poisson}, \code{AnalyzeSetUp.Poisson}, \code{Performance.AlphaSpend.Poisson}, and \code{SampleSize.Poisson} for the surveillance of COVID-19 vaccination.\cr
 -     Updated user guide.\cr
 \cr
 }

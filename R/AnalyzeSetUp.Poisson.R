@@ -1,11 +1,12 @@
 
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
+# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at August-2021
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
+AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,D=0,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
 {
 
+M1<- M
 if(Tailed!="upper"){stop("For this version of the Sequential package, CV.Binomial works only for 'Tailed=upper'.",call. =FALSE)}
 
 # Example of address: "C:/Users/Ivair/Documents"
@@ -58,6 +59,8 @@ MinCases<- M
 
 if( sum(is.numeric(alpha))!=1){stop("Symbols and texts are not applicable for 'alpha'. It must be a number in the (0,0.5) interval.",call. =FALSE)}
 if( sum(is.numeric(MinCases))!=1){stop("Symbols and texts are not applicable for 'M'. It must be an integer greater than zero.",call. =FALSE)}
+if( sum(is.numeric(D))!=1){stop("Symbols and texts are not applicable for 'D'. It must be a number greater than or equal to zero.",call. =FALSE)}
+
 if(is.numeric(SampleSize)==FALSE){stop("Symbols and texts are not applicable for 'SampleSize'. It must be an integer greater than zero.",call. =FALSE)}
 
 if(SampleSize<=0){stop("'SampleSize' must be an integer greater than zero.",call. =FALSE)}
@@ -66,6 +69,10 @@ if(alpha<=0|alpha>0.5||is.numeric(alpha)==FALSE){stop("'alpha' must be a number 
 if(MinCases>SampleSize||is.numeric(MinCases)==FALSE){stop("'M' must be an integer smaller than or equal to 'SampleSize'.",call. =FALSE)}
 if(MinCases<1){stop("'M' must be an integer greater than zero.",call. =FALSE)}
 if(MinCases!=round(MinCases)){stop("'M' must be an integer.",call. =FALSE)}
+
+if(D>SampleSize||is.numeric(D)==FALSE){stop("'D' must be a number smaller than or equal to 'SampleSize'.",call. =FALSE)}
+if(D<0){stop("'D' must be a number greater than or equal to zero.",call. =FALSE)}
+
 
 
 alpha1<- alpha
@@ -99,6 +106,15 @@ mu = -c * ProdLog(z) 		#The expected counts under H0 that is needed to reject th
 mtemp = c(0,mu)
 mmu = diff(mtemp) 		#The marginal difference of the mu[] vector
 imin=MinCases
+
+
+while (mu[imin] < D) imin=imin+1
+if(imin>MinCases) { 
+	mu[imin-1]=D
+	mmu[imin]=mu[imin]-D
+	} # end if 
+
+
 imax=1
 while (mu[imax] < T) imax=imax+1    		# imax is the maximum number of cases that will generate a signal.            
 
@@ -227,8 +243,8 @@ sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
 ##   HERE WE SAVE THE KEY CONTENT TO SETUP THE SURVEILLANCE. THE CONTENT IS SAVED IN THE MATRIX  CALLED inputSetUp 
 #############################################################################################################
 ## inputSetUp matrix contains:
-# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) SampleSize, (C13) alpha, (C14) M, (C15) base(the line of p where the looping will start in the next test), (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) pho (zero if Wald is used), (C19) j (the sample size in the scale of the events if rho=0, and j=0 otherwise)
-# line 2: says ifthe analysis has been started or not. 0 for not started. 1 for already started.
+# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) SampleSize, (C13) alpha, (C14) M, (C15) base(the line of p where the looping will start in the next test), (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) pho (zero if Wald is used), (C19) j (the sample size in the scale of the events if rho=0, and j=0 otherwise), (C1,10) has D, (C1,11) has the M entered by the user 
+# line 2: says if the analysis has been started or not. 0 for not started. 1 for already started.
 # line 3: critical values in the scale of the events for each test
 # line 4: observed events
 # line 5: actual alpha spent
@@ -237,10 +253,12 @@ sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
 
 
 if(AlphaSpendType=="Wald"){k<- length(sa)}
-inputSetUp<- as.data.frame(matrix(0,7,9))
+inputSetUp<- as.data.frame(matrix(0,7,11))
+
+if(AlphaSpendType=="Wald"){alphaspend<- sum_sa; M<- sum(alphaspend==0)+1} #Target alpha spending to be spent event by event.
 
 inputSetUp[1,]<- 0
-inputSetUp[1,1:9]<- c(0,SampleSize,alpha,M,1,0,0,pho,j) 
+inputSetUp[1,1:11]<- c(0,SampleSize,alpha,M,1,0,0,pho,j,D,M1) 
 inputSetUp[2,]<- 0
 inputSetUp[2,1]<- 0 # says if the surveillance was started or not.
 inputSetUp[3,]<- 0
@@ -248,8 +266,6 @@ inputSetUp[4,]<- 0
 inputSetUp[5,]<- 0
 inputSetUp[6,]<- 0
 inputSetUp[7,]<- 0
-
-if(AlphaSpendType=="Wald"){alphaspend<- sum_sa} #Target alpha spending to be spent event by event.
 
 
 write.table(inputSetUp,name)
@@ -271,9 +287,4 @@ setwd(safedir)
 } ## end function AnalyzeSetUp.Poisson
 
 
-# AnalyzeSetUp.Poisson(name="teste",SampleSize=2,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="C:/Users/Visitante/Ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO")
-
-
-
-
-
+# AnalyzeSetUp.Poisson(name="teste",SampleSize=6,alpha=0.05,D=2,M=1,AlphaSpendType="Wald",rho="n",title="teste",address="C:/Users/ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO",Tailed="upper")

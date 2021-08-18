@@ -3,14 +3,20 @@
 \title{Function to set up input parameters before using the \code{Analyze.Poisson} function for the first time.}
 \description{The function \code{AnalyzeSetUp.Poisson} must be run ahead of \code{Analyze.Poisson} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Poisson(name,SampleSize,alpha=0.05,M=1,
+AnalyzeSetUp.Poisson(name,SampleSize,alpha=0.05,D=0,M=1,
 AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Poisson} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
 \item{SampleSize}{The maximum length of surveillance at which the sequential analysis stops without rejecting the null hypothesis. It is defined in terms of the expected sample size under the null hypothesis. There is no default value.}
 \item{alpha}{The overall significance level. Must be in the range (0,0.5]. The default is "alpha=0.05".}
-\item{M}{The minimum number of events required before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".}
+\item{D}{The expected number of events under the null hypothesis at the first look at the data.
+This is used when there is an initial large chunk of data arriving, followed by continuous sequential analysis. The default value is D=0, which is
+also the best choice. This means that there is no delay in the start of the sequential analyses. If D is very large, the maximum 
+sample size will be set equal to D if a non-sequential analysis provides the desired power.}
+\item{M}{The minimum number of events needed before the null hypothesis can be rejected. It must be a positive integer.
+A good rule of thumb is to set M=4 (Kulldorff and Silva, 2015). The default value is M=1, which means that even a single event
+can reject the null hypothesis if it occurs sufficiently early.}
 \item{AlphaSpendType}{The type of alpha spending function to be used. The options are AlphaSpendType="Wald" and AlphaSpendType="power-type". With the 'Wald' option, the Wald type upper rejection boundary is used, which is flat with respect to the likelihood ratio. With the power-type option, the alpha spending uses a power function with parameter rho, with rho defined by the user. This alpha spending setting is automatically used when the \code{Analyze.Poisson} function is run, but, during the sequential analysis, and before each test, the user can always specify an arbitrary amount of alpha spending to be used up until and including that test. See below for details.}
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=1".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
@@ -74,6 +80,8 @@ Kulldorff M, Silva IR. (2015). Continuous Post-market Sequential Safety Surveill
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
 Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739-750.
+
+Silva IR, Maro J, Kulldorff M. (2021). Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, DOI: 10.1002/sim.9094.
 }
 
 \keyword{Poisson sequential analysis}

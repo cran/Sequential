@@ -1,10 +1,11 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-14-2015
+# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at August-08-2021
 # -------------------------------------------------------------------------
 
 
 Analyze.Poisson<- function(name,test,mu0,events,AlphaSpend="n")
 {
+
 
 name1<- name
 
@@ -62,6 +63,7 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 #=> inputSetUp[1,2] has the 'SampleSize', and inputSetUp[1,3] has the overall alpha level.  
 #=> inputSetUp[1,8] has 'rho', which is zero for 'Wald' alpha spending.
 #=> inputSetUp[1,9] has the sample size in the scale of the events. If rho>0, then inputSetUp[1,9] is settled equal to zero.
+#=> inputSetUp[1,10] has D
 #=> inputSetUp[2,1] says if the surveillance was started and, if so, when it has ocurred. 
 #=> inputSetUp[3,]  has the critical values in the scale of the events 
 #=> inputSetUp[4,]  has the observed number of events, look by look, until the (test-1)th look.
@@ -74,7 +76,7 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 
 SampleSize<- inputSetUp[1,2]
 alpha<- inputSetUp[1,3]
-M<- inputSetUp[1,4]
+M<- inputSetUp[1,4]; D<- inputSetUp[1,10] ; M1<- inputSetUp[1,11]
 start<- inputSetUp[2,1]
 reject<- inputSetUp[1,7]
 rho<- inputSetUp[1,8]
@@ -184,7 +186,7 @@ return(list(CVf,alphahere,pf))
 
 # Finding critical value for the 'current_alpha'
 
-if(events+sum(inputSetUp[4,]) >= M & reject==0 & max(inputSetUp[5,])<alpha-0.00000001 ){
+if(events+sum(inputSetUp[4,]) >= M & mu0+sum(inputSetUp[6,]) >= D & reject==0 & max(inputSetUp[5,])<alpha-0.00000001 ){
 
 if(test==1){
 alphas<- current_alpha
@@ -223,7 +225,7 @@ if(CV<=events+sum(inputSetUp[4,])){reject_new<- test}else{reject_new<- 0}
 
                                                                                       }else{reject_new<- max(0,reject)}
 
-if(M>events+sum(inputSetUp[4,]) |reject==1| max(inputSetUp[5,])>=alpha-0.00000001  ){actualspent<- 0; CV<- "NA"}
+if(M>events+sum(inputSetUp[4,])| D>mu0+sum(inputSetUp[6,]) |reject==1| max(inputSetUp[5,])>=alpha-0.00000001  ){actualspent<- 0; CV<- "NA"}
 
 if(reject>0){actualspent<- max(actual_alpha_old)}
 
@@ -232,7 +234,7 @@ if(reject>0){actualspent<- max(actual_alpha_old)}
 ##########################################################
 
 ###############
-### Situation 1: SampleSize not achieved and surveillance not started because events are still smaller than M
+### Situation 1: SampleSize not achieved and surveillance not started because events or cumulative mu0 are still smaller than M or D
 
 if(start==0){ # OPEN
 
@@ -277,13 +279,13 @@ result[i+1,11]<- paste("No")
 
 message(c("                                ",title),domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE) 
-                                              message("=>    H0 cannot be rejected yet because the cumulative events is still smaller than M.",domain = NULL, appendLF = TRUE)
+                                          message("=> H0 cannot be rejected yet because the cumulative events or mu0 are still smaller than M or D.",domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
 options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0," and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -343,7 +345,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0," and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -479,7 +481,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0," and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
@@ -607,7 +609,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0," and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
@@ -730,7 +732,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0," and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -856,7 +858,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0," and M= ",M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 

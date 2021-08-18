@@ -1,18 +1,20 @@
 
 
 
-## This version was implemented on April 2018
+## This version was implemented on August 2021
 
-Performance.Threshold.Poisson <- function(SampleSize,CV.lower="n",CV.upper="n",GroupSizes="n",Tailed="upper",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",RR)
+Performance.Threshold.Poisson <- function(SampleSize,CV.lower="n",CV.upper="n",CV.events.upper="n",M=1,D=0,GroupSizes="n",Tailed="upper",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",RR)
 {
 
 PRECISION=0.00000001
 cvs.lower<- CV.lower
 cvs.upper<- CV.upper
 
+
 # ------------------- INPUT VARIABLE ----------------------------------------------------------
 # SampleSize = maximum length of surveillance, defined in terms of expected counts under H0. It is used only when CV.lower and CV.upper are non-empty. Otherwise, SampleSize is ignored since CV.lower and/or CV.upper define the maximum sample size in the scale of the events. 
-# cv = critical value
+# CV.lower and CV.upper = critical values in the scale of a test statistic specified through 'Statistic'
+# CV.events.upper = upper threshold in the scale of the events
 # M = The minimum number of cases for which a signal is allowed to occur
 # D = Time < T for first look at the data, defined in terms of the expected counts under H0
 # If Tailed="upper" (default), then the threshold is given as an upper tailed testing (H0: R<=RR0), Tailed="lower" for lower tailed (H0: R>=RR0), and Tailed="two" for two-tailed testing (H0: R=RR0).
@@ -20,94 +22,6 @@ cvs.upper<- CV.upper
 # RR= vector of relative risks for performance calculation
 # Statistic = scale that the user is using for the cvs inputs
 # Delta = number in (0, 0.5] for the test statistic of Wang-Tsiatis
-
-if(sum(Tailed==c("upper","lower","two"))==0){stop(" 'Tailed' must be chosen among 'upper', 'lower' or 'two'.",call. =FALSE)}
-
-if(length(GroupSizes)==1){if(GroupSizes=="n"){method<- "continuous"}else{method<- "group"}}
-if(length(GroupSizes)>1){method<- "group"}
-
-M<- 1
-D<- 0
-Groups<- GroupSizes
-T<- SampleSize
-L<- T
-MinCases<- M
-Late<- D
-
-if(length(SampleSize)>1){stop("The maximum length of surveillance, 'SampleSize', must be a single positive number.",call. =FALSE)}
-
-if(length(Groups)==1){# 1
-
-   if(Groups!="n"){
-if(is.numeric(Groups)==FALSE){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(sum(Groups<=0)>0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(sum(Groups==round(Groups))!=length(Groups)){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-
-if(Groups==0){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(SampleSize/Groups!=round(SampleSize/Groups)){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call. =FALSE)}
-if(Groups>SampleSize){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call.=FALSE)}
-if(SampleSize/Groups==round(SampleSize/Groups)){Groups<- rep(Groups,SampleSize/Groups);GroupSizes<- Groups}
-if(length(cvs.lower)==1){if(is.numeric(cvs.lower)==TRUE){cvs.lower<- rep(cvs.lower,length(Groups))}}
-if(length(cvs.upper)==1){if(is.numeric(cvs.upper)==TRUE){cvs.upper<- rep(cvs.upper,length(Groups))}}
-                   }
-                    }# close 1
-
-
-
-if(length(Groups)>1){
-if(sum(is.numeric(Groups))==0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}else{
-if(is.numeric(SampleSize)==FALSE){stop("The maximum length of surveillance, 'SampleSize', must be a positive number.",call. =FALSE)}
-if(SampleSize<=0){stop("The maximum length of surveillance, 'SampleSize', must be a positive number.",call. =FALSE)}
-if(sum(Groups<=0)>0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(sum(Groups==round(Groups))!=length(Groups)){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(sum(Groups)!=SampleSize){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(length(cvs.lower)==1){if(is.numeric(cvs.lower)==TRUE){cvs.lower<- rep(cvs.lower,length(Groups))}}
-if(length(cvs.upper)==1){if(is.numeric(cvs.upper)==TRUE){cvs.upper<- rep(cvs.upper,length(Groups))}}
-}
-}
-
-
-
-if(Tailed=="upper"){
-if(length(cvs.lower)==1){if(cvs.lower!="n"){stop("For 'Tailed=upper' it is not possible to use 'cvs.lower'.",call. =FALSE)}}
-if(length(cvs.lower)>1){stop("For 'Tailed=upper' it is not possible to use 'cvs.lower'.",call. =FALSE)}
-                   }
-
-if(Tailed=="lower"){
-if(length(cvs.upper)==1){if(cvs.upper!="n"){stop("For 'Tailed=lower' it is not possible to use 'cvs.upper'.",call. =FALSE)}}
-if(length(cvs.upper)>1){stop("For 'Tailed=lower' it is not possible to use 'cvs.upper'.",call. =FALSE)}
-                   }
-
-### Checking the threshold scale choice 
-aux_thres<- rep(0,2)
-for(jj in 1:length(cvs.lower)){if(cvs.lower[jj]!="n"){aux_thres[1]<- 1}}
-for(jj in 1:length(cvs.upper)){if(cvs.upper[jj]!="n"){aux_thres[2]<- 1}}
-
-if(Tailed=="two"){
-  if(length(GroupSizes)==1){
-if(length(cvs.lower)>1|length(cvs.upper)>1&method=="group"){stop("Signaling thresholds must have the same dimension of 'GroupSizes'.",call. =FALSE)}
-if(cvs.lower=="n"|cvs.upper=="n"){stop("Lower and upper signaling thresholds must be specified.",call. =FALSE)}
-                           }
-
-if(length(GroupSizes)>1){
-if(aux_thres[1]+aux_thres[2]!=2&aux_thres[3]+aux_thres[4]!=2){stop("Lower and upper signaling thresholds must be specified.",call. =FALSE)}
-if(aux_thres[1]+aux_thres[2]==2){if(length(cvs.lower)!=length(GroupSizes)|length(cvs.upper)!=length(GroupSizes)|length(cvs.upper)!=length(cvs.lower)&method=="group"){stop("Lower and upper signaling thresholds must have the same dimension of 'GroupSizes'.",call. =FALSE)}}
-                        }
-                 }
-
-if(length(GroupSizes)==1){
-if(GroupSizes=="n"){if(Tailed=="two"){if(length(cvs.lower)==1){cvs.lower<- rep(cvs.lower,2*T)};if(length(cvs.upper)==1){cvs.upper<- rep(cvs.upper,2*T)}}}
-if(GroupSizes=="n"){if(Tailed=="lower"){if(length(cvs.lower)==1){cvs.lower<- rep(cvs.lower,2*T)}}}
-if(GroupSizes=="n"){if(Tailed=="upper"){if(length(cvs.upper)==1){cvs.upper<- rep(cvs.upper,2*T)}}}
-
-if(GroupSizes=="n"&Tailed=="two"){if(length(cvs.lower)<2*T|length(cvs.upper)<2*T){stop("For variable lower and upper signaling thresholds, the dimension of cvs.lower and cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
-if(GroupSizes=="n"&Tailed=="lower"){if(length(cvs.lower)<2*T){stop("For variable lower signaling threshold, the dimension of cvs.lower must be at least twice the value of SampleSize.",call. =FALSE)}}
-if(GroupSizes=="n"&Tailed=="upper"){if(length(cvs.upper)<2*T){stop("For variable lower signaling threshold, the dimension of cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
-                         }
-
-
-if(aux_thres[1]==1|aux_thres[2]==1){stat_sca<- 1}else{stat_sca<- 0}
-
 
 
 ####
@@ -207,6 +121,128 @@ return(((uu/SampleSize)^(0.5-Delta))*abs(x))
 
 if(Statistic=="Pocock"){LLR<- LLR2}; if(Statistic=="OBrien-Fleming"){LLR<- LLR3}; if(Statistic=="Wang-Tsiatis"){LLR<- LLR4}
 
+## checking the Tailed parameter
+
+if(sum(Tailed==c("upper","lower","two"))==0){stop(" 'Tailed' must be chosen among 'upper', 'lower' or 'two'.",call. =FALSE)}
+
+## Checking the consistency of the parameter CV.events.upper
+aux.events<- 0
+if(length(CV.events.upper)==1){
+if(CV.events.upper!="n"&length(GroupSizes)>1){stop("'CV.events.upper' and 'SampleSize' must have the same dimentions.",call. =FALSE)}
+if(CV.events.upper!="n"&is.numeric(CV.events.upper)!=TRUE){stop("'CV.events.upper' must be a single number or a vector of positive integers.",call. =FALSE)}
+if(CV.events.upper!="n"){if(ceiling(CV.events.upper)!=CV.events.upper){stop("'CV.events.upper' must be a single number or a vector of positive integers.",call. =FALSE)}}
+if(CV.events.upper!="n"){aux.events<- 1}
+                         }else{
+                             if(is.numeric(CV.events.upper)!=TRUE){stop("'CV.events.upper' must be a single number or a vector of positive integers.",call. =FALSE)}
+                             if(length(CV.events.upper)!=length(GroupSizes)){stop("'CV.events.upper' and 'SampleSize' must have the same dimentions.",call. =FALSE)}
+                             if(sum(ceiling(CV.events.upper)==CV.events.upper)!=length(CV.events.upper)){stop("'CV.events.upper' must be a single number or a vector of positive integers.",call. =FALSE)}
+                             aux.events<- 1
+                              }
+
+## Converting the threshold from the scale of CV.events.upper to test statistic scale CV.upper
+if(aux.events==1){
+if(is.numeric(CV.lower)+is.numeric(CV.upper)>0){stop("Specify the threshold scale either in terms of 'CV.upper' or in terms of 'CV.events.upper', but do not use both types concomitantly.",call. =FALSE)}
+
+CV.upper<- rep(0,length(CV.events.upper))
+for(i in 1:length(CV.events.upper)){CV.upper[i]<- LLR(CV.events.upper[i],GroupSizes[i],Tailed)} 
+cvs.upper<- CV.upper
+                 }
+
+
+
+
+### More checks ### ADJUSTMENT NEEDED FOR GroupSizes WHEN Statistic = "Pocock", "OBrien-Fleming", "Wang-Tsiatis" 
+
+if(length(GroupSizes)==1){
+if(GroupSizes=="n"&Statistic=="MaxSPRT"){ method<- "continuous"}else{method<- "group";GroupSizes=1}                                              
+                         }
+
+if(length(GroupSizes)>1){method<- "group"}
+
+
+Groups<- GroupSizes
+T<- SampleSize
+L<- T
+MinCases<- M
+Late<- D
+
+if(length(SampleSize)>1){stop("The maximum length of surveillance, 'SampleSize', must be a single positive number.",call. =FALSE)}
+
+if(length(Groups)==1){# 1
+
+   if(Groups!="n"){
+if(is.numeric(Groups)==FALSE){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+if(sum(Groups<=0)>0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+if(sum(Groups==round(Groups))!=length(Groups)){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+
+if(Groups==0){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+if(SampleSize/Groups!=round(SampleSize/Groups)){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call. =FALSE)}
+if(Groups>SampleSize){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call.=FALSE)}
+if(SampleSize/Groups==round(SampleSize/Groups)){Groups<- rep(Groups,SampleSize/Groups);GroupSizes<- Groups}
+if(length(cvs.lower)==1){if(is.numeric(cvs.lower)==TRUE){cvs.lower<- rep(cvs.lower,length(Groups))}}
+if(length(cvs.upper)==1){if(is.numeric(cvs.upper)==TRUE){cvs.upper<- rep(cvs.upper,length(Groups))}}
+                   }
+                    }# close 1
+
+
+
+if(length(Groups)>1){
+if(sum(is.numeric(Groups))==0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}else{
+if(is.numeric(SampleSize)==FALSE){stop("The maximum length of surveillance, 'SampleSize', must be a positive number.",call. =FALSE)}
+if(SampleSize<=0){stop("The maximum length of surveillance, 'SampleSize', must be a positive number.",call. =FALSE)}
+if(sum(Groups<=0)>0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+#if(sum(Groups==round(Groups))!=length(Groups)){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+if(sum(Groups)!=SampleSize){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+if(length(cvs.lower)==1){if(is.numeric(cvs.lower)==TRUE){cvs.lower<- rep(cvs.lower,length(Groups))}}
+if(length(cvs.upper)==1){if(is.numeric(cvs.upper)==TRUE){cvs.upper<- rep(cvs.upper,length(Groups))}}
+}
+}
+
+
+
+if(Tailed=="upper"){
+if(length(cvs.lower)==1){if(cvs.lower!="n"){stop("For 'Tailed=upper' it is not possible to use 'cvs.lower'.",call. =FALSE)}}
+if(length(cvs.lower)>1){stop("For 'Tailed=upper' it is not possible to use 'cvs.lower'.",call. =FALSE)}
+                   }
+
+if(Tailed=="lower"){
+if(length(cvs.upper)==1){if(cvs.upper!="n"){stop("For 'Tailed=lower' it is not possible to use 'cvs.upper'.",call. =FALSE)}}
+if(length(cvs.upper)>1){stop("For 'Tailed=lower' it is not possible to use 'cvs.upper'.",call. =FALSE)}
+                   }
+
+### Checking the threshold scale choice 
+aux_thres<- rep(0,2)
+for(jj in 1:length(cvs.lower)){if(cvs.lower[jj]!="n"){aux_thres[1]<- 1}}
+for(jj in 1:length(cvs.upper)){if(cvs.upper[jj]!="n"){aux_thres[2]<- 1}}
+
+if(Tailed=="two"){
+  if(length(GroupSizes)==1){
+if(length(cvs.lower)>1|length(cvs.upper)>1&method=="group"){stop("Signaling thresholds must have the same dimension of 'GroupSizes'.",call. =FALSE)}
+if(cvs.lower=="n"|cvs.upper=="n"){stop("Lower and upper signaling thresholds must be specified.",call. =FALSE)}
+                           }
+
+if(length(GroupSizes)>1){
+if(aux_thres[1]+aux_thres[2]!=2&aux_thres[3]+aux_thres[4]!=2){stop("Lower and upper signaling thresholds must be specified.",call. =FALSE)}
+if(aux_thres[1]+aux_thres[2]==2){if(length(cvs.lower)!=length(GroupSizes)|length(cvs.upper)!=length(GroupSizes)|length(cvs.upper)!=length(cvs.lower)&method=="group"){stop("Lower and upper signaling thresholds must have the same dimension of 'GroupSizes'.",call. =FALSE)}}
+                        }
+                 }
+
+if(length(GroupSizes)==1){
+if(GroupSizes=="n"){if(Tailed=="two"){if(length(cvs.lower)==1){cvs.lower<- rep(cvs.lower,2*T)};if(length(cvs.upper)==1){cvs.upper<- rep(cvs.upper,2*T)}}}
+if(GroupSizes=="n"){if(Tailed=="lower"){if(length(cvs.lower)==1){cvs.lower<- rep(cvs.lower,2*T)}}}
+if(GroupSizes=="n"){if(Tailed=="upper"){if(length(cvs.upper)==1){cvs.upper<- rep(cvs.upper,2*T)}}}
+
+if(GroupSizes=="n"&Tailed=="two"){if(length(cvs.lower)<2*T|length(cvs.upper)<2*T){stop("For variable lower and upper signaling thresholds, the dimension of cvs.lower and cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
+if(GroupSizes=="n"&Tailed=="lower"){if(length(cvs.lower)<2*T){stop("For variable lower signaling threshold, the dimension of cvs.lower must be at least twice the value of SampleSize.",call. =FALSE)}}
+if(GroupSizes=="n"&Tailed=="upper"){if(length(cvs.upper)<2*T){stop("For variable lower signaling threshold, the dimension of cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
+                         }
+
+
+if(aux_thres[1]==1|aux_thres[2]==1){stat_sca<- 1}else{stat_sca<- 0}
+
+
+
+
 
 
 #######################
@@ -225,6 +261,8 @@ if(Tailed=="upper"){
 
 CV<- cvs.upper
 					
+i_min<- 1; while(sum(GroupSizes[1:i_min])<D){i_min<- i_min+1}    # Adjusting the group sizes for the parameter D for late start
+if(i_min<length(GroupSizes)){GroupSizes<- c(sum(GroupSizes[1:i_min]),GroupSizes[(i_min+1):length(GroupSizes)])}else{GroupSizes<- sum(GroupSizes)}
 imax<- length(GroupSizes) # The number of tests performed, including final time T.
 mmu<- GroupSizes
 mu0<- mmu%*%upper.tri(matrix(0,length(mmu),length(mmu)),diag=T)*1
@@ -297,6 +335,8 @@ if(Tailed=="two"|Tailed=="lower"){# open
 
 
 imin<- M
+i_min<- 1; while(sum(GroupSizes[1:i_min])<D){i_min<- i_min+1}    # Adjusting the group sizes for the parameter D for late start
+if(i_min<length(GroupSizes)){GroupSizes<- c(sum(GroupSizes[1:i_min]),GroupSizes[(i_min+1):length(GroupSizes)])}else{GroupSizes<- sum(GroupSizes)}
 
 mmu<- GroupSizes       # An array of the expected counts at each test
 
@@ -951,13 +991,34 @@ colnames(Measures)<- c("RR","Power","ESignalTime","ESampleSize")
 
 if(Tailed=="two"){res<- list(AlphaSpend_lower,AlphaSpend_upper,events_lower,events_upper,Measures); names(res)<- c("AlphaSpend_lower","AlphaSpend_upper","events_lower","events_upper","Performance") }else{res<- list(AlphaSpend,Measures); names(res)<- c("AlphaSpend","Performance")}
 
+auxDh<- sum(D>GroupSizes)+1
+if(auxDh>1){
+if(length(GroupSizes)>auxDh){musnew<- c(sum(GroupSizes[1:auxDh]),GroupSizes[(1+auxDh):length(GroupSizes)])}else{musnew<- sum(GroupSizes)}
+message(c("In order to attend the required D, the alpha spending was calculated for the following group sizes:"),domain = NULL, appendLF = TRUE)
+musnew<- list(musnew); names(musnew)<- "New group sizes"; print(musnew)
+           }
+
 return(res)
 
-}## CLOSE DE WHOLE FUNCTION
+}## CLOSE THEE WHOLE FUNCTION
+#####################
+#####################
+#####################
 
-# Example
+# Example 1
 
 #res<- Performance.Threshold.Poisson(SampleSize=90,CV.lower=c(2.5,2.6,2.7,2.8),CV.upper=c(3,3.1,3.2,3.3),GroupSizes=c(25,20,20,25),Tailed="two",Statistic="MaxSPRT",Delta="n",RR=c(2,1.2,1,3))
+
+# Example 2
+
+#### Suppose one wants to use the following critical values, per test, in the scale of the number of events:
+# cv.events<- c(1,2,4)
+#### Here are the expected number of events per test:
+# mus<- c(0.05,0.5,1.2)
+### Here we calculate the performance measures up to the third test.
+# Performance.Threshold.Poisson(SampleSize=sum(mus),CV.events.upper=cv.events,M=1,D=0.5,GroupSizes=mus,Statistic="MaxSPRT",RR=2)
+
+
 
 
 

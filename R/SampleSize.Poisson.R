@@ -1,10 +1,47 @@
 #----------SampleSize.Poisson.R-------------------------------------------------------------------
 
-# Version of Dez/2016
+# Version of August/2021
 
-SampleSize.Poisson <-
-function(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.000001,Tailed="upper")
+SampleSize.Poisson<-
+function(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.001,alphaSpend="n",rho="n",gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",Tailed="upper")
 {  
+
+if(length(alphaSpend)>1){stop("The 'alphaSpend' parameter must contain a single number among 1, 2, 3 and 4. Read the user manual for more details on the usage of the SampleSize.Poisson function.",call. =FALSE)}
+
+# Searching for the sample size in the case of alphaSpend different from the default.
+if(alphaSpend!="n"){ ## Open 1
+
+if(length(power)>1){stop("For alphaSpend='n', enter with only one value for power.",call. =FALSE)}
+if(length(RR)>1){stop("For alphaSpend='n', enter with only one value for RR.",call. =FALSE)}
+
+
+SizeAux<- max(D,1)
+pow<- 0
+Size<- SizeAux
+while(pow<power){
+Size<- Size+SizeAux
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+pow<- as.numeric(res$Performance[2])    
+                 }
+
+S1<- max(D,SizeAux/2); S2<- Size; Size<- (S1+S2)/2
+lim<- log(power/precision)/log(2)+1
+count<- 0
+while(abs(pow-power)>precision&count<lim){
+count<- count+1
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+pow<- as.numeric(res$Performance[2])
+  if(pow>power){S2<- Size}else{S1<- Size}
+  Size<- (S1+S2)/2
+                                          }
+
+cvs<- res$cvs; per<- res$Performance; res<- list(Size,cvs,per); names(res)<- c("SampleSize","cvs","Performance")
+
+return(res)
+
+                   }else{ ## Close 1 and start the sample size for the defalt alphaSpend="n"
+
+
 
 if(sum(Tailed==c("upper","lower","two"))==0){stop(" 'Tailed' must be chosen among 'upper', 'lower' or 'two'.",call. =FALSE)}
 if(is.numeric(RR)==FALSE){stop("'RR' must be a vector of numbers.",call. =FALSE)}
@@ -77,7 +114,7 @@ if(teste1==1){stop(out,call.=FALSE)}
 
 ## calculates the critical value
 
-cv<- CV.Poisson(SampleSize=T,D,M,alpha,Tailed=tai)
+cv<- suppressMessages(CV.Poisson(SampleSize=T,D,M,alpha,Tailed=tai))
 
 ## calculates power and signal time for relative risk equal to 2
 
@@ -195,11 +232,13 @@ if(length(power)==1){plot(res[,1],res[,3],type="l",xlab="RR",ylab="Sample Size")
 
 
 SampleSize_by_RR_Power<- res
-return(SampleSize_by_RR_Power)   
+return(SampleSize_by_RR_Power)  
+                                  } # Closes the part for sample size using the defalt alphaSpend="n" 
 
 }
 
 ### Example
-#SampleSize.Poisson(alpha=0.05,power=c(0.9,0.95),M=1,D=0,RR=c(0.7,1.5),precision=0.000001,Tailed="two")
+#SampleSize.Poisson(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.000001,alphaSpend=1,rho=1,Statistic="MaxSPRT")
+
 
 
