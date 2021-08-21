@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.3.2\cr
-Date: \tab 2021-08-14\cr
+Version: \tab 3.3.3\cr
+Date: \tab 2021-08-21\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -487,6 +487,10 @@ Version 3.3.1, Feb 2021\cr
 \cr
 Version 3.3.2, Aug 2021\cr
 -     Adjusted functions: \code{Analyze.Poisson}, \code{AnalyzeSetUp.Poisson}, \code{Performance.AlphaSpend.Poisson}, and \code{SampleSize.Poisson} for the surveillance of COVID-19 vaccination.\cr
+-     Updated user guide.\cr
+\cr
+Version 3.3.3, Aug 2021\cr
+-     Adjusted \code{Performance.AlphaSpend.Poisson} function.\cr
 -     Updated user guide.\cr
 \cr
 }

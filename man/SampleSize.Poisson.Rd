@@ -121,7 +121,7 @@ Development of the \code{SampleSize.Poisson} function was funded by:\cr
 ##  Sample size calculated for the non-flat threshold using the
 ##  power-type alpha spending (alphaSpend=1), with rho=1,
 ##  to obtain a power of 80% for a relative risk of 2.5, delay to
-##  start the surveillance equal to 2 (D=1), and the null hypo-
+##  start the surveillance equal to 1 (D=1), and the null hypo-
 ##  thesis can be rejected with 3 events (M=3) under an alpha
 ##  level of 5%. The critical values will be shown in the scale
 ##  of the MaxSPRT statistic.

@@ -276,11 +276,11 @@ i<- i+1
 
 # Calculating expected sample size, expected number of cases to signal, power, and threshold
 power<- p1[1,1+1]
-ETS<- p1[1,1+1] 
+ETS<- mu[1]*p1[1,1+1] 
 
 CVS<- rep(0,i)
 alphaspend<- rep(0,ncol(p)); alphaspend[1]<- p[1,2]
-for(j in 2:i){power<- power+p1[j,j+1]; ETS<- ETS+j*p1[j,j+1];alphaspend[j]<- p[j,j+1]+alphaspend[j-1];CVS[j]<- LLR(j,mu[j])}
+for(j in 2:i){power<- power+p1[j,j+1]; ETS<- ETS+mu[j]*p1[j,j+1];alphaspend[j]<- p[j,j+1]+alphaspend[j-1];CVS[j]<- LLR(j,mu[j])}
 ETS<- ETS/power
 
 # Calculating expected sample size

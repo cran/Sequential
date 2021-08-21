@@ -112,7 +112,7 @@ if(SampleSize<=mu0+sum(inputSetUp[6,1:(test-1)])){current_alpha<- alpha}else{
 if(max(inputSetUp[5,])<alpha-0.00000001&inputSetUp[1,7]==0&events+sum(events_old)>=M){
 
 if(AlphaSpend=="n"){
-  if(inputSetUp[1,8]==0){ # for Wald type of alpha spending
+  if(inputSetUp[1,8]==0){ # for Wald type alpha spending
                          if(inputSetUp[1,9]<as.numeric(events+sum(inputSetUp[4,]))){
                          current_alpha<- alpha
                                                                                    }else{current_alpha<- as.numeric(alphaspend[events+sum(inputSetUp[4,])]) }

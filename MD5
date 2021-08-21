@@ -1,8 +1,8 @@
-c29541b45901a920589f9cd2c0539c65 *DESCRIPTION
+6e07fd487baa9404cf62a30f9b99916e *DESCRIPTION
 aa576ffe7229b7026dd1f1d8a24688e0 *NAMESPACE
 781f678e6e3c3bcd3e7e689c0744ac9d *R/Analyze.Binomial.R
 de6dd0a0512efbfece347015d8446f73 *R/Analyze.CondPoisson.R
-392652a03bf7856237467670109b9637 *R/Analyze.Poisson.R
+360dd965e07ac5748d3c707bc2093a31 *R/Analyze.Poisson.R
 42ae221d4ab98200e9c119a8685e578b *R/Analyze.wBinomial.R
 28752ebfdf59da0c0e7813b02bdaaafd *R/AnalyzeSetUp.Binomial.R
 b844820eb2cdd62783b3ba9c5a1fdd6f *R/AnalyzeSetUp.CondPoisson.R
@@ -14,7 +14,7 @@ d5e0384991952741c8ce6821e7f64432 *R/AnalyzeSetUp.wBinomial.R
 ff0f0fd954b8ae2a00f2a606abd7a023 *R/Optimal.Binomial.R
 57b6f7c127a9e1d460c7bf18f54b26fa *R/Performance.AlphaSpend.Binomial.R
 5a3aa50feceb8cf668590ad8773b551c *R/Performance.AlphaSpend.CondPoisson.R
-a884e34e68665c7537d7632a32d3bc2d *R/Performance.AlphaSpend.Poisson.R
+96b92c2541c47ee01898f622719fa464 *R/Performance.AlphaSpend.Poisson.R
 3ce9e22177943bef02fad45252f02cd7 *R/Performance.Binomial.R
 69298d3eb56eb43d66bbaef52a7a4ba4 *R/Performance.CondPoisson.R
 8ce11028f5d3ee16c348b4af53f25882 *R/Performance.Poisson.R
@@ -23,7 +23,7 @@ b77dcd45cdfafaffa7186c38ae24976f *R/Performance.Threshold.Binomial.R
 3fb4e68557bca5711998e5fc2354fe87 *R/Performance.Threshold.Poisson.R
 653367a8a78bc261b49a0a287e569903 *R/SampleSize.Binomial.R
 4bda31a97a1867179e4f23f2ab5649f4 *R/SampleSize.CondPoisson.R
-20ecfc2bb0f2cc2b9588922efcee541e *R/SampleSize.Poisson.R
+1c2b4afa0ea2516d1f4ef17755b39590 *R/SampleSize.Poisson.R
 335b7fa81e73e1c6da3bfccba10ccb79 *man/Analyze.Binomial.Rd
 2466b89996be931af8b32d686c15b7cf *man/Analyze.CondPoisson.Rd
 01c301ad8ab0b371ec7f7fffd73d0c42 *man/Analyze.Poisson.Rd
@@ -47,5 +47,5 @@ f5cd188a0d60af1cd94b364a36dd21f9 *man/Performance.Threshold.Binomial.Rd
 e7e0b74d7b5f3bda9771f33ea9b4dc99 *man/Performance.Threshold.Poisson.Rd
 d9c5580b6aa541962476a16974da84ab *man/SampleSize.Binomial.Rd
 d0f9834cc7ad04d851b4417dd03d758a *man/SampleSize.CondPoisson.Rd
-c3ea6c477a564842ec4858aa55285095 *man/SampleSize.Poisson.Rd
-d877aeff4a80e07affa54a59064111f4 *man/Sequential-package.Rd
+32576b668f3bd074c4efab6076703d8d *man/SampleSize.Poisson.Rd
+680782dbf775f6e8576515a23feaadca *man/Sequential-package.Rd

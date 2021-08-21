@@ -23,9 +23,9 @@ Size<- Size+SizeAux
 res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
 pow<- as.numeric(res$Performance[2])    
                  }
-
+Sizeini<- Size
 S1<- max(D,SizeAux/2); S2<- Size; Size<- (S1+S2)/2
-lim<- log(power/precision)/log(2)+1
+lim<- log(power/precision,2)/log(2)+1
 count<- 0
 while(abs(pow-power)>precision&count<lim){
 count<- count+1
@@ -34,6 +34,21 @@ pow<- as.numeric(res$Performance[2])
   if(pow>power){S2<- Size}else{S1<- Size}
   Size<- (S1+S2)/2
                                           }
+
+if(pow<power-precision){
+Size<- Sizeini
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+pow<- as.numeric(res$Performance[2])
+frac<- 0
+while(pow>power){
+frac<- frac+0.01
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size-frac,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+pow<- as.numeric(res$Performance[2])
+                }
+Size<- Size-frac+0.01
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+pow<- as.numeric(res$Performance[2])
+                         }
 
 cvs<- res$cvs; per<- res$Performance; res<- list(Size,cvs,per); names(res)<- c("SampleSize","cvs","Performance")
 
@@ -172,7 +187,7 @@ result<- faux(Tm, D, M, RR,alpha)
 pow<- result$Power.SignalTime[1]
 cont<- 0
 poder<- matrix(0,31,1)
-lim<- log((T2-T1)/precision)/log(2)+1
+lim<- log((T2-T1)/precision,2)/log(2)+1
 while((pow<power|power+precision<pow)&cont<lim){
 
                                        if(pow>power){T2<- Tm;Told<- Tm}else{T1<- Tm}
