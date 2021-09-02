@@ -144,7 +144,7 @@ if(aux.events==1){
 if(is.numeric(CV.lower)+is.numeric(CV.upper)>0){stop("Specify the threshold scale either in terms of 'CV.upper' or in terms of 'CV.events.upper', but do not use both types concomitantly.",call. =FALSE)}
 
 CV.upper<- rep(0,length(CV.events.upper))
-for(i in 1:length(CV.events.upper)){CV.upper[i]<- LLR(CV.events.upper[i],GroupSizes[i],Tailed)} 
+for(i in 1:length(CV.events.upper)){CV.upper[i]<- LLR(CV.events.upper[i],sum(GroupSizes[1:i]),Tailed)} 
 cvs.upper<- CV.upper
                  }
 
@@ -154,7 +154,9 @@ cvs.upper<- CV.upper
 ### More checks ### ADJUSTMENT NEEDED FOR GroupSizes WHEN Statistic = "Pocock", "OBrien-Fleming", "Wang-Tsiatis" 
 
 if(length(GroupSizes)==1){
-if(GroupSizes=="n"&Statistic=="MaxSPRT"){ method<- "continuous"}else{method<- "group";GroupSizes=1}                                              
+if(GroupSizes=="n"&Statistic=="MaxSPRT"){ method<- "continuous"}else{method<- "group"}
+if(GroupSizes=="n"&Statistic!="MaxSPRT"){method<- "group";GroupSizes=1}     
+if(GroupSizes!="n"){method<- "group"}                                         
                          }
 
 if(length(GroupSizes)>1){method<- "group"}
@@ -173,10 +175,10 @@ if(length(Groups)==1){# 1
    if(Groups!="n"){
 if(is.numeric(Groups)==FALSE){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
 if(sum(Groups<=0)>0){stop("'GroupSizes' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(sum(Groups==round(Groups))!=length(Groups)){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
+#if(sum(Groups==round(Groups))!=length(Groups)){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
 
 if(Groups==0){stop("'Groups' must be a single number or a vector summing up 'SampleSize'.",call. =FALSE)}
-if(SampleSize/Groups!=round(SampleSize/Groups)){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call. =FALSE)}
+if(Groups!=SampleSize){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call. =FALSE)}
 if(Groups>SampleSize){stop("If 'GroupSizes' is a single number, then the maximum length of surveillance, 'SampleSize', must be a multiple of 'GroupSizes'.",call.=FALSE)}
 if(SampleSize/Groups==round(SampleSize/Groups)){Groups<- rep(Groups,SampleSize/Groups);GroupSizes<- Groups}
 if(length(cvs.lower)==1){if(is.numeric(cvs.lower)==TRUE){cvs.lower<- rep(cvs.lower,length(Groups))}}
@@ -269,7 +271,7 @@ mu0<- mmu%*%upper.tri(matrix(0,length(mmu),length(mmu)),diag=T)*1
 mu0<- as.vector(mu0)                  # An array of the expected counts at each of the tests
 		
 								# mu[i] is the commulative expected count at the i'th test
-mu0[imax]=T							# Sets the expected count at the last test to equal T
+mu0[imax]=T							# Sets the expected count at the last test equal to T
 
 absorb = seq(length=imax,from=0,by=0)		# Contains the number of events needed at time mu[i] in order to reject H0
 for(i in 1:imax)

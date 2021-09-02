@@ -165,7 +165,7 @@ alphat<- 1
 count<- 0
 CVm<- ceiling((CV1+CV2)/2)
 
-limc<- ceiling(log(CV2-CV1)/log(2))
+limc<- ceiling(log(CV2-CV1,2)/log(2))
 while(CVm-CV1>=1&count<limc){
 count<- count+1
 y<- matrix(seq(0,CVm-1),,1); p<- apply(y,1,sumspy) 
@@ -201,7 +201,7 @@ mu0h<- sum(mu0_old)+mu0
 alphas<- current_alpha
 CV<- qpois(1-alphas,mu0h)+1
 p<- rep(0,CV)
-for(x in 0:(CV-1)){p[x+1]<- dpois(x,mu0)}
+for(x in 0:(CV-1)){p[x+1]<- dpois(x,mu0h)}
 actualspent<- 1-ppois(CV-1,mu0h)
                    }
 

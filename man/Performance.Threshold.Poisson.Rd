@@ -98,11 +98,11 @@ Development of the Performance.Threshold.Poisson function was funded by:\cr
 #  and lower and upper thresholds with irregular
 #  sample sizes 25, 20, 20, and 25. 
 #  The statistical performance is evaluated for four different
-#  target RR= RR= 2, 1.2, 1, 3:
+#  target RR= 1, 1.2, 2, 3:
 
 # res<- Performance.Threshold.Poisson(SampleSize=90,CV.lower=c(2.5,2.6,2.7,2.8),
 # CV.upper=c(3,3.1,3.2,3.3),GroupSizes=c(25,20,20,25),Tailed="two",
-# Statistic="MaxSPRT",Delta="n",RR=c(2,1.2,1,3))
+# Statistic="MaxSPRT",Delta="n",RR=c(1,1.2,2,3))
 
 ## Example 2
 #  Suppose that the Analyze.Poisson function was used for an actual analysis.
@@ -111,7 +111,7 @@ Development of the Performance.Threshold.Poisson function was funded by:\cr
 #  Performance.Threshold.Poisson.
 #  For example, suppose that the following thresholds in the scale of the events
 #  were printed by Analyze.Poisson for the first three tests:
-#     cv.events<- c(1,2,4)
+#     cv.events<- c(2,3,5)
 #  which were obtained for the following specific sample sizes:
 #     mus<- c(0.05,0.5,1.2)
 #  Calculating the cumulative power, the expected time to signal, and 
@@ -121,7 +121,7 @@ Development of the Performance.Threshold.Poisson function was funded by:\cr
 # GroupSizes=mus, Statistic="MaxSPRT",RR=2)
 
 
-# This returns a power about 25%.
+# This returns a power about 30%.
 
 }
 

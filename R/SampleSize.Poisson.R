@@ -24,7 +24,7 @@ res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho
 pow<- as.numeric(res$Performance[2])    
                  }
 Sizeini<- Size
-S1<- max(D,SizeAux/2); S2<- Size; Size<- (S1+S2)/2
+S1<- max(D,SizeAux/2); S2<- Size; if(abs(pow-power)>precision){Size<- (S1+S2)/2}
 lim<- log(power/precision,2)/log(2)+1
 count<- 0
 while(abs(pow-power)>precision&count<lim){

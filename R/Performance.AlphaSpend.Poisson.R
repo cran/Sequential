@@ -284,7 +284,7 @@ for(j in 2:i){power<- power+p1[j,j+1]; ETS<- ETS+mu[j]*p1[j,j+1];alphaspend[j]<-
 ETS<- ETS/power
 
 # Calculating expected sample size
-ESS<- ETS+(1-power)*SampleSize
+ESS<- ETS*power+(1-power)*SampleSize
 
 perf<- c(RR,power,ETS,ESS)
 names(perf)<- c("RR","power","ESignalTime","ESampleSize")

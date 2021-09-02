@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.3.3\cr
-Date: \tab 2021-08-21\cr
+Version: \tab 3.4\cr
+Date: \tab 2021-08-26\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -279,7 +279,7 @@ accomplish with target statistical powers through the functions \code{SampleSize
 
 
 \author{ Ivair Ramos Silva, Martin Kulldorff.\cr
-Maintainer: Ivair Ramos Silva <jamesivair@yahoo.com.br>
+Maintainer: Ivair Ramos Silva <ivair@ufop.edu.br>
 }
 
 \references{
@@ -491,6 +491,10 @@ Version 3.3.2, Aug 2021\cr
 \cr
 Version 3.3.3, Aug 2021\cr
 -     Adjusted \code{Performance.AlphaSpend.Poisson} function.\cr
+-     Updated user guide.\cr
+\cr
+Version 3.4, Aug 2021\cr
+-     Adjusted \code{Analyze.Poisson} function.\cr
 -     Updated user guide.\cr
 \cr
 }
