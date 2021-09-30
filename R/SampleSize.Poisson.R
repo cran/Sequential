@@ -1,6 +1,6 @@
 #----------SampleSize.Poisson.R-------------------------------------------------------------------
 
-# Version of August/2021
+# Version of Set/2021
 
 SampleSize.Poisson<-
 function(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.001,alphaSpend="n",rho="n",gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",Tailed="upper")

@@ -1,9 +1,9 @@
 
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at August-2021
+# Function to setup parameters for the unpredictable Poisson MaxSPRT surveillance - Version edited at August-2021
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,D=0,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
+AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,D=0,M=1,AlphaSpendType="Wald",rho="n",R0=1,title="n",address="n",Tailed="upper")
 {
 
 M1<- M
@@ -53,7 +53,7 @@ stop(c("There already exists a file called"," ",name1,".
 If you really want to overwrite the existent file, please, go to ",address," 
 to delete the file '",name,"'. Alternatively, you can delete that file by using the 
 following commands: ", "setwd(","'",getwd(),"'",")","; ", "file.remove(","'",name,"'","), 
-then try 'AnalyzeSetUp.Binomial' again."),call. =FALSE)
+then try 'AnalyzeSetUp.Poisson' again."),call. =FALSE)
                            }
 MinCases<- M
 
@@ -102,7 +102,7 @@ ProdLog <- function(z){
 Perror_I<- function(cv){
  
 z = -exp(-1-cv/c)
-mu = -c * ProdLog(z) 		#The expected counts under H0 that is needed to reject the null with i number of adverse events
+mu = -c * ProdLog(z)/R0 		#The expected counts under H0:RR<=1 that is needed to reject the null with i number of adverse events
 mtemp = c(0,mu)
 mmu = diff(mtemp) 		#The marginal difference of the mu[] vector
 imin=MinCases
@@ -134,24 +134,24 @@ dim(p) = c(imax-1,imax)								# i in 1:imax-1 is the rows and j in 1:imax is th
 # ------------------------------------------------------------------------------------------
 
 if(imin==MinCases) {
-	for(s in 1:imin) p[imin,s] = dpois(s-1,mu[imin])			# Probability of having s-1 cases at time mu[imin], not rejectinh H0
-	p[imin,imin+1] = 1-ppois(imin-1,mu[imin])				# Probability of having s+ cases at time mu[imin], rejectinh H0
+	for(s in 1:imin) p[imin,s] = dpois(s-1,R0*mu[imin])			# Probability of having s-1 cases at time mu[imin], not rejectinh H0
+	p[imin,imin+1] = 1-ppois(imin-1,R0*mu[imin])				# Probability of having s+ cases at time mu[imin], rejectinh H0
 	} # end if
 
 if(imin>MinCases) {
-	for(s in 1:imin) p[imin-1,s]=dpois(s-1,mu[imin-1])		# Probability of having s-1 cases at time mu[imin-1], not rejecting H0
-	p[imin-1,imin+1] = 1-ppois(imin-1,mu[imin-1])				# Probability of having s+ cases at time mu[imin-1], rejecting H0
+	for(s in 1:imin) p[imin-1,s]=dpois(s-1,R0*mu[imin-1])		# Probability of having s-1 cases at time mu[imin-1], not rejecting H0
+	p[imin-1,imin+1] = 1-ppois(imin-1,R0*mu[imin-1])				# Probability of having s+ cases at time mu[imin-1], rejecting H0
 	for(s in 1:imin) 								# Probability of having s-1 cases at time mu[imin], not rejectinh H0
 		for(k in 1:s) 
-			p[imin,s]=p[imin,s]+p[imin-1,k]*dpois(s-k,mmu[imin])	
+			p[imin,s]=p[imin,s]+p[imin-1,k]*dpois(s-k,R0*mmu[imin])	
 	for(k in 1:imin) 
-		p[imin,imin+1] = p[imin,imin+1] + p[imin-1,k]*(1-ppois(imin-k,mmu[imin]))
+		p[imin,imin+1] = p[imin,imin+1] + p[imin-1,k]*(1-ppois(imin-k,R0*mmu[imin]))
 } # end if 
 
 funcaux1<- function(ii){j<- matrix(seq(1,(ii-1)),,1); ptes<- apply(j,1,funcaux2,ii); return(ptes)}
-funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,mmu[ii])) ) }
-funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,mmu[ii])) ) }
-funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,mmu[ii])) ) ) }
+funcaux2<- function(jj,ii){k<- seq(1,jj); return(sum(p[ii-1,k]*dpois(jj-k,R0*mmu[ii])) ) }
+funcaux3<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*dpois(ii-k,R0*mmu[ii])) ) }
+funcaux4<- function(ii){k<- seq(1,ii-1); return(sum(p[ii-1,k]*(1-ppois(ii-k,R0*mmu[ii])) ) ) }
 
 # Calculating the remaining rows in the p[][] matix
 # -------------------------------------------------
@@ -172,7 +172,7 @@ i<- i+1
 
 pp=0
 if(imax>imin)
-for(k in 1:(imax-1)) pp=pp+p[imax-1,k]*(1-ppois(imax-k,T-mu[imax-1])) #Calculates the last probability to signal before time SampleSize
+for(k in 1:(imax-1)) pp=pp+p[imax-1,k]*(1-ppois(imax-k,R0*T-R0*mu[imax-1])) #Calculates the last probability to signal before time SampleSize
 
 
 # Sums up the probabilities of absorbing states when a signal occurs, to get the alpha level
@@ -185,7 +185,7 @@ for(i in imin:(imax-1)){ alpha_I=alpha_I+p[i,i+1] ; Salpha[i]<- p[i,i+1] }
 alpha_I=alpha_I+pp ; Salpha[imax-1]<- Salpha[imax-1]+pp
 
 
-}else{alpha_I<- 1-ppois(imax-1,mu[imax]); Salpha<- rep(0,imax-1) ; Salpha[imax-1]<-  1-ppois(imax-1,mu[imax])} # end if(imin<imax)
+}else{alpha_I<- 1-ppois(imax-1,R0*mu[imax]); Salpha<- rep(0,imax-1) ; Salpha[imax-1]<-  1-ppois(imax-1,R0*mu[imax])} # end if(imin<imax)
 
 return(list(alpha_I,Salpha,mu[1:(imax-1)]))
 
@@ -253,12 +253,12 @@ sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
 
 
 if(AlphaSpendType=="Wald"){k<- length(sa)}
-inputSetUp<- as.data.frame(matrix(0,7,11))
+inputSetUp<- as.data.frame(matrix(0,7,12))
 
 if(AlphaSpendType=="Wald"){alphaspend<- sum_sa; M<- sum(alphaspend==0)+1} #Target alpha spending to be spent event by event.
 
 inputSetUp[1,]<- 0
-inputSetUp[1,1:11]<- c(0,SampleSize,alpha,M,1,0,0,pho,j,D,M1) 
+inputSetUp[1,1:12]<- c(0,SampleSize,alpha,M,1,0,0,pho,j,D,M1,R0) 
 inputSetUp[2,]<- 0
 inputSetUp[2,1]<- 0 # says if the surveillance was started or not.
 inputSetUp[3,]<- 0
@@ -287,4 +287,4 @@ setwd(safedir)
 } ## end function AnalyzeSetUp.Poisson
 
 
-# AnalyzeSetUp.Poisson(name="teste",SampleSize=6,alpha=0.05,D=2,M=1,AlphaSpendType="Wald",rho="n",title="teste",address="C:/Users/ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO",Tailed="upper")
+# AnalyzeSetUp.Poisson(name="teste",SampleSize=6,alpha=0.05,D=2,M=1,AlphaSpendType="Wald",rho="n",R0=1,title="teste",address="C:/Users/ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO",Tailed="upper")

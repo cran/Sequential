@@ -1,4 +1,4 @@
-Performance.AlphaSpend.Poisson<- function(SampleSize, alpha=0.05,D=0,M=1,RR,alphaSpend=1,rho=0.5,gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",Tailed="upper"){
+Performance.AlphaSpend.Poisson<- function(SampleSize, alpha=0.05,D=0,M=1,RR,alphaSpend=1,rho=0.5,R0=1,gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",Tailed="upper"){
 
 
 # ------------------- INPUT VARIABLE ----------------------------------------------------------
@@ -7,6 +7,7 @@ Performance.AlphaSpend.Poisson<- function(SampleSize, alpha=0.05,D=0,M=1,RR,alph
 # alphaSpend: is a number among 1, 2, 3, 4. Each representing one of the shapes shown in the paper.
 # RR= relative risk for performance calculation
 # rho: is a parameter when alphaSpend=1 
+# R0: A positive real-valued number for the relative risk under H0, where R<=R0 if "Tailed=lower", R>=R0 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.
 # gamma: is a parameter when alphaSpend=4 
 # Statistic = test statistic scale that the user wants for the threshold output 
 # Delta = number in (0, 0.5] for the test statistic of Wang-Tsiatis
@@ -33,7 +34,7 @@ if(is.numeric(alpha)==FALSE){stop("The 'alpha' level must be a single positive n
 if(alpha<=0|alpha>=1){stop("The 'alpha' level must be a single positive number in the (0,1) interval.",call. =FALSE)}
 
 if(length(rho)>1){stop("The parameter 'rho' for 'alphaSpend=1' must be a single positive number.",call. =FALSE)}
-if(is.numeric(rho)==FALSE){stop("The parameter 'rho' for 'alphaSpend=1' must be a single positive number.",call. =FALSE)}
+if(is.numeric(rho)==FALSE&alphaSpend==1){stop("The parameter 'rho' for 'alphaSpend=1' must be a single positive number.",call. =FALSE)}
 if(rho<=0){stop("The parameter 'rho' for 'alphaSpend=1' must be a single positive number.",call. =FALSE)}
 
 if(alphaSpend==4){
@@ -106,15 +107,15 @@ if(alphaSpend==4){alphashape<- alpha_spendT4}
 LLR <- function(cc,uu,Tai=Tailed) {
 
 if(Tai=="upper"){
-	if(cc<=uu) x=0
-	if(cc>uu) x = (uu-cc) + cc*log(cc/uu)
+	if(cc<=R0*uu) x=0
+	if(cc>R0*uu) x = (R0*uu-cc) + cc*log(cc/(R0*uu))
                    }
 if(Tai=="lower"){
-	if(cc>=uu) x=0
-	if(cc<uu) x = (uu-cc) + cc*log(cc/uu)
+	if(cc>=R0*uu) x=0
+	if(cc<R0*uu) x = (R0*uu-cc) + cc*log(cc/(R0*uu))
                    }
 if(Tai=="two"){	
-	x = (uu-cc) + cc*log(cc/uu)
+	x = (R0*uu-cc) + cc*log(cc/(R0*uu))
                    }
 	return(x)
 	}
@@ -126,17 +127,17 @@ LLR2 <- function(cc,uu,Tai=Tailed)
 {
 
 if(Tai=="upper"){
-	if(cc<=uu) x=0
-     if(cc>uu) x<- (cc-uu)/sqrt(uu)
+	if(cc<=R0*uu) x=0
+     if(cc>R0*uu) x<- (cc-R0*uu)/sqrt(R0*uu)
                    }
 
 if(Tai=="lower"){
-	if(cc>=uu) x=0
-      if(cc<uu) x<- (cc-uu)/sqrt(uu)
+	if(cc>=R0*uu) x=0
+      if(cc<R0*uu) x<- (cc-R0*uu)/sqrt(R0*uu)
                    }   
 
 if(Tai=="two"){
-    x<- (cc-uu)/sqrt(uu)
+    x<- (cc-R0*uu)/sqrt(R0*uu)
                  } 
 return(abs(x))
 
@@ -147,19 +148,19 @@ LLR3 <- function(cc,uu,Tai=Tailed)
 {
 
 if(Tai=="upper"){
-	if(cc<=uu) x=0
-     if(cc>uu) x<- (cc-uu)/sqrt(uu)
+	if(cc<=R0*uu) x=0
+     if(cc>R0*uu) x<- (cc-R0*uu)/sqrt(R0*uu)
                    }
 
 if(Tai=="lower"){
-	if(cc>=uu) x=0
-      if(cc<uu) x<- (cc-uu)/sqrt(uu)
+	if(cc>=R0*uu) x=0
+      if(cc<R0*uu) x<- (cc-R0*uu)/sqrt(R0*uu)
                    }   
 
 if(Tai=="two"){
-    x<- (cc-uu)/sqrt(uu)
+    x<- (cc-R0*uu)/sqrt(R0*uu)
                  } 
-return(sqrt(uu/SampleSize)*abs(x))
+return(sqrt(R0*uu/SampleSize)*abs(x))
 
 }
 
@@ -170,19 +171,19 @@ LLR4 <- function(cc,uu,Tai=Tailed)
 {
 
 if(Tai=="upper"){
-	if(cc<=uu) x=0
-     if(cc>uu) x<- (cc-uu)/sqrt(uu)
+	if(cc<=R0*uu) x=0
+     if(cc>R0*uu) x<- (cc-R0*uu)/sqrt(R0*uu)
                    }
 
 if(Tai=="lower"){
-	if(cc>=uu) x=0
-      if(cc<uu) x<- (cc-uu)/sqrt(uu)
+	if(cc>=R0*uu) x=0
+      if(cc<R0*uu) x<- (cc-R0*uu)/sqrt(R0*uu)
                    }   
 
 if(Tai=="two"){
-    x<- (cc-uu)/sqrt(uu)
+    x<- (cc-R0*uu)/sqrt(R0*uu)
                  } 
-return(((uu/SampleSize)^(0.5-Delta))*abs(x))
+return(((R0*uu/SampleSize)^(0.5-Delta))*abs(x))
 
 }
 
@@ -203,8 +204,8 @@ while(auxD==0){
 mu1<- 0 ; mu2<- T
 mut<- (mu1+mu2)/2
 alphas<- alphashape(mut)
-while(abs(1-ppois(M-1,mut)-alphas)>0.0000001&abs(mut-T)>0.000001){
-if(1-ppois(M-1,mut)>alphas){mu2<- mut}else{mu1<- mut}
+while(abs(1-ppois(M-1,R0*mut)-alphas)>0.0000001&abs(mut-T)>0.000001){
+if(1-ppois(M-1,R0*mut)>alphas){mu2<- mut}else{mu1<- mut}
 mut<- (mu1+mu2)/2
 alphas<- alphashape(mut)
                                                                  }
@@ -221,10 +222,10 @@ p1<- matrix(0,round(T*4),round(T*4)+1)
 # Calculating the M-th row in the p[][] matrix for which there is a chance to reject H0
 
 for(s in 1:M){ 
-p[M,s]=dpois(s-1,mu[M])		  # Probability of having s-1 cases at time mu[M] under H0
+p[M,s]=dpois(s-1,R0*mu[M])		  # Probability of having s-1 cases at time mu[M] under H0
 p1[M,s]=dpois(s-1,RR*mu[M])	  # Probability of having s-1 cases at time mu[M] under the alternative	
              }
-p[M,M+1]=1-ppois(M-1,mu[M])     # Probability of rejecting H0 at time mu[M] under H0
+p[M,M+1]=1-ppois(M-1,R0*mu[M])     # Probability of rejecting H0 at time mu[M] under H0
 p1[M,M+1]=1-ppois(M-1,RR*mu[M]) # Probability of rejecting H0 at time mu[M] under the alternative
 
 # Defining the starting target alpha spend
@@ -245,16 +246,16 @@ while(teste==0&abs(mu1-mu2)>0.00000000001){ # open while 2
 
 for(j in 1:(i-1)){							# This loop calculates the p[][] matrix, one column at a time, from left to right
 		for(k in 1:j){ 
-			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,mut-mu[i-1])	# Calculates the standard p[][] cell values
+			p[i,j]=p[i,j]+p[i-1,k]*dpois(j-k,R0*(mut-mu[i-1]))	# Calculates the standard p[][] cell values
                   p1[i,j]=p1[i,j]+p1[i-1,k]*dpois(j-k,(mut-mu[i-1])*RR)
                          } 
                  }
 	for(k in 1:(i-1)){
-		p[i,i]=p[i,i]+p[i-1,k]*dpois(i-k,mut-mu[i-1])		# Calculates the diagonal under the absorbing states, which requires a unique formula
+		p[i,i]=p[i,i]+p[i-1,k]*dpois(i-k,R0*(mut-mu[i-1]))		# Calculates the diagonal under the absorbing states, which requires a unique formula
             p1[i,i]=p1[i,i]+p1[i-1,k]*dpois(i-k,(mut-mu[i-1])*RR)
                  }
 	for(k in 1:(i-1)){ 
-		p[i,i+1]=p[i,i+1]+p[i-1,k]*(1-ppois(i-k,mut-mu[i-1]))# Calculates the diagonal absorbing states where H0 is rejected
+		p[i,i+1]=p[i,i+1]+p[i-1,k]*(1-ppois(i-k,R0*(mut-mu[i-1])))# Calculates the diagonal absorbing states where H0 is rejected
             p1[i,i+1]=p1[i,i+1]+p1[i-1,k]*(1-ppois(i-k,(mut-mu[i-1])*RR))
                        }
 
@@ -299,7 +300,7 @@ return(results)
 
 # EXAMPLE
 
-#res<- Performance.AlphaSpend.Poisson(SampleSize=30, alpha=0.05,alphaSpend=1,RR=1.5,rho=0.5,gamma="n",Statistic="MaxSPRT")
+#res<- Performance.AlphaSpend.Poisson(SampleSize=30, alpha=0.05,alphaSpend=1,RR=1.5,rho=0.5,R0=1,gamma="n",Statistic="MaxSPRT")
 
 
 

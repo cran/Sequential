@@ -214,6 +214,7 @@ statesOld<- as.numeric(read.table(name2)[[1]]) # has the possible state of Sn un
 ## Setting up the target alpha spending.
 
 kref<- sum(cases+controls)+sum(controls_old+cases_old)
+if(kref>=M){Msatisfied<- 1}else{Msatisfied<- 0}
 
 if(SampleSize<=kref){current_alpha<- alpha}else{
 if(max(inputSetUp[5,])<alpha-0.00000001&inputSetUp[1,7]==0&kref>=M){
@@ -661,10 +662,11 @@ result[i+1,2*nw+7]<- paste("No")
 
              } # close 2
 
+if(Msatisfied==0){ # open Msatisfied
 
 message(c("                                ",title),domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE) 
-                                              message("=>    H0 cannot be rejected yet because the cumulative events is still smaller than M.",domain = NULL, appendLF = TRUE)
+                         message("=> H0 cannot be rejected yet because the cumulative events is still smaller than M.",domain = NULL, appendLF = TRUE)
 message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
 options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
@@ -674,8 +676,25 @@ message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, 
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
+                 }else{
 
-           } # CLOSE
+message(c("                                ",title),domain = NULL, appendLF = TRUE)
+message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE) 
+                         message("=> H0 cannot be rejected yet because the cumulative events is still smaller than the minimum required by the alpha spending plan.",domain = NULL, appendLF = TRUE)
+message("-------------------------------------------------------------------------------------------",domain = NULL, appendLF = TRUE)
+options("width"=300)
+print(result,right=TRUE,row.names=FALSE)
+
+message("===========================================================================================",domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailed,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
+message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message("===========================================================================================",domain = NULL, appendLF = TRUE)
+
+                      } # close Msatisfied 
+
+
+
+           } # CLOSE Situation 1
 
 
 

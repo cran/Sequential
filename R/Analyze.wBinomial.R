@@ -99,7 +99,7 @@ M<- inputSetUp[1,4]
 start<- inputSetUp[2,1]
 reject<- inputSetUp[1,7]
 rho<- inputSetUp[1,8]
-Tailed<- inputSetUp[1,9] ; Tailedor<- Tailed; if(Tailed=="lower"|Tailed=="upper"){Tailed<- 1}else{Tailed<- 2}
+Tailed<- inputSetUp[1,9] ; if(Tailed==1){Tailedor<- "upper"}else{Tailedor<- "two"}
 maxspent<- max(inputSetUp[5,])
 actual_alpha_old<- inputSetUp[5,]
 target_alpha_old<- inputSetUp[7,]

@@ -3,12 +3,13 @@
 \title{Function to conduct group sequential analyses for Poisson data without the need to know group sizes a priori.}
 \description{The function \code{Analyze.Poisson} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Poisson} and \code{CV.G.Poisson}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the expected number of events, mu0, can be different for different observations.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Poisson} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Poisson}} function.}
 \usage{
-Analyze.Poisson(name,test,mu0,events,AlphaSpend="n")
+Analyze.Poisson(name,test,mu0="n",cum.mu0="n",events,AlphaSpend="n")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and it must be the same as the name given by the \code{AnalyzeSetup.Poisson} function. Should never be the same as another sequential analysis that is run simultaneously on the same computer.}
 \item{test}{An integer indicating the number of hypothesis tests performed up to and including the current test. For example, if there were four prior looks at the data, and this is the fifth one, then "test=5". This number should be increased by one each time that the \code{Analyze.Poisson} function is run for a new group of data, when it is part of the same sequential analysis.  If not, there is an error message.}
-\item{mu0}{The expected number of events under the null hypothesis. The parameter mu0 must be a positive number. There is no default value.}
+\item{mu0}{The test specific expected number of events under the null hypothesis. The parameter mu0 must be a positive number. There is no default value unless cum.mu0 is specified instead.}
+\item{cum.mu0}{The cumulative expected number of events under the null hypothesis. The parameter cum.mu0 must be a positive number. There is no default value unless mu0 specified instead.}
 \item{events}{The number of observed events.}
 \item{AlphaSpend}{The alpha spending function is specified in the \code{AnalyzeSetUp.Poisson} function. At any look at the data, it is possible to over ride that pre-specified alpha spending plan by using the AlphaSpend parameter. AlphaSpend is a number representing the maximum amount of alpha (Type I error probabiliy) to be spent up to and including the current test. Because of the discrete nature of the Poisson distribution, the actual amount of alpha spent may be less than the maximum amount specified. It must be in the range (0,alpha]. The default value is no override, which means that, if AlphaSpend= "n", then the function will use the alpha spending plan specified in the \code{AnalyzeSetUp.Poisson} function.}
 }

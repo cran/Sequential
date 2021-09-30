@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 3.4\cr
-Date: \tab 2021-08-26\cr
+Version: \tab 4.0\cr
+Date: \tab 2021-09-28\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -52,6 +52,8 @@ Index: \tab \cr
                                            \tab Poisson Data When the Goup Sizes are not Known a Priori.\cr
 \code{\link[Sequential]{AnalyzeSetUp.CondPoisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.CondPoisson} Function for the First Time.\cr
+\code{\link[Sequential]{ConfidenceInterval.Binomial}} \tab Confidence interval for the relative risk following\cr
+                                                      \tab a sequential test with binomial data.\cr
 \code{\link[Sequential]{CV.Binomial}} \tab Critical Values for Group and Continuous Sequential\cr
                                      \tab Analysis with Binomial Data.\cr
 \code{\link[Sequential]{CV.Poisson}} \tab Critical Values for Group and Continuous Sequential\cr
@@ -493,8 +495,12 @@ Version 3.3.3, Aug 2021\cr
 -     Adjusted \code{Performance.AlphaSpend.Poisson} function.\cr
 -     Updated user guide.\cr
 \cr
-Version 3.4, Aug 2021\cr
+Version 3.4, Sept 2021\cr
 -     Adjusted \code{Analyze.Poisson} function.\cr
+-     Updated user guide.\cr
+\cr
+Version 4.0, Sept 2021\cr
+-     New function \code{ConfidenceInterval.Binomial}, adjusted \code{Analyze.wBinomial} and new parameter R0 for \code{Analyze.Poisson} and \code{Performance.AlphaSpend.Poisson}.\cr
 -     Updated user guide.\cr
 \cr
 }

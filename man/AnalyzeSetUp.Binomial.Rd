@@ -4,8 +4,9 @@
 \description{The function \code{AnalyzeSetUp.Binomial} must be run ahead of \code{Analyze.Binomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.Binomial(name,N="n",alpha=0.05,zp="n",pp="n",
-M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",gama=0.9,R0=1,
-ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
+M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",ConfTimes=1,
+Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",
+address="n",Tailed="upper")
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Binomial} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
@@ -18,7 +19,8 @@ ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
 \item{power}{The target power to be used as a constraint in the optimal alpha spending soluation. It is only applicable for 'AlphaSpendType=optimal'.}
 \item{RR}{The relative risk for the target power. It is only applicable for 'AlphaSpendType=optimal'.}
 \item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. Default is without confidence coeficient.}
-\item{gama}{Confidence coefficient for the interval estimator of the relative risk. Default is 0.9. It has no effect when ConfIntWidth="n".}
+\item{ConfTimes}{Times where the restriction on the confidence interval width is initiated for each entry of ConfIntWidth. Default is 1.}
+\item{Gamma}{Confidence coefficient for the bounded width interval estimator of the relative risk for AlphaSpendType= "optimal". Default is 0.9. It has no effect when ConfIntWidth="n".}
 \item{R0}{A positive real-valued number for the relative risk under H0, where R<=R0 if "Tailed=lower", R>=R0 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 \item{ObjectiveMin}{The objective function to minimize in case of 'AlphaSpendType=optimal'. The default is 'ObjectiveMin=ETimeToSignal'. The other option is 'ObjectiveMin=ESampleSize'.}
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=0.5".}

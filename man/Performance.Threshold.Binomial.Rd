@@ -80,7 +80,7 @@ Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vac
 
 Silva IR, Kulldorff M. (2015). Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Maro J, Kulldorff M. (2019). Exact Sequential Analysis Using R Sequential. Working Paper.
+Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, DOI: 10.1002/sim.9094.
 }
 
 

@@ -5,7 +5,7 @@
 all for a pre-specified upper limit on the sample size.}
 \usage{
 Performance.AlphaSpend.Poisson(SampleSize,alpha=0.05,D=0,M=1,RR,alphaSpend=1,rho=0.5,
-gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),
+R0=1,gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),
 Delta="n",Tailed="upper")
       }
 \arguments{
@@ -21,6 +21,7 @@ can reject the null hypothesis if it occurs sufficiently early.}
 \item{RR}{Vector of relative risks for performance calculation. There is no default value.}
 \item{alphaSpend}{A vector with the cummulative Type I error probabiliy to be spent up to each test. Alternatively, one can use an integer between 1 to 4. Default is 1. See Details.}
 \item{rho}{Positive number used for the power-type alpha spending function (\code{AlphaSpend=1}) only. The default value is "rho=0.5". See Details.}
+\item{R0}{A positive real-valued number for the relative risk under H0, where R<=R0 if "Tailed=lower", R>=R0 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 \item{gamma}{Positive number used for the gamma-type alpha spending function (\code{AlphaSpend=4}) only. There is no default value. See Details.}
 \item{Statistic}{The test statistic scale to deliver the signaling threshold. See Details.}
 \item{Delta}{Parameter needed for calculation of Wang-Tsiatis test statistic if this is the option selected in "Statistic". Must be a number in the (0, 0.5] interval. There is no default value.}

@@ -45,6 +45,8 @@ if(MinCases>N||is.numeric(MinCases)==FALSE){stop("'M' must be an integer smaller
 if(MinCases<1){stop("'M' must be an integer greater than zero.",call. =FALSE)}
 if(MinCases!=round(MinCases)){stop("'M' must be an integer.",call. =FALSE)}
 
+if(Tailed=="upper"){Tailed<- 1}else{Tailed<- 2}
+
 #############################################################################################################
 ##   HERE WE SAVE THE KEY CONTENT TO SETUP THE SURVEILLANCE. THE CONTENT IS SAVED IN THE MATRIX  CALLED inputSetUp 
 #############################################################################################################

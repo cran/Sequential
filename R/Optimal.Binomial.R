@@ -1,9 +1,10 @@
 
 ###### This code finds optimal alpha spending to minimize expected lenght of surveillance restricted to expcted time to signal with binomial data
 
-Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth="n",gama=0.9,R0=1)
+Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,power,RR,GroupSizes="n",Tailed= "upper",ConfIntWidth="n",ConfTimes=1,Gamma=0.9,R0=1)
 {
 
+gama<- Gamma
 
 # Objective: statistical performance measure to minimize. Options are "ETimeToSignal" and "ESampleSize". Default is "ETimeToSignal"
 # N: Maximum length of surveillance
@@ -14,11 +15,14 @@ Optimal.Binomial<- function(Objective="ETimeToSignal",N="n",z="n",p="n",alpha,po
 # power: target power. It will be a vector of length 2 in case of "Tailed=two", where power[1] is the target power under RR[1], and power[2] under RR[2].
 # GroupSizes:  Vector with the number of adverse events (exposed+unexposed) between two looks at the data, i.e, irregular group sizes. Important: Must sums up N. The default is continuous sequential testing.
 # Tailed= "lower", "upper", "two".  Default is "upper".
-# ConfIntWidth: a positive value indicating that the actual relative risk R will belong to the rang [Rhat-ConfIntWidth/2, Rhat+ConfIntWidth/2], where Rhat is the maximum likelihood estimator of R. Default is without confidence interval restriction. 
-# gama: confidence coefficient. Default is 0.9.
+# ConfIntWidth: a positive value indicating that the actual relative risk R will belong to the rang [Rhat-ConfIntWidth/2, Rhat+ConfIntWidth/2], where Rhat is the maximum likelihood estimator of R. Default is 1. 
+## ConfTimes = times where the restrictions on the confidence interval length are initiated for each entry of ConfIntWidth. Default is 1. 
+# Gamma: confidence coefficient. Default is 0.9.
 # R0: one number (>0) for the relative risk under H0, or a two-dimensional vector for H0: R0[1]<= R <= R0[2].
 
 if(ConfIntWidth=="n"){ConfIntWidth<- 500}
+
+ConfIntWidth_0<- ConfIntWidth
 
 if(p=="n"&z=="n"){stop("Please, at least z or p must be provided.",call. =FALSE)}
 
@@ -276,13 +280,18 @@ auxETS<- rep(0,M2); if(Tailed=="two"){auxETS2<- rep(0,M2)}
 
 if(Tailed=="two"){jin<- 0}else{jin<- 1}
 
+ConfIntWidth_0
+ConfAux<- rep(200,N)
+for(k in 1:length(ConfIntWidth_0)){ConfAux[ConfTimes[k]:N]<- ConfIntWidth_0[k]}
+ConfIntWidth<- ConfAux
+
 for(i in 1:N){
    for(j in jin:i){
 
 
             if( i==imin & (j>=ks(i)|j<=ks_inf(i)+1) &sum(i==GroupSizes)>0){
       
-                if(j<i){Ru<- z*j/(i-j)+ConfIntWidth/2 ; Rl<- z*j/(i-j)-ConfIntWidth/2}else{Ru<- z+ConfIntWidth/2; Rl<- z-ConfIntWidth/2}
+                if(j<i){Ru<- z*j/(i-j)+ConfIntWidth[i]/2 ; Rl<- z*j/(i-j)-ConfIntWidth[i]/2}else{Ru<- z+ConfIntWidth[i]/2; Rl<- z-ConfIntWidth[i]/2}
                     pRu<- 1/(1+z/Ru) ; pRl<- 1/(1+z/Rl)
 
                     auxETS[posi2(i,j)]<- i  ; if(Tailed=="two"){auxETS2[posi2(i,j)]<- j}
@@ -297,7 +306,7 @@ for(i in 1:N){
 
 
             if(i>imin){
-         if(j<i){Ru<- z*j/(i-j)+ConfIntWidth/2 ; Rl<- z*j/(i-j)-ConfIntWidth/2}else{Ru<- z+ConfIntWidth/2; Rl<- z-ConfIntWidth/2}
+         if(j<i){Ru<- z*j/(i-j)+ConfIntWidth[i]/2 ; Rl<- z*j/(i-j)-ConfIntWidth[i]/2}else{Ru<- z+ConfIntWidth[i]/2; Rl<- z-ConfIntWidth[i]/2}
                     pRu<- 1/(1+z/Ru) ; pRl<- 1/(1+z/Rl)
 
      Ar1s[posi(i,j),]<- (choose(i-1,j-1)*Ar1s[posi(i-1,j-1), ]+choose(i-1,j)*Ar1s[posi(i-1,j), ])/choose(i,j)
@@ -437,7 +446,7 @@ return(res)
 
 }# CLOSE FUNCTION FOR OPTIMAL ALPHA SPENDING
 
-
+#system.time(res2<- Optimal.Binomial(Objective="ESampleSize",N=120,z=1,p="n",alpha=0.05,power=c(0.8,0.8),RR=c(0.5,2),GroupSizes="n",Tailed= "two",ConfIntWidth=3,ConfTimes=50,Gamma=0.9,R0=c(0.9,1.1)))
 
 
 

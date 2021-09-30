@@ -22,7 +22,7 @@ multiple weighted binomial endpoints, that is, the analysis reflects the drugs c
 It works with a variety of alpha spending functions for continuous, group or mixed group-continuous sequential analysis.
 The binomial probabilities, given by \eqn{p=1/(1+z)}. 
 
-The test statistic is based on the weighted sum of binomial endpoints introduced by Silva et al (2018). 
+The test statistic is based on the weighted sum of binomial endpoints introduced by Silva et al (2020). 
 
 
 Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, there is (i) no need to pre-specify the
@@ -133,7 +133,7 @@ increased computational speed, end of schedule analysis using left-over alpha, e
 #   AnalyzeSetUp.wBinomial(name="Rofe_Naisds",N=1000,alpha=0.05,M=1,
 #   rho=0.5,title="rofecoxib (Vioxx) vs. NSAID comparison",
 #   address="C:/Users/Ivair/Documents",
-#   Tailed=2)
+#   Tailed="two")
 
 ### Now we apply sequential tests to each of two chunks of data.
 # -------------------------------------------------------------------------
@@ -141,7 +141,7 @@ increased computational speed, end of schedule analysis using left-over alpha, e
 ## This example is based on two outcomes, myocardinal
 #  infarction (w1=2.2), and major bleeding (w2=0.04), obtained
 #  from a study comparing risk of myocardial infarction and
-#  gastrointestinal bleeding. See details in Silva et al (2019).
+#  gastrointestinal bleeding. See details in Silva et al (2020).
   
 ## Test 1
 ## Note: cut off the "#" symbol before running the line below.

@@ -1,9 +1,9 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at August-08-2021
+# Function to perform the unpredictable Poisson MaxSPRT surveillance - Version edited at September-06-2021
 # -------------------------------------------------------------------------
 
 
-Analyze.Poisson<- function(name,test,mu0,events,AlphaSpend="n")
+Analyze.Poisson<- function(name,test,mu0="n",cum.mu0="n",events,AlphaSpend="n")
 {
 
 
@@ -35,19 +35,6 @@ title<- read.table(titlecheck)
 title<- title[1,1]
 if(title==0){title<- " "}else{title<- as.character(title)}
 
-if( sum(is.numeric(events))!=1){stop("Symbols and texts are not applicable for 'events'. It must be an integer number or zero.",call. =FALSE)}
-
-if( sum(is.numeric(test))!=1|length(test)>1){stop("Symbols and texts are not applicable for 'test'. It must be an integer greater than zero.",call. =FALSE)}
-
-if(test<0){stop("'test' must be an integer greater than zero.",call. =FALSE)}
-
-if(sum(events<0)>0){stop("The count 'events' must be an integer greater than or equal to zero.",call. =FALSE)}
-
-if(sum(is.numeric(mu0))!=1){stop("Symbols and texts are not applicable for 'mu0'. It must be a number greater than zero.",call. =FALSE)}
-
-if(sum(mu0<=0)>0){stop("The entry of 'mu0' must be a number greater than zero.",call. =FALSE)}
-
-if(length(events)>1|length(mu0)>1){stop("'events' and 'mu0' must be single values, not vectors.",call. =FALSE)}
 
 ####
 ## Uploading information from previous tests
@@ -64,6 +51,8 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 #=> inputSetUp[1,8] has 'rho', which is zero for 'Wald' alpha spending.
 #=> inputSetUp[1,9] has the sample size in the scale of the events. If rho>0, then inputSetUp[1,9] is settled equal to zero.
 #=> inputSetUp[1,10] has D
+#=> inputSetUp[1,11] has the minimum number of events (M1) to rejected H0 given D. 
+#=> inputSetUp[1,12] has R0, the parameter under H0.
 #=> inputSetUp[2,1] says if the surveillance was started and, if so, when it has ocurred. 
 #=> inputSetUp[3,]  has the critical values in the scale of the events 
 #=> inputSetUp[4,]  has the observed number of events, look by look, until the (test-1)th look.
@@ -76,13 +65,43 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 
 SampleSize<- inputSetUp[1,2]
 alpha<- inputSetUp[1,3]
-M<- inputSetUp[1,4]; D<- inputSetUp[1,10] ; M1<- inputSetUp[1,11]
+M<- inputSetUp[1,4]; D<- inputSetUp[1,10] ; M1<- inputSetUp[1,11]; R0<- inputSetUp[1,12]
 start<- inputSetUp[2,1]
 reject<- inputSetUp[1,7]
 rho<- inputSetUp[1,8]
 if(test>1){CVs_old<- inputSetUp[3,1:(test-1)]; events_old<- inputSetUp[4,1:(test-1)]; mu0_old<- inputSetUp[6,1:(test-1)]; target_alpha_old<- inputSetUp[7,1:(test-1)]; actual_alpha_old<- inputSetUp[5,1:(test-1)]}else{
 events_old<-0; mu0_old<- 0
 }
+
+
+### Important checks
+
+if( sum(is.numeric(events))!=1){stop("Symbols and texts are not applicable for 'events'. It must be an integer number or zero.",call. =FALSE)}
+
+if( sum(is.numeric(test))!=1|length(test)>1){stop("Symbols and texts are not applicable for 'test'. It must be an integer greater than zero.",call. =FALSE)}
+
+if(test<0){stop("'test' must be an integer greater than zero.",call. =FALSE)}
+
+if(sum(events<0)>0){stop("The count 'events' must be an integer greater than or equal to zero.",call. =FALSE)}
+
+if(mu0=="n"&cum.mu0=="n"){stop("Please, at least one of the inputs, mu0 or cum.mu0, must be provided.",call. =FALSE)}
+
+if(cum.mu0!="n"){if(sum(is.numeric(cum.mu0))!=1){stop("Symbols and texts are not applicable for 'cum.mu0'. It must be a number greater than zero.",call. =FALSE)}}
+
+if(sum(is.numeric(mu0))==1&sum(is.numeric(cum.mu0))==1){stop("Both mu0 and cum.mu0 are specified. Please, set only one of them different from the default.",call. =FALSE)}
+
+if(sum(is.numeric(cum.mu0))==1){if(cum.mu0<=0){stop("The value of 'cum.mu0' must be a number greater than zero.",call. =FALSE)}}
+
+if(sum(is.numeric(cum.mu0))==1){
+if(test==1){mu0<- cum.mu0}else{mu0<- cum.mu0-sum(mu0_old)}
+if(mu0<=0){stop("The value of cum.mu0 must be greater than the cumulative mu0 from previous tests. Please revise.",call. =FALSE)}
+                               } 
+
+if(sum(is.numeric(mu0))!=1){stop("Symbols and texts are not applicable for 'mu0'. It must be a number greater than zero.",call. =FALSE)}
+
+if(sum(mu0<=0)>0){stop("The entry of 'mu0' must be a number greater than zero.",call. =FALSE)}
+
+if(length(events)>1|length(mu0)>1){stop("'events' and 'mu0' must be single values, not vectors.",call. =FALSE)}
 
 
 
@@ -137,8 +156,8 @@ if(AlphaSpend=="n"){
 #----- THE MAXSPRT STATISTIC
 
 LLR <- function(cc,uu) {
-	if(cc<=uu) x=0
-	if(cc>uu) x = (uu-cc) + cc*log(cc/uu)
+	if(cc<=R0*uu) x=0
+	if(cc>R0*uu) x = (R0*uu-cc) + cc*log(cc/(R0*uu))
 	x
 	}
 #--------------------------
@@ -154,18 +173,18 @@ critical_value<- function(pold,current_alpha,CVold)
 {
 
 # auxiliary function
-sumspx<- function(x,y){return(dpois(y-x,mu0)*pold[x+1,1])}
-sumspx2<- function(xx){return((1-ppois(CVm-1-xx,mu0))*pold[xx+1,1])}
+sumspx<- function(x,y){return(dpois(y-x,R0*mu0)*pold[x+1,1])}
+sumspx2<- function(xx){return((1-ppois(CVm-1-xx,R0*mu0))*pold[xx+1,1])}
 sumspy<- function(y){x<- matrix(seq(0,min(CVold-1,y)),,1); return(sum(apply(x,1,sumspx,y)))}
 
 alphas<- current_alpha-max(actual_alpha_old)
 
-CV1<- CVold-1 ; CV2<- CV1+ qpois(1-alphas,mu0)+1
+CV1<- CVold-1 ; CV2<- CV1+ qpois(1-alphas,R0*mu0)+1
 alphat<- 1
 count<- 0
 CVm<- ceiling((CV1+CV2)/2)
 
-limc<- ceiling(log(CV2-CV1,2)/log(2))
+limc<- max(ceiling(log(CV2-CV1,2)/log(2)),1)
 while(CVm-CV1>=1&count<limc){
 count<- count+1
 y<- matrix(seq(0,CVm-1),,1); p<- apply(y,1,sumspy) 
@@ -190,19 +209,19 @@ if(events+sum(inputSetUp[4,]) >= M & mu0+sum(inputSetUp[6,]) >= D & reject==0 & 
 
 if(test==1){
 alphas<- current_alpha
-CV<- qpois(1-alphas,mu0)+1
+CV<- qpois(1-alphas,R0*mu0)+1
 p<- rep(0,CV)
-for(x in 0:(CV-1)){p[x+1]<- dpois(x,mu0)}
-actualspent<- 1-ppois(CV-1,mu0)
+for(x in 0:(CV-1)){p[x+1]<- dpois(x,R0*mu0)}
+actualspent<- 1-ppois(CV-1,R0*mu0)
            }
 
 if(test>1&start==0){
 mu0h<- sum(mu0_old)+mu0
 alphas<- current_alpha
-CV<- qpois(1-alphas,mu0h)+1
+CV<- qpois(1-alphas,R0*mu0h)+1
 p<- rep(0,CV)
-for(x in 0:(CV-1)){p[x+1]<- dpois(x,mu0h)}
-actualspent<- 1-ppois(CV-1,mu0h)
+for(x in 0:(CV-1)){p[x+1]<- dpois(x,R0*mu0h)}
+actualspent<- 1-ppois(CV-1,R0*mu0h)
                    }
 
 if(test>1&start>0){
@@ -285,7 +304,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", M given D= ", M,", H0: RR<=",R0,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -345,7 +364,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", M given D= ", M,", H0: RR<=",R0,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -481,7 +500,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", M given D= ", M,", H0: RR<=",R0,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
@@ -609,7 +628,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", M given D= ", M,", H0: RR<=",R0,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
@@ -732,7 +751,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", M given D= ", M,", H0: RR<=",R0,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -858,7 +877,7 @@ options("width"=300)
 print(result,right=TRUE,row.names=FALSE)
 
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
-message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", and M given D= ", M,"."),domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", mu0= ",mu0,", D= ",D,", M= ",M1,", M given D= ", M,", H0: RR<=",R0,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
@@ -909,8 +928,8 @@ invisible(result2)
 #####################################
 
 
-# AnalyzeSetUp.Poisson(name="VaccineA", SampleSize=100, alpha=0.05,M=1,AlphaSpendType="power-type",rho=0.5,title="n",address="C:/Users/Ivair/Documents")
+# AnalyzeSetUp.Poisson(name="VaccineA", SampleSize=100, alpha=0.05,M=1,AlphaSpendType="power-type",rho=0.5,R0=1,title="n",address="C:/Users/Ivair/Documents")
 # AnalyzeSetUp.Poisson(name="CvH MMR",SampleSize=25,alpha=0.05,M=3,AlphaSpendType="Wald",rho="n",title="CvH MMR_MMRV",address="C:/Users/Visitante/Ivair")
-# Analyze.Poisson(name="VaccineA",test=1,mu0=1,events=1,AlphaSpend="n")
+# Analyze.Poisson(name="VaccineA",test=1,mu0=1,cum.mu0="n",events=1,AlphaSpend="n")
 
 

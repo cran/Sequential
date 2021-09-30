@@ -14,7 +14,7 @@ title="n",address="n",Tailed="upper")
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=0.5".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
 \item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
-\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
+\item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="two" for H0:RR=1.}
 }
 
 
