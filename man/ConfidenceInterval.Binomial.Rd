@@ -36,7 +36,7 @@ and \code{p} are such that \code{p=1/(1+z)}. Otherwise, an error message will ap
 
 With \code{GroupSizes} the user informs the sample size of each subsequent test. Therefore, only positive integers are accepted in \code{GroupSizes}. 
 
-The confidence interval is calculated by pivoting the probaility of rejecting the null hypothesis with one of the thresholds CV.lower or CV.upper. See the paper by Silva and Zhuang (2021) for details.
+The confidence interval is calculated by pivoting the probaility of rejecting the null hypothesis with one of the thresholds CV.lower or CV.upper. This is equivalent to inverting the two-tailed testing as described by Jennison and Turnbull (2000), page 181 of Section 8.5. See also Silva and Zhuang (2021) for more details on the calculations.
 
 }
 \value{
@@ -46,6 +46,8 @@ The confidence interval is calculated by pivoting the probaility of rejecting th
 \author{Ivair Ramos Silva and Martin Kulldorf.
 }
 \references{
+
+Jennison C, Turnbull B. (2000), Group Sequential Methods with Applications to Clinical Trials, London: Chapman and Hall/CRC.
 
 Silva IR, Zhuang Y. (2021), Bounded-width Confidence Interval Following Optimal Sequential Test with Binary Data. Working paper.
 

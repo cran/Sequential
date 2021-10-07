@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.0\cr
-Date: \tab 2021-09-28\cr
+Version: \tab 4.1\cr
+Date: \tab 2021-10-06\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -501,6 +501,10 @@ Version 3.4, Sept 2021\cr
 \cr
 Version 4.0, Sept 2021\cr
 -     New function \code{ConfidenceInterval.Binomial}, adjusted \code{Analyze.wBinomial} and new parameter R0 for \code{Analyze.Poisson} and \code{Performance.AlphaSpend.Poisson}.\cr
+-     Updated user guide.\cr
+\cr
+Version 4.1, Oct 2021\cr
+-     Adjusted \code{SampleSize.Poisson}.\cr
 -     Updated user guide.\cr
 \cr
 }

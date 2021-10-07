@@ -1,6 +1,6 @@
 #----------SampleSize.Poisson.R-------------------------------------------------------------------
 
-# Version of Set/2021
+# Version of Oct/2021
 
 SampleSize.Poisson<-
 function(alpha=0.05,power=0.9,M=1,D=0,RR=2,precision=0.001,alphaSpend="n",rho="n",gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),Delta="n",Tailed="upper")
@@ -20,7 +20,7 @@ pow<- 0
 Size<- SizeAux
 while(pow<power){
 Size<- Size+SizeAux
-res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,R0=1,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
 pow<- as.numeric(res$Performance[2])    
                  }
 Sizeini<- Size
@@ -29,7 +29,7 @@ lim<- log(power/precision,2)/log(2)+1
 count<- 0
 while(abs(pow-power)>precision&count<lim){
 count<- count+1
-res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,R0=1,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
 pow<- as.numeric(res$Performance[2])
   if(pow>power){S2<- Size}else{S1<- Size}
   Size<- (S1+S2)/2
@@ -37,16 +37,16 @@ pow<- as.numeric(res$Performance[2])
 
 if(pow<power-precision){
 Size<- Sizeini
-res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,R0=1,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
 pow<- as.numeric(res$Performance[2])
 frac<- 0
 while(pow>power){
 frac<- frac+0.01
-res<- Performance.AlphaSpend.Poisson(SampleSize=Size-frac,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size-frac,alpha,D,M,RR,R0=1,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
 pow<- as.numeric(res$Performance[2])
                 }
 Size<- Size-frac+0.01
-res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
+res<- Performance.AlphaSpend.Poisson(SampleSize=Size,alpha,D,M,RR,R0=1,alphaSpend,rho,gamma,Statistic,Delta,Tailed)
 pow<- as.numeric(res$Performance[2])
                          }
 

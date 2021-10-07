@@ -1,8 +1,8 @@
 Package: Sequential
 Type: Package
 Title: Exact Sequential Analysis for Poisson and Binomial Data
-Version: 4.0
-Date: 2021-09-28
+Version: 4.1
+Date: 2021-10-06
 Author: Ivair Ramos Silva and Martin Kulldorff
 Maintainer: Ivair Ramos Silva <ivair@ufop.edu.br>
 Description: Functions to calculate exact critical values, statistical power, expected time to signal, and required sample sizes for performing exact sequential analysis. All these	calculations can be done for either Poisson or binomial data, for continuous or group sequential analyses, and for different types of rejection boundaries. In case of group sequential analyses, the group sizes do not have to be specified in advance and the alpha spending can be arbitrarily settled.
@@ -10,6 +10,6 @@ License: GPL-2
 LazyLoad: yes
 Imports: boot
 NeedsCompilation: no
-Packaged: 2021-09-29 06:47:16 UTC; ivair
+Packaged: 2021-10-07 05:24:05 UTC; ivair
 Repository: CRAN
-Date/Publication: 2021-09-30 05:10:01 UTC
+Date/Publication: 2021-10-07 05:50:02 UTC
