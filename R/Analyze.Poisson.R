@@ -271,7 +271,8 @@ result[test+1,2]<- round(mu0,2)
 result[test+1,3]<- events
 result[test+1,4]<- mu0+sum(mu0_old)
 result[test+1,5]<- events+sum(events_old)
-if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+#if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2)
 result[test+1,7]<- round(LLR(events+sum(events_old),mu0+sum(mu0_old)),2)
 result[test+1,8]<- round(current_alpha,2)
 result[test+1,9]<- round(actualspent,2)
@@ -286,7 +287,8 @@ result[i+1,2]<- round(mu0_old[i],2)
 result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(mu0_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i])
-if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+#if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1}
+result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) 
 result[i+1,7]<- round(LLR(sum(events_old[1:i]),sum(mu0_old[1:i])),2)
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,8]<- round(target_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,9]<- round(actual_alpha_old[i],4)}else{result[i+1,9]<- "NA"}
@@ -330,7 +332,8 @@ result[test+1,2]<- round(mu0,2)
 result[test+1,3]<- events
 result[test+1,4]<- round(mu0+sum(mu0_old),2)
 result[test+1,5]<- events+sum(events_old)
-if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+#if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2)
 result[test+1,7]<- round(LLR(events+sum(events_old),mu0+sum(mu0_old)),2)
 result[test+1,8]<- round(current_alpha,4)
 result[test+1,9]<- round(actualspent,4)
@@ -345,7 +348,8 @@ result[i+1,2]<- round(mu0_old[i],2)
 result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(mu0_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i])
-if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+#if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2)
 result[i+1,7]<- round(LLR(sum(events_old[1:i]),sum(mu0_old[1:i])),2)
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,8]<- round(target_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,9]<- round(actual_alpha_old[i],4)}else{result[i+1,9]<- "NA"}
@@ -459,7 +463,8 @@ result[test+1,2]<- round(mu0,2)
 result[test+1,3]<- events
 result[test+1,4]<- round(mu0+sum(mu0_old),2)
 result[test+1,5]<- events+sum(events_old)
-if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+#if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2)
 result[test+1,7]<- round(LLR(events+sum(events_old),mu0+sum(mu0_old)),2)
 result[test+1,8]<- round(current_alpha,4)
 result[test+1,9]<- round(actualspent,4)
@@ -474,7 +479,8 @@ result[i+1,2]<- round(mu0_old[i],2)
 result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(mu0_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i])
-if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+#if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1}
+result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) 
 result[i+1,7]<- round(LLR(sum(events_old[1:i]),sum(mu0_old[1:i])),2)
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,8]<- round(target_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,9]<- round(actual_alpha_old[i],4)}else{result[i+1,9]<- "NA"}
@@ -590,7 +596,8 @@ result[test+1,2]<- round(mu0,2)
 result[test+1,3]<- events
 result[test+1,4]<- round(mu0+sum(mu0_old),2)
 result[test+1,5]<- events+sum(events_old)
-if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+#if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2)
 result[test+1,7]<- round(LLR(events+sum(events_old),mu0+sum(mu0_old)),2)
 result[test+1,8]<- round(current_alpha,4)
 result[test+1,9]<- round(actualspent,4)
@@ -605,7 +612,8 @@ result[i+1,2]<- round(mu0_old[i],2)
 result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(mu0_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i])
-if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+#if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2)
 result[i+1,7]<- round(LLR(sum(events_old[1:i]),sum(mu0_old[1:i])),2)
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,8]<- round(target_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,9]<- round(actual_alpha_old[i],4)}else{result[i+1,9]<- "NA"}
@@ -717,7 +725,8 @@ result[test+1,2]<- round(mu0,2)
 result[test+1,3]<- events
 result[test+1,4]<- round(mu0+sum(mu0_old),2)
 result[test+1,5]<- events+sum(events_old)
-if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+#if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2)
 result[test+1,7]<- round(LLR(events+sum(events_old),mu0+sum(mu0_old)),2)
 result[test+1,8]<- round(current_alpha,4)
 result[test+1,9]<- round(actualspent,4)
@@ -732,7 +741,8 @@ result[i+1,2]<- round(mu0_old[i],2)
 result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(mu0_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i])
-if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+#if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2)
 result[i+1,7]<- round(LLR(sum(events_old[1:i]),sum(mu0_old[1:i])),2)
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,8]<- round(target_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,9]<- round(actual_alpha_old[i],4)}else{result[i+1,9]<- "NA"}
@@ -843,7 +853,8 @@ result[test+1,2]<- round(mu0,2)
 result[test+1,3]<- events
 result[test+1,4]<- round(mu0+sum(mu0_old),2)
 result[test+1,5]<- events+sum(events_old)
-if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+#if(events+sum(events_old)>=mu0+sum(mu0_old)){result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2) }else{result[test+1,6]<- 1}
+result[test+1,6]<- round((events+sum(events_old))/(mu0+sum(mu0_old)),2)
 result[test+1,7]<- round(LLR(events+sum(events_old),mu0+sum(mu0_old)),2)
 result[test+1,c(8,9,10)]<- paste("NA")
 result[test+1,11]<- paste("Yes")
@@ -856,7 +867,8 @@ result[i+1,2]<- round(mu0_old[i],2)
 result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(mu0_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i])
-if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+#if(sum(events_old[1:i])>=sum(mu0_old[1:i])){result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2) }else{result[i+1,6]<- 1} 
+result[i+1,6]<- round(sum(events_old[1:i])/sum(mu0_old[1:i]),2)
 result[i+1,7]<- round(LLR(sum(events_old[1:i]),sum(mu0_old[1:i])),2)
 if(i>reject){result[i+1,c(8,9,10)]<- paste("NA")}else{
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,8]<- round(target_alpha_old[i],4)}else{result[i+1,8]<- "NA"}

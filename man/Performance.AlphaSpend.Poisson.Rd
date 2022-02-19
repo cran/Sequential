@@ -2,7 +2,7 @@
 \alias{Performance.AlphaSpend.Poisson}
 \title{Calculates performance and signaling thresholds for user-defined alpha spending for sequential analysis with Poisson data.}
 \description{The function \code{Performance.AlphaSpend.Poisson} calculates power, expected time to signal, expected sample size and the signaling threshold (critical values) associated to any user-specified alpha spending for continuous sequential analysis with Poisson data,
-all for a pre-specified upper limit on the sample size.}
+or for a pre-specified upper limit on the sample size.}
 \usage{
 Performance.AlphaSpend.Poisson(SampleSize,alpha=0.05,D=0,M=1,RR,alphaSpend=1,rho=0.5,
 R0=1,gamma="n",Statistic=c("MaxSPRT", "Pocock", "OBrien-Fleming", "Wang-Tsiatis"),

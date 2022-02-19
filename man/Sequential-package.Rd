@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.1\cr
-Date: \tab 2021-10-06\cr
+Version: \tab 4.2\cr
+Date: \tab 2022-02-17\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -128,7 +128,7 @@ the null hypothesis is rejected, use the \code{Performance.Poisson}, \code{Perfo
 These functions also work for group sequential analysis when the group sizes are fixed a priori.
 For with fixed and/or unpredictable group sizes, see the function \code{Analyze.Poisson}. 
 
-If the first event occurs sufficiently early, the sequential analysis may end with the null hypothesis rejected after a single events. There is an option
+If the first event occurs sufficiently early, the sequential analysis may end with the null hypothesis rejected after a single event. There is an option
 to require a minimum number of observed events, \eqn{c_t}= M, before the null can be rejected.
 Setting M in the range [3,6] is often a good choice (Kulldorff and Silva, 2012). If there is a delay until the sequential analysis starts,
 but it continuous continuously thereafter, there is an option for that as well, requiring a minimum number \eqn{\mu_t}= D of expected events before the null can be rejected.
@@ -359,6 +359,7 @@ Feedback from users is greatly appreciated. Very valuable suggestions concerning
 -     Joselito M. Montalban, Active Living, Population and Public Health Branch, Winnipeg, Manitoba, Canada.\cr 
 -     Sarah Spruin and Vaccine Safety Surveillance, Public Health Agency of Canada.\cr
 -     Lola Adewale, Stateam LLC, New Jersey, United States.\cr
+-	Lian Lin, Ph.D., Director, Safety Statistics, Stats and Programming, Moderna.\cr
 }
 
 \keyword{Sequential analysis}
@@ -505,6 +506,10 @@ Version 4.0, Sept 2021\cr
 \cr
 Version 4.1, Oct 2021\cr
 -     Adjusted \code{SampleSize.Poisson}.\cr
+-     Updated user guide.\cr
+\cr
+Version 4.2, Feb 2022\cr
+-     Adjusted \code{AnalyzeSetUp.Poisson}.\cr
 -     Updated user guide.\cr
 \cr
 }

@@ -1,6 +1,6 @@
 
 # -------------------------------------------------------------------------
-# Function to setup parameters for the unpredictable Poisson MaxSPRT surveillance - Version edited at August-2021
+# Function to setup parameters for the unpredictable Poisson MaxSPRT surveillance - Version edited at Feb-2022
 # -------------------------------------------------------------------------
 
 AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,D=0,M=1,AlphaSpendType="Wald",rho="n",R0=1,title="n",address="n",Tailed="upper")
@@ -200,7 +200,7 @@ mum<- 0
 while(mum<T){
 cc<- cc+1
 zm = -exp(-1-CV2/cc)
-mum = -cc * ProdLog(zm)
+mum = -cc * ProdLog(zm)/R0
             }
 
 c = 1:cc
