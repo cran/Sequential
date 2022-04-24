@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.2\cr
-Date: \tab 2022-02-17\cr
+Version: \tab 4.3\cr
+Date: \tab 2022-04-24\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -510,6 +510,10 @@ Version 4.1, Oct 2021\cr
 \cr
 Version 4.2, Feb 2022\cr
 -     Adjusted \code{AnalyzeSetUp.Poisson}.\cr
+-     Updated user guide.\cr
+\cr
+Version 4.3, April 2022\cr
+-     Adjusted \code{Analyze.Binomial} for bugs on the relative risk estimate under variable matching ratio.\cr
 -     Updated user guide.\cr
 \cr
 }

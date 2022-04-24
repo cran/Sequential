@@ -271,7 +271,7 @@ RelRisk<- function(ord)
 {
 lenZs<- length(names(table(z_current[1:sum(rows_current[1:ord])])))
 if(lenZs==1){ 
-rrest<- min(z)*sum(cases_current[1:sum(rows_current[1:ord])])/sum(controls_current[1:sum(rows_current[1:ord])])
+rrest<- min(z_current[1:sum(rows_current[1:ord])])*sum(cases_current[1:sum(rows_current[1:ord])])/sum(controls_current[1:sum(rows_current[1:ord])])
           }else{
 counta<- 1
 rrest<- 0

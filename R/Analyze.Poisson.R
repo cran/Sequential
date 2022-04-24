@@ -629,7 +629,7 @@ message(c("                                ",title),domain = NULL, appendLF = TR
 message("-------------------------------------------------------------------------------------------", domain = NULL, appendLF = TRUE)
 message(c("The upper limit on the length of surveillance has been reached."), domain = NULL, appendLF = TRUE)                                                       
 message(c("You should end the sequential analysis without rejecting H0."), domain = NULL, appendLF = TRUE)
-message(c("There is no remaining alpha to spend in futures tests."), domain = NULL, appendLF = TRUE)
+message(c("There is no remaining alpha to spend in future tests."), domain = NULL, appendLF = TRUE)
 message(" ", domain = NULL, appendLF = TRUE)  
 message("-------------------------------------------------------------------------------------------", domain = NULL, appendLF = TRUE)
 options("width"=300)
