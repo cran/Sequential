@@ -270,8 +270,8 @@ if(Tailed!="two"){M2<- (imin+N)*(N-imin+1)/2 - sum(apply(matrix(seq(imin,N),,1),
 
 Ar1s<- matrix(0,M,M2)
 
-Ar1<- matrix(0,M2+2,M2)
-a1<- rep(1,M2+2)
+Ar1<- matrix(0,M2+3,M2)
+a1<- rep(1,M2+3)
 
 prob0<- rep(0,M2) # prob0[posi(i,j)] probability of having, at time i, exactly j cases.
 probA<- rep(0,M2); if(Tailed=="two"){probA_inf<- rep(0,M2)}
@@ -334,8 +334,10 @@ for(i in 1:N){
 
 Ar1[M2+1,]<- prob0
 Ar1[M2+2,]<- probINT
+Ar1[M2+3,]<- probA
 a1[M2+1]<- alpha
 a1[M2+2]<- 1-gama
+a1[M2+3]<- 1
 
 ## Restriction of the type ==
 

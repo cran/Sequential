@@ -86,6 +86,8 @@ is no serious impact from chosen RR very different from the actual relative risk
 In addition to selecting the alpha spending plan, it is necessary to specify the overall alpha, or maximum Type I error probability, for the sequential analysis as a whole.
 It is also necessary to specify the maximum length of the sequential analysis, N, so that the sequential analysis stops without rejecting the null hypothesis when
 a total of N observations are obtained.  
+
+The possibility of constructing the alpha spending restricted to a desired maximum length for the confidence interval, activated by the "ConfIntWidth" parameter, is based on the method proposed by Silva and Zhuang (2022).  
 }
 
 \value{
@@ -114,9 +116,11 @@ Kulldorff M, Silva IR. (2015). Continuous post-market sequential safety surveill
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Kulldorff M. (2018). Optimal Alpha Spending for Sequential Analysis With Binary Data. Working paper.
+Silva IR, Kulldorff M, Yih W. Katherine. (2020), Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 
 Silva IR. (2018). Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107-118.
+
+Silva IR, Zhuang, Y. (2022), Bounded-width confidence interval following optimal sequential analysis of adverse events with binary data, Statistical Methods in Medical Research, 31(12), 2323--2337.
 }
 
 \keyword{Binomial sequential analysis}

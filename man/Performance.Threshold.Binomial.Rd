@@ -27,7 +27,7 @@ user-specified thresholds are calculated with \code{Performance.Threshold.Binomi
 \code{N} must be a positive integer defining the maximum length of surveillance. To avoid very large computation times,
 we suggest not using values greater than 1000.
 
-For two-tailed testing (code{Tailed="two"}), both lower and upper signaling thresholds must be informed through
+For two-tailed testing (\code{Tailed="two"}), both lower and upper signaling thresholds must be informed through
 \code{CV.lower} and \code{CV.upper}. If the user
 desires a constant threshold (critical value) in the scale of a test statistic, then a single number can be informed.
 For time-variable (non-constant) thresholds, the length of \code{CV.upper} and \code{CV.lower} must coincide with the length of \code{GroupSizes}.
@@ -48,7 +48,7 @@ and \code{p} are such that \code{p=1/(1+z)}. Otherwise, an error message will ap
 
 With \code{GroupSizes} the user informs the sample size of each subsequent test. Therefore, only positive integers are accepted in \code{GroupSizes}. 
 
-The input \code{Statistic} specifies the scale selected by the user to inform \code{CV.lower} and code{cvs.upper}among the classic methods:
+The input \code{Statistic} specifies the scale selected by the user to inform \code{CV.lower} and \code{cvs.upper}among the classic methods:
 MaxSPRT (Kulldorf et al., 2011), Pocock (Pocock, 1977), OBrien-Fleming (O'Brien and Fleming, 1979), or Wang-Tsiatis (Jennison and Turnbull, 2000). 
 For \code{Statistic="Wang-Tsiatis"}, the user has to choose a number in the (0, 0.5] interval for \code{Delta}.
 

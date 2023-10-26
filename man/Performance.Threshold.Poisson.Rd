@@ -32,7 +32,7 @@ For continuous and group sequential analysis with Poisson data, the alpha spendi
 user-specified thresholds are calculated with \code{Performance.Threshold.Poisson}. 
 
 
-The inputs \code{CV.lower}, \code{CV.upper}, if two-tailed testing (code{Tailed="two"}),
+The inputs \code{CV.lower}, \code{CV.upper}, if two-tailed testing (\code{Tailed="two"}),
 both lower and upper signaling thresholds must be informed. If the user
 desires a constant threshold (critical value), then a single number can be informed for each of these inputs.
 For time-variable (non-constant) thresholds, the length of \code{CV.lower} and \code{CV.upper} must coincide with the length of \code{GroupSizes}.
@@ -42,7 +42,7 @@ For details about the algorithm used to calculate the critical value, see the pa
 
 With \code{GroupSizes} the user informs the sample size of each subsequent test. Therefore, only positive numbers are accepted in \code{GroupSizes}. 
 
-The input \code{Statistic} specifies the scale selected by the user to inform \code{CV.lower} and code{CV.upper}among the classic methods:
+The input \code{Statistic} specifies the scale selected by the user to inform \code{CV.lower} and \code{CV.upper} among the classic methods:
 MaxSPRT (Kulldorf et al., 2011), Pocock (Pocock, 1977), OBrien-Fleming (O'Brien and Fleming, 1979), or Wang-Tsiatis (Jennison and Turnbull, 2000). 
 For \code{Statistic="Wang-Tsiatis"}, the user has to choose a number in the (0, 0.5] interval for \code{Delta}. 
 

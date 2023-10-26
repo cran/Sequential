@@ -19,7 +19,7 @@ GroupSizes,z="n",p="n",Cum.cases,Tailed="upper")
 \details{
 For continuous and group sequential analysis with binomial data, the confidence interval for the relative risk, RR, is constructed with \code{ConfidenceInterval.Binomial}.
 
-For two-tailed testing (code{Tailed="two"}), both lower and upper signaling thresholds must be informed through
+For two-tailed testing (\code{Tailed="two"}), both lower and upper signaling thresholds must be informed through
 \code{CV.lower} and \code{CV.upper}. See details in Silva et al (2021).
 
 \code{z} is a vector of positive numbers representing the matching ratios for each test (group). If a single number is given, then it will be used as a constant
@@ -36,7 +36,7 @@ and \code{p} are such that \code{p=1/(1+z)}. Otherwise, an error message will ap
 
 With \code{GroupSizes} the user informs the sample size of each subsequent test. Therefore, only positive integers are accepted in \code{GroupSizes}. 
 
-The confidence interval is calculated by pivoting the probaility of rejecting the null hypothesis with one of the thresholds CV.lower or CV.upper. This is equivalent to inverting the two-tailed testing as described by Jennison and Turnbull (2000), page 181 of Section 8.5. See also Silva and Zhuang (2021) for more details on the calculations.
+The confidence interval is calculated by pivoting the probability of rejecting the null hypothesis with one of the thresholds CV.lower or CV.upper. This is equivalent to inverting the two-tailed testing as described by Jennison and Turnbull (2000), page 181 of Section 8.5. See also Silva and Zhuang (2022) for more details on the calculations.
 
 }
 \value{
@@ -49,7 +49,7 @@ The confidence interval is calculated by pivoting the probaility of rejecting th
 
 Jennison C, Turnbull B. (2000), Group Sequential Methods with Applications to Clinical Trials, London: Chapman and Hall/CRC.
 
-Silva IR, Zhuang Y. (2021), Bounded-width Confidence Interval Following Optimal Sequential Test with Binary Data. Working paper.
+Silva IR, Zhuang, Y. (2022), Bounded-width confidence interval following optimal sequential analysis of adverse events with binary data, Statistical Methods in Medical Research, 31(12), 2323--2337.
 
 Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, DOI: 10.1002/sim.9094.
 

@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.3\cr
-Date: \tab 2022-04-24\cr
+Version: \tab 4.3.1\cr
+Date: \tab 2022-10-22\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -310,7 +310,7 @@ Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th
 
 Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
 
-Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, DOI: 10.1002/sim.9094.
+Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, 40(22), 4890--4913.
 
 Silva IR, Kulldorff M, Yih W. Katherine. (2020), Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 
@@ -323,6 +323,12 @@ Silva IR. (2018a), Type I Error Probability Spending for Post-Market Drug and Va
 Silva IR. (2018b), Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739--750.
 
 Silva IR, Lopes LM, Dias P, Yih WK. (2019b), Alpha Spending for Historical Versus Surveillance Poisson Data With CMaxSPRT. Statistics in Medicine, 38(12), 2126--2138. 
+
+Silva IR, Montalban, J. (2023), The person-time ratio distribution for the exact monitoring of adverse events: Historical vs surveillance Poisson data, Statistics in Medicine, 42(18), 3283--3301.
+
+Silva IR, Oliveira, F. (2023), Matching ratio and sample size for optimal sequential testing with binomial data, Statistical Methods in Medical Research, DOI: 10.1177/0962280223117603.
+
+Silva IR, Zhuang, Y. (2022), Bounded-width confidence interval following optimal sequential analysis of adverse events with binary data, Statistical Methods in Medical Research, 31(12), 2323--2337.
 
 Xia Qi. (2007), A Procedure for Group Sequential Comparative Poisson Trials. Journal of Biopharmaceutical Statistics, 17, 869--881. 
 
@@ -338,7 +344,9 @@ Development of the R Sequential package has been funded and supported by:\cr
 -	Food and Drug Administration, USA, through the Mini-Sentinel Project (v1.0,1.1,2.0).\cr
 -	National Institute of General Medical Sciences, NIH, USA, through grant number R01GM108999 (v2.0 to 3.1).\cr
 -	Federal University of Ouro Preto (UFOP), through contract under internal UFOP's resolution CEPE 4600 (v2.0 to 3.1).\cr
--	National Council of Scientific and Technological Development (CNPq), Brazil, process number 301391/2019-0. (v1.0).\cr
+-	National Council of Scientific and Technological Development (CNPq), Brazil, process number 301391/2019-0. (v3.1 to v4.3).\cr
+-     National Council of Scientific and Technological Development (CNPq), Brazil, process number 302882/2022-7. (v4.3.1).\cr
+-	Support Foundation to Minas Gerais State Research-Fapemig, Brazil, grant numbers PQ-00787-21 and RED-00133-21. (v3.1 to v4.3). \cr
 -	Bank for Development of the Minas Gerais State (BDMG), Brazil (v1.0).\cr
 \cr
 Feedback from users is greatly appreciated. Very valuable suggestions concerning the R Sequential package have been received from various individuals, including:\cr
@@ -515,5 +523,8 @@ Version 4.2, Feb 2022\cr
 Version 4.3, April 2022\cr
 -     Adjusted \code{Analyze.Binomial} for bugs on the relative risk estimate under variable matching ratio.\cr
 -     Updated user guide.\cr
+\cr
+Version 4.3.1, Octuber 2023\cr
+-	Updated reference for the bounded-length confidence interval following sequential analysis with binary data.\cr
 \cr
 }

@@ -62,7 +62,7 @@ For details about the algorithm used to calculate the critical value, see the pa
 
 With \code{GroupSizes} the user informs the sample size of each subsequent test. Therefore, only positive integers are accepted in \code{GroupSizes}. 
 
-The input \code{Statistic} specifies the scale selected by the user to inform \code{cvs.lower} and code{cvs.upper}among the classic methods:
+The input \code{Statistic} specifies the scale selected by the user to inform \code{cvs.lower} and \code{cvs.upper}among the classic methods:
 MaxSPRT (Kulldorf et al., 2011), Pocock (Pocock, 1977), OBrien-Fleming (O'Brien and Fleming, 1979), or Wang-Tsiatis (Jennison and Turnbull, 2000). 
 For \code{Statistic="Wang-Tsiatis"}, the user has to choose a number in the (0, 0.5] interval for \code{Delta}. 
 
