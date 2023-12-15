@@ -171,7 +171,7 @@ if(sum(events_old)+k<=20){Inference="exact"} ; if(20<sum(events_old)+k&sum(event
 
 if(Inference=="exact"){
 
-cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
+cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt); rest[rest<=0]<- 10^(10) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
 cond.dpois<- function(x,tt){if(x<0){return(0)};return(exp( x*log(tt)-lfactorial(x)+ log( A(x,tt) ) ) )}
 cond.dpois_mult<- function(x,tt){if(x<0){return(0)}else{return(exp(x*log(tt)-lfactorial(x) ))}}
 
@@ -201,7 +201,7 @@ if(x<0){return(0)}else{
 ####<=====
 if(Inference=="conservative"){
 
-cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
+cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt) ; rest[rest<=0]<- 10^(10) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
 cond.dpois<- function(x,tt){if(x<0){return(0)};return(exp( x*log(tt)-lfactorial(x)+ log( A(x,tt) ) ) )}
 cond.dpois_mult<- function(x,tt){if(x<0){return(0)}else{return(exp(x*log(tt)-lfactorial(x) ))}}
 
@@ -377,12 +377,12 @@ current_alpha<- 0
 result[test+1,1]<- test
 result[test+1,2]<- round(tau,2)
 result[test+1,3]<- events
-result[test+1,4]<- tau+sum(tau_old)
+result[test+1,4]<- round(tau+sum(tau_old),2)
 result[test+1,5]<- events+sum(events_old)
 result[test+1,6]<- round(cLLR(events+sum(events_old),cc,tau+sum(tau_old)),2)
 result[test+1,7]<- round(current_alpha,2)
 result[test+1,8]<- round(actualspent,2)
-result[test+1,9]<- round(CV,6)
+result[test+1,9]<- CV
 result[test+1,10]<- paste("No")
 
 if(test>1){
@@ -423,7 +423,7 @@ message("=======================================================================
 ###############
 ### Situation 2: H0 not rejected yet and sample size not achieved
 
-if(reject==0&reject_new==0&start>0&SampleSize>=CurrentSample){# OPEN
+if(reject==0&reject_new==0&start>0&SampleSize>CurrentSample){# OPEN
 
 result<- data.frame(matrix(0,test+1,10))
 
@@ -434,7 +434,7 @@ result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","tar
 result[test+1,1]<- test
 result[test+1,2]<- round(tau,2)
 result[test+1,3]<- events
-result[test+1,4]<- tau+sum(tau_old)
+result[test+1,4]<- round(tau+sum(tau_old),2)
 result[test+1,5]<- events+sum(events_old)
 result[test+1,6]<- round(cLLR(events+sum(events_old),cc,tau+sum(tau_old)),2)
 result[test+1,7]<- round(current_alpha,4)
@@ -479,7 +479,7 @@ message("=======================================================================
 x<- seq(start,test,1) ; critical_values<- as.numeric(result[(start+1):(test+1),9]); loglike<- as.numeric(result[2:(test+1),6])
 
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1))))
+ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1,na.rm=TRUE))))
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
 axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
@@ -498,7 +498,7 @@ legend("topleft",c("Needed to reject H0 (CV)","Observed LLR"),col=c("red","blue"
 
 ### Situation 3: SampleSize achieved with remaining alpha spending, H0 not rejected in previous tests (that is "reject==0"), and "start>0"
 
-if(start>0&CurrentSample>=SampleSize&alpha-actualspent>0.00000001&reject==0&reject_new==0){ # OPEN
+if(start>0&CurrentSample>=SampleSize&max(inputSetUp[5,])<alpha-0.00000001&reject==0&reject_new==0){ # OPEN
 
 result<- data.frame(matrix(0,test+1,10))
 
@@ -509,12 +509,12 @@ result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","tar
 result[test+1,1]<- test
 result[test+1,2]<- round(tau,2)
 result[test+1,3]<- events
-result[test+1,4]<- tau+sum(tau_old)
+result[test+1,4]<- round(tau+sum(tau_old),2)
 result[test+1,5]<- events+sum(events_old)
 result[test+1,6]<- round(cLLR(events+sum(events_old),cc,tau+sum(tau_old)),2)
 result[test+1,7]<- round(current_alpha,4)
 result[test+1,8]<- round(actualspent,4)
-result[test+1,9]<- round(CV,6)
+if(is.numeric(CV)==TRUE){result[test+1,9]<- round(CV,6)}else{result[test+1,9]<- CV}
 result[test+1,10]<- paste("No")
 
 if(test>1){
@@ -557,10 +557,10 @@ message("=======================================================================
 
 # Graphic with critical values and observed test statistic
 
-x<- seq(start,test,1) ; critical_values<- as.numeric(result[(start+1):(test+1),9]); loglike<- as.numeric(result[2:(test+1),6])
+x<- seq(start,test,1) ; critical_values<- suppressWarnings(as.numeric(result[(start+1):(test+1),9])); loglike<- as.numeric(result[2:(test+1),6])
 
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1))))
+ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1,na.rm=TRUE))))
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
 axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
@@ -580,9 +580,9 @@ legend("topleft",c("Needed to reject H0 (CV)","Observed LLR"),col=c("red","blue"
 ###############
 ### Situation 4: SampleSize achieved without remaining alpha spending
 
-if(start>0&CurrentSample>=SampleSize&alpha-actualspent<=0.00000001&start>0&reject==0&reject_new==0){ # OPEN
+if(start>0&CurrentSample>=SampleSize&max(inputSetUp[5,])>=alpha-0.00000001&start>0&reject==0&reject_new==0){ # OPEN
 
-
+tau0<- max(tau0_old)
 result<- data.frame(matrix(0,test+1,10))
 
 colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
@@ -592,12 +592,12 @@ result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","tar
 result[test+1,1]<- test
 result[test+1,2]<- round(tau,2)
 result[test+1,3]<- events
-result[test+1,4]<- tau+sum(tau_old)
+result[test+1,4]<- round(tau+sum(tau_old),2)
 result[test+1,5]<- events+sum(events_old)
 result[test+1,6]<- round(cLLR(events+sum(events_old),cc,tau+sum(tau_old)),2)
 result[test+1,7]<- round(current_alpha,4)
-result[test+1,8]<- round(actualspent,4)
-result[test+1,9]<- round(CV,6)
+result[test+1,8]<- round(current_alpha,4)
+if(is.numeric(CV)==TRUE){result[test+1,9]<- round(CV,6)}else{result[test+1,9]<- CV}
 result[test+1,10]<- paste("No")
 
 if(test>1){
@@ -639,10 +639,10 @@ message("=======================================================================
 
 # Graphic with critical values and observed test statistic
 
-x<- seq(start,test,1) ; critical_values<- as.numeric(result[(start+1):(test+1),9]); loglike<- as.numeric(result[2:(test+1),6])
+x<- seq(start,test,1) ; critical_values<- suppressWarnings(as.numeric(result[(start+1):(test+1),9])); loglike<- as.numeric(result[2:(test+1),6])
 
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1))))
+ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1,na.rm=TRUE))))
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
 axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
@@ -672,7 +672,7 @@ result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","tar
 result[test+1,1]<- test
 result[test+1,2]<- round(tau,2)
 result[test+1,3]<- events
-result[test+1,4]<- tau+sum(tau_old)
+result[test+1,4]<- round(tau+sum(tau_old),2)
 result[test+1,5]<- events+sum(events_old)
 result[test+1,6]<- round(cLLR(events+sum(events_old),cc,tau+sum(tau_old)),2)
 result[test+1,7]<- round(current_alpha,4)
@@ -716,7 +716,7 @@ message("=======================================================================
 x<- seq(start,test,1) ; critical_values<- as.numeric(result[(start+1):(test+1),9]); loglike<- as.numeric(result[2:(test+1),6])
 
 plot(seq(1,test,1),rep(max(loglike)+1,test),col="white",pch=18,xlab="Test",cex.main=1.3,cex.lab=1.3,cex.main=1.5,xaxt="n",
-ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1))))
+ylab=c("Log-likelihood ratio"),main="Critical value (CV) versus Observed Log-likelihood Ratio (LLR)",ylim=c(0,max(max(loglike)+1,max(critical_values+1,na.rm=TRUE))))
 sequencia<- seq(1,test,1)
 rotulos<- seq(1,test,1)
 axis(1, at=sequencia, labels=rotulos,las=1,cex.axis=1.2)
@@ -748,7 +748,7 @@ result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","tar
 result[test+1,1]<- test
 result[test+1,2]<- round(tau,2)
 result[test+1,3]<- events
-result[test+1,4]<- tau+sum(tau_old)
+result[test+1,4]<- round(tau+sum(tau_old),2)
 result[test+1,5]<- events+sum(events_old)
 result[test+1,6]<- round(cLLR(events+sum(events_old),cc,tau+sum(tau_old)),2)
 result[test+1,7]<- paste("NA")
@@ -795,6 +795,11 @@ message("=======================================================================
 
             }# CLOSE
 
+
+
+
+
+
 ############################################################
 ## UPDATING INFORMATION FOR FUTURE TESTES
 ############################################################
@@ -827,7 +832,7 @@ if(rho==0){write.table(alphaspend,paste(name1,"alphaspend.txt",sep=""))}
 
 write.table(inputSetUp,name)
 
-if(start>0&reject==0){write.table(p,paste(name1,"p.txt",sep=""))}
+if(start>0&reject==0&max(as.numeric(inputSetUp[5,]))<alpha-0.00000001){write.table(p,paste(name1,"p.txt",sep=""))}
 
 result2<- result[2:(test+1),]
 colnames(result2)<- c("Test","Person-timeR","events","Cum. Person-timeR","Cum. events","LLR","target alpha","actual alpha","CV","Reject H0")
