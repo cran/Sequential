@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.3.2\cr
-Date: \tab 2023-12-03\cr
+Version: \tab 4.3.3\cr
+Date: \tab 2024-02-20\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -529,5 +529,8 @@ Version 4.3.1, Octuber 2023\cr
 \cr
 Version 4.3.2, Dec 2023\cr
 -	Correction of bugs in the Analyze.CondPoisson function.\cr
+\cr
+Version 4.3.3, Feb 2024\cr
+-	Updated user guide.\cr
 \cr
 }
