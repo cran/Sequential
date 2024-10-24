@@ -20,8 +20,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.3.3\cr
-Date: \tab 2024-02-20\cr
+Version: \tab 4.3.4\cr
+Date: \tab 2024-10-24\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -348,6 +348,7 @@ Development of the R Sequential package has been funded and supported by:\cr
 -     National Council of Scientific and Technological Development (CNPq), Brazil, process number 302882/2022-7. (v4.3.1).\cr
 -	Support Foundation to Minas Gerais State Research-Fapemig, Brazil, grant numbers PQ-00787-21 and RED-00133-21. (v3.1 to v4.3). \cr
 -	Bank for Development of the Minas Gerais State (BDMG), Brazil (v1.0).\cr
+-	Vaccine Safety Datalink - VSD Infrastructure Activities project at HPHCI. (v4.3.4).\cr
 \cr
 Feedback from users is greatly appreciated. Very valuable suggestions concerning the R Sequential package have been received from various individuals, including:\cr
 -	Ron Berman, University of California Berkeley.\cr
@@ -524,7 +525,7 @@ Version 4.3, April 2022\cr
 -     Adjusted \code{Analyze.Binomial} for bugs on the relative risk estimate under variable matching ratio.\cr
 -     Updated user guide.\cr
 \cr
-Version 4.3.1, Octuber 2023\cr
+Version 4.3.1, Oct 2023\cr
 -	Updated reference for the bounded-length confidence interval following sequential analysis with binary data.\cr
 \cr
 Version 4.3.2, Dec 2023\cr
@@ -532,5 +533,8 @@ Version 4.3.2, Dec 2023\cr
 \cr
 Version 4.3.3, Feb 2024\cr
 -	Updated user guide.\cr
+\cr
+Version 4.3.4, Oct 2024\cr
+-	Correction of bugs in theAnalyze.CondPoisson function.\cr
 \cr
 }

@@ -370,6 +370,7 @@ result<- data.frame(matrix(0,test+1,10))
 colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
 result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
 
+tau0<- 0
 actualspent<- 0
 CV<- "NA"
 current_alpha<- 0
