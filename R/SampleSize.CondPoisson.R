@@ -1,8 +1,8 @@
 #----------SampleSize.Poisson.R-------------------------------------------------------------------
 
-# Version of Dez/2016
+# Version of June/2025
 
-SampleSize.CondPoisson<- function(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2,Tailed="upper")
+SampleSize.CondPoisson<- function(cc,D=0,M=1,alpha=0.05,power=0.9,RR=2,Tailed="upper",NegBinApprox= TRUE)
 {
 
 if(Tailed!="upper"){stop("For this version of the Sequential package, SampleSize.CondPoisson works only for 'Tailed=upper'.",call. =FALSE)}                                
@@ -37,6 +37,15 @@ if(cc<=0|round(cc)!=cc){stop("'cc' must be a positive integer.",call. =FALSE)}
 if(D<0){stop("'D' must be a positive number.",call. =FALSE)}
 if(M<=0|round(M)!=M){stop("'M' must be a positive integer.",call. =FALSE)}
 
+
+## Redefining variables for cross-functions consistency
+
+cc1<- cc
+D1<- D
+M1<- M
+alpha1<- alpha
+power1<- power
+RR1<- RR
 
 ##### Auxiliary function to be used in the search for sample size for each configuration of RR and power
 find_N<- function(RRt,powert)
@@ -123,10 +132,62 @@ return(result)
 
 }############ Closes find_N, the function that obtains the solution for each configuration of RR and power
 #############
+ 
 
 
 
-# Finding the exact solution for each RR and for each power
+
+
+
+########### Second version of find_N with the Negative Binomial approximation for NegBinApprox= TRUE
+###########
+   
+ if(NegBinApprox== TRUE){
+#
+  find_N<- function(RRt,powert){
+          Fx<- function(P_V,kk,cc,rr){
+           x<- P_V
+           pp<- 1-rr*x/(rr*x+1) 
+           return( 1- pnbinom(kk-1,size=cc,prob=pp) )
+                                     }
+#
+cota<- ceiling(log(4*cc/0.001,2))
+prob1<- 0
+kkh<- 1
+while(prob1<powert){
+  kkh<- kkh+1
+  count<- 0
+  cv1<- 0.001; cv2<- 4*cc; cvm<- (cv1+cv2)/2
+  prob0<- 0
+    while(abs(alpha-prob0)>0.001&count<=cota){
+      prob0<- Fx(P_V=cvm,kk=kkh,cc,rr=1)
+      if(prob0>alpha){cv2<- cvm}else{cv1<- cvm}
+      cvm<- (cv1+cv2)/2
+      count<- count+1
+                                    }
+       if(prob0>alpha){cvm<- cv1; prob0<- Fx(P_V=cvm,kk=kkh,cc,rr=1)}
+       prob1<- Fx(P_V=cvm,kk=kkh,cc,rr=RRt)
+                  }
+#       
+
+CV<- CV.CondPoisson(Inference="liberal", StopType="Cases",K=kkh,cc=cc1,D=D1,M=M1,alpha=alpha1)$cv
+
+result<- list(kkh,CV,prob0,prob1)
+
+names(result)<- c("K","CV","Type I error probability","Power")
+return(result)
+                                }
+                         }
+
+
+
+
+
+
+
+
+###########
+# Finding the solution for each RR and for each power
 
 RRs<- RR[order(RR)]
 powers<- power[order(power)]
@@ -142,6 +203,9 @@ for(i in 1:length(RR)){
                           acon<- acon+1
                           }
                       }
+
+
+
 
 
 # Ploting the graph

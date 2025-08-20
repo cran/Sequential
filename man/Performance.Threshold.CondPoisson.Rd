@@ -20,7 +20,7 @@ Person_timeRatioH0="n",GroupSizes="n",Tailed="upper",RR)
 For continuous and group sequential analysis based on monitoring Poisson data conditioned on matched
 historical Poisson data, the power, expected time to signal, expected sample size and alpha spending impplied by user-specified thresholds are calculated with
 \code{Performance.Threshold.CondPoisson}. The user can select one between two scales to enter with the
-threshold, the the Conditional Maximized Sequential
+threshold, the Conditional Maximized Sequential
 Probability Ratio Test statistic (CMaxSPRT) scale (Li and Kulldorff, 2010), or the surveillance versus historical person-time ratio (Silva et al., 2019a).
 For the CMaxSRT scale, the input is \code{CV.upper}. This can be entered as a vector for group sequential analysis. For example, for a three-group sequential test,
 the i-th entry represents the critical value for the i-th test, with i=1, 2, 3. If a single number is informed in \code{CV.upper}, then

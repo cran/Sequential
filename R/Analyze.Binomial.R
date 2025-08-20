@@ -131,8 +131,20 @@ if( length(names(table(c(length(cases),length(controls),length(z),length(w)))))>
 ####
 
 inputSetUp<- read.table(name)
-if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1,1]+1,". ",
-"If you do not have information about previous tests, see the user manual for more details."),call. =FALSE)}
+if(inputSetUp[1,1]!=test-1){
+aux_aux<- 1
+message(c("The current test should be"," ",inputSetUp[1,1]+1,". ", "If you do not have information about previous tests, see the user manual for more details."),domain = NULL, appendLF = TRUE)
+                           }else{aux_aux<- 0} 
+
+
+if(inputSetUp[1,1]>0&aux_aux==1){nameb<- paste(name1,"results.txt",sep=""); result2<- read.table(nameb)}
+
+
+#####
+#####  OPEN IMPORTANT GLOBAL TEST FOR THE CASE WHEN THE WRONG test INPUT IS ENTERED. THUS, THIS FUNCTION ONLY RETURNS THE TABLE WITH INFORMATION FROM PREVIOUS TESTS
+#####
+
+if(aux_aux==0){
 
 
 
@@ -151,7 +163,10 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 # line 12: Target alpha spending defined with AnalyzeSetUp
 # line 13: weight for each observation (old w)
 # line 14: test associated to each weight 
-# lines 15: the first column has R0
+# lines 15: the first column has R0, and the second column has an auxiliary variable "start_frac" that says if the amount of events_fraction to control for unstable data has been activated in previous tests. 
+# line 16: the first column has cases_fraction, and the second column has events_fraction for the robust alpha spending construction to manage unstable data
+# line 17: lower limit of the confidence interval per test
+# line 18: upper limit of the confidence interval per test
 
 #### 
 
@@ -176,6 +191,9 @@ w_old<- as.numeric(inputSetUp[13,1:sum(row_old)])         # w_old
 test_old<- as.numeric(inputSetUp[14,1:sum(row_old)])      # test indexes
 z_setup<- inputSetUp[1,10] ; if(z_setup==0){z_setup<- "n"}
 R0<- inputSetUp[15,1]
+start_frac<- inputSetUp[15,2]
+cases_fraction<- inputSetUp[16,1]
+events_fraction<- inputSetUp[16,2] 
 
 if(test>1){
 cases_current<- as.numeric(c(cases_old,cases))
@@ -189,7 +207,111 @@ rows_current<- length(cases)
 z_current<- z
                }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################
+## Constructing the non-sequential confidence interval for RR
+
 if(CIgamma=="n"){CIgamma<- 1-alpha}
+
+if(length(z)<length(cases)){zhh<- rep(z,length(cases))}else{zhh<- z}
+
+if(test>1){
+caseshh<- c(cases_old,cases)
+controlshh<- c(controls_old,controls)
+zhh<- c(z_old,zhh)
+          }else{
+                caseshh<- cases
+                controlshh<- controls
+               }
+datahh<- data.frame(cases=caseshh,controls=controlshh,z=zhh)
+cases_per_z<- aggregate(datahh$cases,list(datahh$z),sum)
+controls_per_z<- aggregate(datahh$controls,list(datahh$z),sum)
+
+#------------------------------------------------------------------------------------------
+
+cases_obs<-  cases_per_z[,2] # observed cases
+controls_obs<-  controls_per_z[,2] # observed controls
+GroupSizes_obs<-  cases_obs + controls_obs
+Cum.cases_obs<-  sum(cases_obs) # total number of events
+z_obs<-  as.numeric(controls_per_z[,1])
+
+if( (length(cases_obs)<=5|Cum.cases_obs<=300) & Cum.cases_obs>0 & Cum.cases_obs<sum(GroupSizes_obs)){ # verifying if the Poisson approach is to be used for saving execution time
+
+CV.upper_one_test<- cases_obs%*%upper.tri(matrix(0,length(cases_obs),length(cases_obs)),diag=T)+controls_obs%*%upper.tri(matrix(0,length(controls_obs),length(controls_obs)),diag=T)+1
+
+ConfInt<- ConfidenceInterval.Binomial(Gamma=CIgamma,
+                            CV.upper= CV.upper_one_test,
+                            GroupSizes= GroupSizes_obs,
+                            z= z_obs,
+                            Cum.cases= Cum.cases_obs
+                            )
+
+RRcil<- round(ConfInt$RRl,3) 
+RRciu<- round(ConfInt$RRu,3)
+#----------------------------------------------------------------------
+
+                                         }else{
+
+
+prob_inf<- function(RRhh)
+{
+pps<- 1/(1+z_obs/RRhh)
+lambda<- sum(pps*GroupSizes_obs)
+return(1-ppois(Cum.cases_obs-1,lambda))
+}
+
+prob_sup<- function(RRhh)
+{
+pps<- 1/(1+z_obs/RRhh)
+lambda<- sum(pps*GroupSizes_obs)
+return(ppois(Cum.cases_obs,lambda))
+}
+
+mmm<- 1
+RRs<- seq(0.01,10*mmm,0.01)
+probSinf<- apply(matrix(RRs,,1),1,prob_inf)
+probSsup<- apply(matrix(RRs,,1),1,prob_sup)
+
+if(sum(probSinf<=alpha/2)>0){RRcil<- max(RRs[probSinf<=alpha/2])}else{RRcil<- 0}
+
+while(sum(probSsup<=alpha/2)==0&mmm<=10){
+mmm<- mmm+1
+RRs<- seq(10*(mmm-1)+0.01,10*mmm,0.01)
+probSsup<- apply(matrix(RRs,,1),1,prob_sup)
+                                }
+if(sum(probSsup<=alpha/2)>0){RRciu<- min(RRs[probSsup<=alpha/2])}else{RRciu<- Inf}
+
+
+                                              } # closes the verification for the Poisson approximation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #### More checks
@@ -207,7 +329,7 @@ if(sum(cases_old)+sum(controls_old)>=M){
 name2<- paste(name1,"pold.txt",sep="")
 pold<- matrix(as.numeric(read.table(name2)[[1]]), ,1) # has the previous state probabilities 
 name2<- paste(name1,"statesOld.txt",sep="")
-statesOld<- as.numeric(read.table(name2)[[1]]) # has the possible state of Sn until (test-1)th analysis.
+statesOld<- as.numeric(read.table(name2)[[1]]) # has the possible states of Sn until (test-1)th analysis.
                                        }
 
 ##################################################################
@@ -310,6 +432,8 @@ return(llrcum)
 
 sn_marginal<- function(z,w,cases,controls,R=R0)
 {
+
+
 z_w_levels<- names(table(paste(z,w)))
 data_matrix<- matrix(0,length(z_w_levels),5)
 colnames(data_matrix)<- c("z","w","Cases","Controls","Total")
@@ -317,11 +441,12 @@ colnames(data_matrix)<- c("z","w","Cases","Controls","Total")
 for(ii in 1:length(z_w_levels)){ # 1
 sum_cases<- sum(cases[z_w_levels[ii]==paste(z,w)]) 
 sum_controls<- sum(controls[z_w_levels[ii]==paste(z,w)])
-sum_total<- sum_cases+sum_controls
+if(start>0&start_frac==0&sum_cases+sum_controls+sum(cases_old)+sum(controls_old)>10){events_fraction_aux<- events_fraction; start_frac<- 1}else{events_fraction_aux<- 0}
+sum_total<- sum_cases+sum_controls - events_fraction_aux # events_fraction is the parameter to control the effects of events disappearing during the surveillance due to unstable data 
 
 data_matrix[ii,]<- c(max(z[z_w_levels[ii]==paste(z,w)]),max(w[z_w_levels[ii]==paste(z,w)]),sum_cases,sum_controls,sum_cases+sum_controls)
 
-pii<- 1/(1+max(z[z_w_levels[ii]==paste(z,w)])/R)
+pii<- 1/(1+max(z[z_w_levels[ii]==paste(z,w)])/R) 
  
 if(ii==1){ # 2
 states=seq(0,sum_total)*max(w[z_w_levels[ii]==paste(z,w)])
@@ -387,7 +512,7 @@ if(sum(cases_old)+sum(controls_old)>=M){resm<- sn_marginal(z,w,casesr,controlsr)
 statesMed<- resm[[1]]
 pmed<- resm[[2]]
 
-paux<- rep(0,length(statesOld)*length(statesMed))
+paux<- rep(0,length(statesOld)*length(statesMed)) 
 statesaux<- paux 
 cc<- 1
 for(kk in 1:length(statesOld)){
@@ -414,8 +539,8 @@ while(p<perrorI){p<- sum(pnew[length(pnew):jj]); if(p<perrorI){i<- jj;jj<- jj-1;
 
 alphahere<- pp              ## actual alpha spent in the current test 
 if(pp>0){CVf<- statesNew[i]}else{CVf<- NA}
-statesOld<- statesNew[1:i]
-pold<- pnew[1:i]
+statesOld<- statesNew[1:jj]
+pold<- pnew[1:jj]
 
 return(list(CVf,alphahere,pold,statesOld))
             } # 3
@@ -444,9 +569,23 @@ return(list(CVfu,CVfl,alphahere,pold,statesOld))
 #--------------------------
 #### Closes the critical value function
 
+
+
+
+
+
+
 ##########################################################
 ###### CALCULATING CRITICAL VALUE AND ACTUAL ALPHA SPENT FOR THE CURRENT TEST
 ##########################################################
+
+## Setting up the auxiliary variable to handle unstable data with the robust alpha spending
+
+if(test==1){SAUX<- cases+controls}else{SAUX<- cases_old+controls_old+cases+controls}
+if(cases_fraction>0&cases_fraction<1){cases_fraction_aux<- floor(cases_fraction*SAUX)}else{cases_fraction_aux<- cases_fraction}
+
+
+
 
 # Finding critical value for the 'current_alpha'
 
@@ -457,7 +596,7 @@ if(totalevents >= M&reject==0&max(inputSetUp[5,])<alpha-0.00000001 ){
 res<- critical_value(z,w,casesr=cases,controlsr=controls,current_alpha,maxspent)
 
 if(Tailed==1){
-CVu<- res[[1]]
+CVu<- res[[1]] + cases_fraction_aux # cases_fraction is to ensure a robust alpha spending for unstable data
 actualspent<- res[[2]]+max(actual_alpha_old)
 if(actualspent==0){CVu<- NA}
 pold<- res[[3]]
@@ -465,8 +604,8 @@ statesOld<- res[[4]]
              }
 
 if(Tailed==2){
-CVu<- res[[1]]
-CVl<- res[[2]]
+CVu<- res[[1]] + cases_fraction_aux
+CVl<- res[[2]] - cases_fraction_aux
 actualspent<- res[[3]]+max(actual_alpha_old)
 if(actualspent==0){CVu<- NA; CVl<- NA}
 pold<- res[[4]]
@@ -490,6 +629,14 @@ if(aux1==1|aux2==1){reject_new<- test}else{reject_new<- 0}
                                                                      }else{reject_new<- max(0,reject)}
 
 if(M>totalevents |reject==1| max(inputSetUp[5,])>=alpha-0.00000001 ){actualspent<- 0; CVu<- NA;  if(Tailed==2){CVl<- NA} }
+
+
+
+
+
+
+
+
 
 
 
@@ -522,6 +669,10 @@ namesw<- rep(0,nw)
 for(k in 1:nw){if(k>1){namesw[k]<- paste("w=",ws[k])}else{namesw[k]<- paste("  w=",ws[k])}}
 
 
+
+
+
+
 ###############
 ### Situation 1: SampleSize not achieved and surveillance not started because events are still smaller than M
 
@@ -529,10 +680,10 @@ if(start==0){ # OPEN
 
 if(Tailed==1){ # 1
 
-result<- data.frame(matrix(0,test+1,12))
+result<- data.frame(matrix(0,test+1,14))
 result[2:(test+1),1]<- seq(1,test,1)
-colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," " , "--Confidence","interval for RR--") 
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit")
 
 result[2:(test+1),1]<- seq(1,test)
 result[test+1,2]<- sum(cases)
@@ -546,6 +697,8 @@ result[test+1,9]<- 0
 result[test+1,10]<- 0
 result[test+1,11]<-  NA
 result[test+1,12]<- paste("No")
+result[test+1,13]<- RRcil
+result[test+1,14]<- RRciu
 
 if(test>1){
 
@@ -564,7 +717,8 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,9]<- 0}else{result[i+1,9]
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,10]<- 0}else{result[i+1,10]<- NA}
 if(is.numeric(CVu_old[i])==TRUE){result[i+1,11]<- CVu_old[i]}else{result[i+1,11]<- NA}
 result[i+1,12]<- paste("No")
-
+result[i+1,13]<- inputSetUp[17,i]
+result[i+1,14]<- inputSetUp[18,i]
                     }
 
           }
@@ -674,6 +828,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailed,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
                  }else{
@@ -688,6 +844,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho, ", Tailed= ", Tailed,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
                       } # close Msatisfied 
@@ -706,10 +864,10 @@ if(reject==0&reject_new==0&start>0&totalevents<SampleSize){# OPEN
 
 if(Tailed==1){ # 1
 
-result<- data.frame(matrix(0,test+1,12))
+result<- data.frame(matrix(0,test+1,14))
 result[2:(test+1),1]<- seq(1,test,1)
-colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," " , "--Confidence","interval for RR--") 
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit")
 
 result[2:(test+1),1]<- seq(1,test)
 result[test+1,2]<- sum(cases)
@@ -723,6 +881,8 @@ result[test+1,9]<- specify_decimal(current_alpha,4)
 result[test+1,10]<- specify_decimal(actualspent,4)
 result[test+1,11]<-  CVu
 result[test+1,12]<- paste("No")
+result[test+1,13]<- RRcil
+result[test+1,14]<- RRciu
 
 if(test>1){
 
@@ -741,7 +901,8 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,9]<- specify_decimal(targ
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,10]<- specify_decimal(actual_alpha_old[i],4)}else{result[i+1,10]<- paste(NA)}
 if(is.numeric(CVu_old[i])==TRUE){result[i+1,11]<- CVu_old[i]}else{result[i+1,11]<- paste(NA)}
 result[i+1,12]<- paste("No")
-
+result[i+1,13]<- inputSetUp[17,i]
+result[i+1,14]<- inputSetUp[18,i]
                     }
 
           }
@@ -924,6 +1085,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,",zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
 
@@ -941,10 +1104,10 @@ if(totalevents>=SampleSize&alpha-actualspent>0.00000001&start>0&reject==0&reject
 
 if(Tailed==1){ # 1
 
-result<- data.frame(matrix(0,test+1,12))
+result<- data.frame(matrix(0,test+1,14))
 result[2:(test+1),1]<- seq(1,test,1)
-colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," " , "--Confidence","interval for RR--") 
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit")
 
 result[2:(test+1),1]<- seq(1,test)
 result[test+1,2]<- sum(cases)
@@ -958,6 +1121,8 @@ result[test+1,9]<- specify_decimal(current_alpha,4)
 result[test+1,10]<- specify_decimal(actualspent,4)
 result[test+1,11]<-  CVu
 result[test+1,12]<- paste("No")
+result[test+1,13]<- RRcil
+result[test+1,14]<- RRciu
 
 if(test>1){
 
@@ -976,7 +1141,8 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,9]<- specify_decimal(targ
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,10]<- specify_decimal(actual_alpha_old[i],4)}else{result[i+1,10]<- NA}
 if(is.numeric(CVu_old[i])==TRUE){result[i+1,11]<- CVu_old[i]}else{result[i+1,11]<- NA}
 result[i+1,12]<- paste("No")
-
+result[i+1,13]<- inputSetUp[17,i]
+result[i+1,14]<- inputSetUp[18,i]
                     }
 
           }
@@ -1163,6 +1329,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
                                             
                                                                   } # CLOSE
@@ -1177,10 +1345,10 @@ if(totalevents>=SampleSize&alpha-actualspent<=0.00000001&start>0&reject==0&rejec
 
 if(Tailed==1){ # 1
 
-result<- data.frame(matrix(0,test+1,12))
+result<- data.frame(matrix(0,test+1,14))
 result[2:(test+1),1]<- seq(1,test,1)
-colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," " , "--Confidence","interval for RR--") 
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit")
 
 result[2:(test+1),1]<- seq(1,test)
 result[test+1,2]<- sum(cases)
@@ -1194,7 +1362,8 @@ result[test+1,9]<- specify_decimal(current_alpha,4)
 result[test+1,10]<- specify_decimal(actualspent,4)
 result[test+1,11]<-  CVu
 result[test+1,12]<- paste("No")
-
+result[test+1,13]<- RRcil
+result[test+1,14]<- RRciu
 if(test>1){
 
 for(i in 1:(test-1)){
@@ -1212,7 +1381,8 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,9]<- specify_decimal(targ
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,10]<- specify_decimal(actual_alpha_old[i],4)}else{result[i+1,10]<- NA}
 if(is.numeric(CVu_old[i])==TRUE){result[i+1,11]<- CVu_old[i]}else{result[i+1,11]<- NA}
 result[i+1,12]<- paste("No")
-
+result[i+1,13]<- inputSetUp[17,i]
+result[i+1,14]<- inputSetUp[18,i]
                     }
 
           }
@@ -1399,6 +1569,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)                                                         
 
                                               
@@ -1417,10 +1589,10 @@ if(reject==0&reject_new>0){# OPEN
 
 if(Tailed==1){ # 1
 
-result<- data.frame(matrix(0,test+1,12))
+result<- data.frame(matrix(0,test+1,14))
 result[2:(test+1),1]<- seq(1,test,1)
-colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," " , "--Confidence","interval for RR--") 
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit")
 
 result[2:(test+1),1]<- seq(1,test)
 result[test+1,2]<- sum(cases)
@@ -1434,6 +1606,8 @@ result[test+1,9]<- specify_decimal(current_alpha,4)
 result[test+1,10]<- specify_decimal(actualspent,4)
 result[test+1,11]<-  CVu
 result[test+1,12]<- paste("Yes")
+result[test+1,13]<- RRcil
+result[test+1,14]<- RRciu
 
 if(test>1){
 
@@ -1452,7 +1626,8 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,9]<- specify_decimal(targ
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,10]<- specify_decimal(actual_alpha_old[i],4)}else{result[i+1,10]<- NA}
 if(is.numeric(CVu_old[i])==TRUE){result[i+1,11]<- CVu_old[i]}else{result[i+1,11]<- NA}
 result[i+1,12]<- paste("No")
-
+result[i+1,13]<- inputSetUp[17,i]
+result[i+1,14]<- inputSetUp[18,i]
                     }
 
           }
@@ -1636,9 +1811,14 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
             }# CLOSE
+
+
+
 
 
 
@@ -1651,10 +1831,10 @@ if(reject>0){# OPEN
 
 if(Tailed==1){ # 1
 
-result<- data.frame(matrix(0,test+1,12))
+result<- data.frame(matrix(0,test+1,14))
 result[2:(test+1),1]<- seq(1,test,1)
-colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "-----","Cumulative","--------"," "," ","--alpha","spent--"," "," " , "--Confidence","interval for RR--") 
+result[1,]<- c("Test","Cases","Controls","Cases","Controls","E[Cases|H0]","RR estimate","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit")
 
 result[2:(test+1),1]<- seq(1,test)
 result[test+1,2]<- sum(cases)
@@ -1668,6 +1848,8 @@ result[test+1,9]<- NA
 result[test+1,10]<- NA
 result[test+1,11]<-  NA
 result[test+1,12]<- paste("Yes")
+result[test+1,13]<- RRcil
+result[test+1,14]<- RRciu
 
 if(test>1){
 
@@ -1675,6 +1857,8 @@ for(i in 1:(test-1)){
 
 if(i==1){a1<- 1; a2<- sum(rows_current[1:i])}else{a1<- sum(rows_current[1:(i-1)])+1; a2<- sum(rows_current[1:i])}
 
+result[i+1,13]<- inputSetUp[17,i]
+result[i+1,14]<- inputSetUp[18,i]
 result[i+1,2]<- sum(cases_current[a1:a2])
 result[i+1,3]<- sum(controls_current[a1:a2])
 result[i+1,4]<- sum(cases_current[1:sum(rows_current[1:i])])
@@ -1802,6 +1986,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: N= ",SampleSize,", alpha= ",alpha,", rho= ",rho,", zp= ", z_setup,", and M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: cases_fraction= ",cases_fraction," and events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",CIgamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
             }# CLOSE
@@ -1810,7 +1996,7 @@ message("=======================================================================
 
 
 ############################################################
-## UPDATING INFORMATION FOR FUTURE TESTES
+## UPDATING INFORMATION FOR FUTURE TESTS
 ############################################################
 
                                                                                                                                        
@@ -1831,6 +2017,9 @@ inputSetUp[11,(sum(row_old)+1):(sum(row_old)+length(z_w_levels))]<- data_matrix[
 inputSetUp[12,1:length(alphaspend)]<- alphaspend
 inputSetUp[13,(sum(row_old)+1):(sum(row_old)+length(z_w_levels))]<- data_matrix[,2]
 inputSetUp[14,(sum(row_old)+1):(sum(row_old)+length(z_w_levels))]<- test
+inputSetUp[15,2]<- start_frac
+inputSetUp[17,test]<- RRcil
+inputSetUp[18,test]<- RRciu
 
 ## inputSetUp matrix contains:
 # line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) SampleSize, (C13) alpha, (C14) M, (C15) base(the line of p where the looping will start in the next test), (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) rho (zero if Wald is used)
@@ -1847,7 +2036,10 @@ inputSetUp[14,(sum(row_old)+1):(sum(row_old)+length(z_w_levels))]<- test
 # line 12: Target alpha spending defined with AnalyzeSetUp
 # line 13: weight for each observation (old w)
 # line 14: test associated to each weight
-
+# line 15: the first column has R0, and the second column has an auxiliary variable "start_frac" that says if the amount of events_fraction to control for unstable data has been activated in previous tests.
+# line 16: the first column has cases_fraction, and the second column has events_fraction for the robust alpha spending construction to manage unstable data
+# line 17: lower limit of the confidence interval per test
+# line 18: upper limit of the confidence interval per test
 
 
 ############################################################
@@ -1862,11 +2054,19 @@ write.table(statesOld,paste(name1,"statesOld.txt",sep=""))
                                                                 }
 
 result2<- result[2:(test+1),]
-colnames(result2)<- c("Test", "Cases", "Controls", "Cum. cases", "Cum. controls", "E[Cases|H0]" , "RR estimate", "LLR", "target alpha", "actual alpha", "CV", "Reject H0")
+colnames(result2)<- c("Test", "Cases", "Controls", "Cum. cases", "Cum. controls", "E[Cases|H0]" , "RR estimate", "LLR", "target alpha", "actual alpha", "CV", "Reject H0","RR_CI_lower","RR_CI_upper")
+write.table(result2,paste(name1,"results.txt",sep=""))
+
+#####
+#####  CLOSES IMPORTANT GLOBAL TEST
+#####
+                   } 
+
+
 invisible(result2)
 
 #####################################
-}##### Close function Analyze.wBinomial
+}##### Close function Analyze.Binomial
 #####################################
 
 
@@ -1875,11 +2075,8 @@ invisible(result2)
 ####
 #    Note: cut off the symbol "#" before runing the lines below.
 
-#AnalyzeSetUp.Binomial(name="test",N="n", alpha=0.05, pp=0.44, M=5, AlphaSpendType="optimal",address="C:/Users/ivair/POST-DOC/Material para construcao do pacote Sequential/Sequential_3.0/PASTA PARA TREINO")
-#system.time(res<- Analyze.Binomial(name="test",test=1,p=0.44,cases=6,controls=2))
-
-
-
+#AnalyzeSetUp.Binomial(name="TESTE",N=100,alpha=0.05,zp=1,pp=0.5,M=1,AlphaSpendType="power-type",power=0.9,RR=2,ConfIntWidth="n",ConfTimes=1,Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=1,title="n",address="C:/Users/User/Documents/Viagens a Boston/2024/BACKUP DEVIDO AO PROBLEMA DE VIRUS/TRABALHO V2/Robust Alpha Spending/CODES/TESTE",Tailed="upper",cases_fraction=2,events_fraction=1)
+#res<- Analyze.Binomial(name="TESTE",test=1,z=c(1,2),cases=c(3,3),controls=c(4,4))
 
 
 

@@ -4,8 +4,8 @@
 \description{The function \code{AnalyzeSetUp.Poisson} must be run ahead of \code{Analyze.Poisson} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.Poisson(name,SampleSize,alpha=0.05,D=0,M=1,
-AlphaSpendType="Wald",rho="n",R0=1,title="n",address="n",
-Tailed="upper")
+AlphaSpendType="Wald",rho=1,R0=1,title="n",address="n",
+Tailed="upper",events_fraction=0,power=0.9,RR=2)
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Poisson} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
@@ -24,6 +24,9 @@ can reject the null hypothesis if it occurs sufficiently early.}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
 \item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
 \item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1.}
+\item{events_fraction}{This activates the construction of a robust alpha spending due to unstable data. The deafult is events_fraction=0, which means that there will not occur events added to the data by mistake during the surveillance. If events_fraction is in (0, 1), then it represents a percent of the total sample size under H0. If events_fraction >= 1, it represents constant number of events added by mistake during the analysis.}
+\item{power}{The target power for the robust alpha spending. The default is power= 0.9.}
+\item{RR}{The target relative risk for the target power when the robust alpha spending is used. The default is RR= 2.}
 }
 
 

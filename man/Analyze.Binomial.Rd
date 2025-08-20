@@ -1,7 +1,7 @@
 \name{Analyze.Binomial}
 \alias{Analyze.Binomial}
 \title{Function for group sequential analyses for binomial data, without the need to know group sizes a priori.}
-\description{The function \code{Analyze.Binomial} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the binomial probability, p, can be different for different observations. In a matched case-control setting, this means that the matching ratios can be different for different matched sets.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Binomial} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function.}
+\description{The function \code{Analyze.Binomial} is used for either continuous or group sequential analysis, or for a  combination of the two. Unlike \code{CV.Binomial}, it is not necessary to pre-specify the group sizes before the sequential analysis starts. Moreover, under the null hypothesis, the binomial probability, p, can be different for different observations. In a matched case-control setting, this means that the matching ratios can be different for different matched sets.  It is possible to use either a Wald type rejection boundary, which is flat with respect to the likelihood ratio, or a user defined alpha spending function. \code{Analyze.Binomial} is run at each look at the data. Before running it by the first time, it is necessary to run the \code{\link[Sequential]{AnalyzeSetUp.Binomial}} function.}
 \usage{
 Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
       }
@@ -18,7 +18,7 @@ Analyze.Binomial(name,test,z="n",p="n",cases,controls,AlphaSpend="n")
 
 \details{
 The function \code{Analyze.Binomial} performs continuous or group sequential analysis for Bernoulli or binomial data. It can also be used for mixed continuous-group sequential
-analysis where some data arrives continuously while other data arrives in groups. Unlike \code{CV.Binomial} and \code{CV.G.Binomial}, there is (i) no need to pre-specify the
+analysis where some data arrives continuously while other data arrives in groups. Unlike \code{CV.Binomial}, there is (i) no need to pre-specify the
 group sizes before the sequential analysis starts, (ii) a variety of alpha spending functions are available, and (iii)  it is possible to include an offset term where,
 under the null hypothesis, different observations have different binomial probabilities p.
 

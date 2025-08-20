@@ -236,7 +236,7 @@ if(GroupSizes=="n"){if(Tailed=="upper"){if(length(cvs.upper)==1){cvs.upper<- rep
 
 if(GroupSizes=="n"&Tailed=="two"){if(length(cvs.lower)<2*T|length(cvs.upper)<2*T){stop("For variable lower and upper signaling thresholds, the dimension of cvs.lower and cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
 if(GroupSizes=="n"&Tailed=="lower"){if(length(cvs.lower)<2*T){stop("For variable lower signaling threshold, the dimension of cvs.lower must be at least twice the value of SampleSize.",call. =FALSE)}}
-if(GroupSizes=="n"&Tailed=="upper"){if(length(cvs.upper)<2*T){stop("For variable lower signaling threshold, the dimension of cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
+if(GroupSizes=="n"&Tailed=="upper"){if(length(cvs.upper)<2*T){stop("For variable upper signaling threshold, the dimension of cvs.upper must be at least twice the value of SampleSize.",call. =FALSE)}}
                          }
 
 

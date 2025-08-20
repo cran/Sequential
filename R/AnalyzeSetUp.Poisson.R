@@ -1,9 +1,9 @@
 
 # -------------------------------------------------------------------------
-# Function to setup parameters for the unpredictable Poisson MaxSPRT surveillance - Version edited at Feb-2022
+# Function to setup parameters for the unpredictable Poisson MaxSPRT surveillance - Version edited at April-2025
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,D=0,M=1,AlphaSpendType="Wald",rho="n",R0=1,title="n",address="n",Tailed="upper")
+AnalyzeSetUp.Poisson<- function(name,SampleSize,alpha=0.05,D=0,M=1,AlphaSpendType="Wald",rho=1,R0=1,title="n",address="n",Tailed="upper",events_fraction=0,power=0.9,RR=2)
 {
 
 M1<- M
@@ -18,6 +18,8 @@ pho<- rho
 
 phoref<- rho
 T<- SampleSize
+
+if(events_fraction>0 & events_fraction<1){events_fraction<- floor(events_fraction*T)}
 
 if(AlphaSpendType!="Wald"&AlphaSpendType!="power-type"){stop("Set AlphaSpendType= 'Wald' or AlphaSpendType= 'power-type'.",call. =FALSE)}
 if(AlphaSpendType=="power-type"&is.numeric(pho)!=TRUE){stop("Symbols and texts are not applicable for 'rho'. It must be a positive number.",call. =FALSE)}
@@ -80,6 +82,52 @@ alpha1<- alpha
 posi<- 2
 
 rejt<- 0
+
+
+
+
+
+## Updating the SampleSize for ensuring the target power for unstable data
+
+
+
+if(events_fraction>0){
+
+res<- Performance.AlphaSpend.Poisson(SampleSize,alpha,D,M,RR,alphaSpend=1,rho,
+R0,gamma="n",Statistic="MaxSPRT", Delta="n",Tailed="upper")
+
+CV_new<- rep(0,events_fraction+length(res$cvs))
+CV_new[(events_fraction+1):length(CV_new)]<- res$cvs  ; CV_new[CV_new==0]<- 10  
+if(2*SampleSize>length(CV_new)){CV_new<- c(CV_new,rep(CV_new[length(CV_new)], ceiling(2*SampleSize-length(CV_new))+1 ))}
+
+res2<- Performance.Threshold.Poisson(SampleSize,CV.lower="n",CV.upper=CV_new,
+CV.events.upper="n",M,D,GroupSizes="n",Tailed="upper",
+Statistic="MaxSPRT", Delta="n",RR)
+
+power_ref<- res2$Performance[2]
+
+while(power_ref<power){
+    SampleSize<- SampleSize+10
+    
+res<- Performance.AlphaSpend.Poisson(SampleSize,alpha,D,M,RR,alphaSpend=1,rho,
+R0,gamma="n",Statistic="MaxSPRT", Delta="n",Tailed="upper")
+
+CV_new<- rep(0,events_fraction+length(res$cvs))
+CV_new[(events_fraction+1):length(CV_new)]<- res$cvs  ; CV_new[CV_new==0]<- 10  
+if(2*SampleSize>length(CV_new)){CV_new<- c(CV_new,rep(CV_new[length(CV_new)], ceiling(2*SampleSize-length(CV_new))+1 ))}
+
+res2<- Performance.Threshold.Poisson(SampleSize,CV.lower="n",CV.upper=CV_new,
+CV.events.upper="n",M,D,GroupSizes="n",Tailed="upper",
+Statistic="MaxSPRT", Delta="n",RR)
+
+power_ref<- res2$Performance[2]
+                      }                    
+T<-  SampleSize
+}
+
+
+
+
 
 # -------------------------------------------------------------------------
 # Function produces alpha spending associated to flat critical values - continuous Poisson MaxSPRT
@@ -239,6 +287,14 @@ if(sum(sa)==0){stop("Choose larger SampleSize. It is not possible to find a solu
 sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
                           }else{j<- 0}
 
+
+
+
+
+
+
+
+
 #############################################################################################################
 ##   HERE WE SAVE THE KEY CONTENT TO SETUP THE SURVEILLANCE. THE CONTENT IS SAVED IN THE MATRIX  CALLED inputSetUp 
 #############################################################################################################
@@ -250,12 +306,14 @@ sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=T))
 # line 5: actual alpha spent
 # line 6: expected number of events under H0, mu0, test by test
 # line 7: has the target alpha spending actually used until the (test-1)th look.
-
+# line 8: collumn 1 has the number of events that can be added to the counts of events by mistake, that is, this is to manage the effects of unstable data, collumn 2 has the target power, and collumn 3 has the target relative risk.
+# line 9: lower limit of the confidence interval per test
+# line 10: upper limit of the confidence interval per test
 
 if(AlphaSpendType=="Wald"){k<- length(sa)}
-inputSetUp<- as.data.frame(matrix(0,7,12))
+inputSetUp<- as.data.frame(matrix(0,10,12))
 
-if(AlphaSpendType=="Wald"){alphaspend<- sum_sa; M<- sum(alphaspend==0)+1} #Target alpha spending to be spent event by event.
+if(AlphaSpendType=="Wald"){alphaspend<- sum_sa; M<- sum(alphaspend==0)+1} # Target alpha spending to be spent event by event.
 
 inputSetUp[1,]<- 0
 inputSetUp[1,1:12]<- c(0,SampleSize,alpha,M,1,0,0,pho,j,D,M1,R0) 
@@ -266,7 +324,9 @@ inputSetUp[4,]<- 0
 inputSetUp[5,]<- 0
 inputSetUp[6,]<- 0
 inputSetUp[7,]<- 0
-
+inputSetUp[8,]<- 0; inputSetUp[8,1]<- events_fraction  ; inputSetUp[8,2]<- power ; inputSetUp[8,3]<- RR
+inputSetUp[9,]<- 0
+inputSetUp[10,]<- 0
 
 write.table(inputSetUp,name)
 titlecheck<- data.frame(matrix(0,1,1))
@@ -276,7 +336,7 @@ message(c("The parameters were successfully set at '",address,"'."),domain = NUL
 message(c("The temporary directory of your computer has the address of the directory where the settings information of this sequential analysis is saved.
 Thus, do not clean the temporary directory before finishing this sequential analysis."),domain = NULL, appendLF = TRUE)
 
-if(AlphaSpendType=="Wald"&phoref!="n"){message(c("The value of 'rho' is ignored, as it is not used when AlphaSpendType='Wald'."),domain = NULL, appendLF = TRUE)}
+if(AlphaSpendType=="Wald"&phoref!="n"&events_fraction==0){message(c("The value of 'rho' is ignored, as it is not used when AlphaSpendType='Wald' and events_fraction=0."),domain = NULL, appendLF = TRUE)}
 
 write.table(titlecheck,paste(name1,"title.txt",sep=""))
 
@@ -287,4 +347,4 @@ setwd(safedir)
 } ## end function AnalyzeSetUp.Poisson
 
 
-# AnalyzeSetUp.Poisson(name="teste",SampleSize=6,alpha=0.05,D=2,M=1,AlphaSpendType="Wald",rho="n",R0=1,title="teste",address="C:/Users/ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO",Tailed="upper")
+# AnalyzeSetUp.Poisson(name="teste",SampleSize=6,alpha=0.05,D=2,M=1,AlphaSpendType="Wald",rho=1,R0=1,title="teste",address="C:/Users/User/Documents/Viagens a Boston/2024/BACKUP DEVIDO AO PROBLEMA DE VIRUS/TRABALHO V2/Robust Alpha Spending/CODES/TESTE",Tailed="upper",events_fraction=0,power=0.9,RR=2)

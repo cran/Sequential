@@ -1,9 +1,9 @@
 
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at Jan-15-2015
+# Function to perform the unpredictable binomial MaxSPRT surveillance - Version edited at April-11-2025
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp="n",pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",ConfTimes=1,Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",address="n",Tailed="upper")
+AnalyzeSetUp.Binomial<- function(name,N="n",alpha=0.05,zp=1,pp="n",M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",ConfTimes=1,Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=1,title="n",address="n",Tailed="upper",cases_fraction=0,events_fraction=0)
 {
 
 gama<- Gamma
@@ -96,6 +96,92 @@ LLR <- function(cc,n,z){
       	x
 	                 }
 #--------------------------
+
+
+
+
+
+
+
+
+# Open updated N for robust alpha spending
+#####################################################
+if(cases_fraction>0){
+
+Noriginal<- N
+
+res<- Performance.AlphaSpend.Binomial(N,alpha,AlphaSpend=1,z=zp,
+p="n",GroupSizes=1,Tailed="upper",RR,rho,Statistic="MaxSPRT")
+cvs<- res$cvs.cases
+aux<- sum(is.na(cvs))
+if(aux>0){cvs[1:aux]<- seq(2,aux+1)} 
+
+if(cases_fraction==0|cases_fraction>=1){aux<- cases_fraction}else{aux<- cases_fraction*seq(1,N)}
+cvs_p<- floor(cvs+ aux)
+aux<- seq(2,N+1); cvs_p[cvs_p>aux]<- aux[cvs_p>aux]
+
+res<- Performance.Threshold.Binomial(N,CV.lower="n",CV.upper=cvs_p,
+z=zp,p="n",GroupSizes=1,Tailed="upper",
+Statistic="Cases", Delta="n", RR)
+
+powerRef<- res$Performance[2]
+
+if(powerRef<power){ # open 1
+
+while(powerRef<power){
+Nold<- N
+N<- N+10
+res<- Performance.AlphaSpend.Binomial(N,alpha,AlphaSpend=1,AlphaSpendLower="n",
+AlphaSpendUpper="n",z=zp, p="n",GroupSizes=1,Tailed="upper",rho,gamma="n",RR,
+Statistic="MaxSPRT", Delta="n")
+cvs<- res$cvs.cases
+aux<- sum(is.na(cvs))
+if(aux>0){cvs[1:aux]<- seq(2,aux+1)} 
+
+if(cases_fraction==0|cases_fraction>=1){aux<- cases_fraction}else{aux<- cases_fraction*seq(1,N)}
+cvs_p<- floor(cvs+ aux)
+aux<- seq(2,N+1); cvs_p[cvs_p>aux]<- aux[cvs_p>aux]
+
+res<- Performance.Threshold.Binomial(N,CV.lower="n",CV.upper=cvs_p,
+z=zp,p="n",GroupSizes=1,Tailed="upper", Statistic="Cases", Delta="n", RR)
+
+powerRef<- res$Performance[2]
+                            }
+ 
+             
+Nmed<- ceiling((Nold+N)/2)
+
+res<- Performance.AlphaSpend.Binomial(N=Nmed,alpha,AlphaSpend=1,
+AlphaSpendLower="n", AlphaSpendUpper="n", z=zp, p="n",GroupSizes=1,
+Tailed="upper",rho,gamma="n",RR,Statistic="MaxSPRT",Delta="n")
+cvs<- res$cvs.cases
+aux<- sum(is.na(cvs))
+if(aux>0){cvs[1:aux]<- seq(2,aux+1)} 
+
+if(cases_fraction==0|cases_fraction>=1){aux<- cases_fraction}else{aux<- cases_fraction*seq(1,Nmed)}
+cvs_p<- floor(cvs+ aux)
+aux<- seq(2,Nmed+1); cvs_p[cvs_p>aux]<- aux[cvs_p>aux]
+
+res<- Performance.Threshold.Binomial(N=Nmed,CV.lower="n",CV.upper=cvs_p,
+z=zp,p="n",GroupSizes=1,Tailed="upper", Statistic="Cases", Delta="n", RR)
+
+powerRef<- res$Performance[2]
+
+if(powerRef>power){N<- max(Noriginal,Nmed)}
+           } # close 1
+
+
+         } # close updated N for robust alpha spending
+#####################################################
+
+
+
+
+
+
+
+
+
 
 
 # -------------------------------------------------------------------------
@@ -273,12 +359,15 @@ if(y<N){absorb1<- c(seq(2,y),y,seq(y+1,N))}else{absorb1<- c(seq(2,y),y)}; absorb
 # line 12: Target alpha spending defined with AnalyzeSetUp
 # line 13: weight for each observation
 # line 14: test per weight
-# line 15: the first column has R0
+# line 15: the first column has R0, and the second column has an auxiliary variable "start_frac" that says if the amount of events_fraction to control for unstable data has been activated in previous tests.
+# line 16: the first column has cases_fraction, and the second column has events_fraction for the robust alpha spending construction to manage unstable data
+# line 17: lower limit of the confidence interval per test
+# line 18: upper limit of the confidence interval per test
 
 if(AlphaSpendType=="power-type"){z<- 0}
 if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){rho<- 0}
 
-inputSetUp<- as.data.frame(matrix(0,15,max(length(absorb1),length(sum_sa),10)))
+inputSetUp<- as.data.frame(matrix(0,18,max(length(absorb1),length(sum_sa),10)))
 
 N<- length(sum_sa)
 
@@ -300,6 +389,7 @@ if(AlphaSpendType=="Wald"|AlphaSpendType=="optimal"){inputSetUp[12,1:length(sum_
 inputSetUp[13,]<- 0
 inputSetUp[14,]<- 0
 inputSetUp[15,1]<- R0
+inputSetUp[16,1]<- cases_fraction; inputSetUp[16,2]<- events_fraction 
 
 write.table(inputSetUp,name)
 titlecheck<- data.frame(matrix(0,1,1))
@@ -309,7 +399,10 @@ message(c("The parameters were successfully set at '",address,"'."),domain = NUL
 message(c("The temporary directory of your computer has the address of the directory where the settings information of this sequential analysis is saved.
 Thus, do not clean the temporary directory before finishing this sequential analysis."),domain = NULL, appendLF = TRUE)
 
-if(AlphaSpendType=="power-type"&zp!=1){message(c("The values of 'zp' and 'pp' are ignored, as it is not used when AlphaSpendType='power-type'. The value of 'z' must be specified when running the Analyze.Binommial function."),domain = NULL, appendLF = TRUE)}
+if(AlphaSpendType=="power-type"&zp!=1){message(c("The values of 'zp' and 'pp' are ignored, as it is not used when AlphaSpendType='power-type' and the robust alpha spending is not activated. The value of 'z' must be specified when running the Analyze.Binommial function."),domain = NULL, appendLF = TRUE)}
+
+if(cases_fraction>0|events_fraction>0){if(Tailed!=1){message(c("The robust alpha spending only works with 'Tailed=upper' in this version of the package."),domain = NULL, appendLF = TRUE)}}
+
 
 write.table(titlecheck,paste(name1,"title.txt",sep=""))
 
@@ -318,7 +411,8 @@ setwd(safedir)
 } ## end function AnalyzeSetUp.Binomial
 
 
-
+#Example
+#AnalyzeSetUp.Binomial(name="TESTE",N=100,alpha=0.05,zp=1,pp=0.5,M=1,AlphaSpendType="power-type",power=0.9,RR=2,ConfIntWidth="n",ConfTimes=1,Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=1,title="n",address="C:/Users/User/Documents/Viagens a Boston/2024/BACKUP DEVIDO AO PROBLEMA DE VIRUS/TRABALHO V2/Robust Alpha Spending/CODES/TESTE",Tailed="upper",cases_fraction=2,events_fraction=1)
 
 
 

@@ -55,8 +55,20 @@ if(length(events)>1|length(tau)>1){stop("'events' and 'tau' must be single value
 ####
 
 inputSetUp<- read.table(name)
-if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1,1]+1,". ",
-"If you do not have information about previous tests, see the user manual for more details."),call. =FALSE)}
+if(inputSetUp[1,1]!=test-1){
+aux_aux<- 1
+message(c("The current test should be"," ",inputSetUp[1,1]+1,". ", "If you do not have information about previous tests, see the user manual for more details."),domain = NULL, appendLF = TRUE)
+                           }else{aux_aux<- 0} # MODIFIQUEI AQUI
+
+
+if(inputSetUp[1,1]>0&aux_aux==1){nameb<- paste(name1,"results.txt",sep=""); result2<- read.table(nameb)}
+
+
+#####
+#####  OPEN IMPORTANT GLOBAL TEST
+#####
+
+if(aux_aux==0){
 
 
 ##################################################################
@@ -73,7 +85,10 @@ if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1
 #=> inputSetUp[6,]  has the observed tau values, test by test, until the (test-1)th look.
 #=> inputSetUp[7,]  has the target alpha spending until the (test-1)th look.
 #=> inputSetUp[8,]  has the critical values tau0 in the scale of the ratio Pk/V, test by test, until the (test-1)th look.
-
+#=> inputSetUp[9,1] has the number of events that can be added to the counts of events by mistake, that is, this is to manage the effects of unstable data and collumn 2 has the target power, and collumn 3 has the target relative risk.
+#=> line 10: lower limit of the confidence interval per test
+#=> line 11: upper limit of the confidence interval per test
+#=> line 12: relative risk estimate per test
 #### 
 
 SampleSize<- inputSetUp[1,2]
@@ -87,7 +102,9 @@ StopType<- inputSetUp[1,11] ; if(StopType==1){StopType<- "Cases"}else{StopType<-
 if(test>1){CVs_old<- inputSetUp[3,1:(test-1)]; events_old<- inputSetUp[4,1:(test-1)]; tau_old<- inputSetUp[6,1:(test-1)]; target_alpha_old<- inputSetUp[7,1:(test-1)]; actual_alpha_old<- inputSetUp[5,1:(test-1)]; tau0_old<- inputSetUp[8,1:(test-1)]}else{
 events_old<-0; tau_old<- 0; tau0_old=0
 }
-
+events_fraction<- inputSetUp[9,1]
+power<- inputSetUp[9,2]
+RR<- inputSetUp[9,3]
 
 
 #### More checks
@@ -132,6 +149,78 @@ if(AlphaSpend=="n"){
 
                                                                             }
                                                          }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##################################################################
+## Constructing the non-sequential confidence interval. 
+
+gamma<- 1-alpha # confidence coefficient  
+kk<- events + sum(events_old)  # number of events during the surveillance period 
+P_V<- PersonTimeRatio + sum(tau_old) # Cumulative person_time ratio (cumulative P/V)
+
+Fx<- function(P_V,kk,cc,rr){
+x<- P_V
+pp<- 1-rr*x/(rr*x+1) 
+return( 1- pnbinom(kk-1,size=cc,prob=pp) )
+                           }
+rrm<- 10 # this is not an user-defined parameter. It is part of the algorithm.
+prob0<- 1-Fx(P_V,kk,cc,rrm) 
+while(prob0>(1-gamma)/2){rrm<- rrm+5; prob0<- 1-Fx(P_V,kk,cc,rrm) }
+RRh<- seq(0.0001,rrm,0.0001) 
+  
+RRcil<- min(RRh[Fx(P_V,kk,cc,RRh)>=(1-gamma)/2]) # lower limit
+RRciu<- max(RRh[1-Fx(P_V,kk,cc,RRh)>=(1-gamma)/2])  # upper limit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##################################################################
+## Calculating the unbiased relative risk estimate of RR based on expression 23 of SILVA and MONTALBAN(2023). 
+
+RRest<- round((P_V^(-1))*2*(kk-1)/(2*cc+1),4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -269,7 +358,8 @@ for(s in 0:min((sum(ks[1:(test-1)])-1),ki)){if(ki>0){pf[ki+1]<- pf[ki+1]+(cond.p
                                            } # pf[s+1]: probability of having s events at time tau0
                         }
 
-CVf<- cLLR(sum(ks),cc,tau0)
+kss<- sum(ks) + events_fraction   # events_fraction is to manage unstable data
+CVf<- cLLR(kss,cc,tau0)
 
 return(list(CVf,perror,pf,tau0))
 }
@@ -296,21 +386,23 @@ alphas<- current_alpha
 cv1<- 0
 cv2<- 10
 cvm<- (cv1+cv2)/2
-kn<- sum(events_old+k)
+kn<- sum(events_old) + k
 tau0<- cv_tal(kn,cc,cvm)
 perror<- 0
 # tau value at the very first chunk of data
 while(abs(perror-alphas)>0.00000001){
     perror<- 1-cond.ppois(kn-1,tau0)
-    if(perror>alphas){cv1<- cvm}else{cv2<- cvm}; cvm<- (cv1+cv2)/2; tau0<- cv_tal(kn,cc,cvm)
-                                     }
+    if(perror>alphas){cv1<- cvm}else{cv2<- cvm}; cvm<- (cv1+cv2)/2; tau00<- tau0; tau0<- cv_tal(kn,cc,cvm)
+                                    }
 
 actualspent<- perror
-CV<- cvm
+#CV<- cvm # This line was replaced by the two lines below in order to implement the management of unstable data
+kss<- kn + events_fraction   # events_fraction is to manage unstable data
+CV<-  cLLR(kss,cc,tau00)
 
 ## Updating pold for future tests, here denoted by p
 p<- rep(0,kn)
-for(s in 0:(kn-1)){if(s>0){p[s+1]<- cond.ppois(s,tau0)-cond.ppois(s-1,tau0)}else{p[s+1]<- cond.ppois(s,tau0)}} # p[s+1]: probability of having s cases at time mu1
+for(s in 0:(kn-1)){if(s>0){p[s+1]<- cond.ppois(s,tau00)-cond.ppois(s-1,tau00)}else{p[s+1]<- cond.ppois(s,tau00)}} # p[s+1]: probability of having s cases at time mu1
 
                     }# close 1
 
@@ -365,10 +457,10 @@ if(reject>0){actualspent<- max(actual_alpha_old)}
 
 if(start==0){ # OPEN
 
-result<- data.frame(matrix(0,test+1,10))
+result<- data.frame(matrix(0,test+1,13))
 
-colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ", "--Confidence","interval for RR--"," ") 
+result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit","Unbiased RR estimate")
 
 tau0<- 0
 actualspent<- 0
@@ -385,6 +477,9 @@ result[test+1,7]<- round(current_alpha,2)
 result[test+1,8]<- round(actualspent,2)
 result[test+1,9]<- CV
 result[test+1,10]<- paste("No")
+result[test+1,11]<- RRcil
+result[test+1,12]<- RRciu
+result[test+1,13]<- RRest
 
 if(test>1){
 for(i in 1:(test-1)){
@@ -399,7 +494,9 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,7]<- round(target_alpha_o
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,8]<- round(actual_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 result[i+1,9]<- round(CVs_old[i],6)
 result[i+1,10]<- paste("No")
-
+result[i+1,11]<- inputSetUp[10,i]
+result[i+1,12]<- inputSetUp[11,i]
+result[i+1,13]<- inputSetUp[12,i]
                     }
           }
 
@@ -413,6 +510,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", Historical number of events= ",cc," and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",gamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
 
@@ -426,10 +525,10 @@ message("=======================================================================
 
 if(reject==0&reject_new==0&start>0&SampleSize>CurrentSample){# OPEN
 
-result<- data.frame(matrix(0,test+1,10))
+result<- data.frame(matrix(0,test+1,13))
 
-colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ", "--Confidence","interval for RR--"," ") 
+result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit","Unbiased RR estimate")
 
 
 result[test+1,1]<- test
@@ -442,6 +541,9 @@ result[test+1,7]<- round(current_alpha,4)
 result[test+1,8]<- round(actualspent,4)
 result[test+1,9]<- round(CV,6)
 result[test+1,10]<- paste("No")
+result[test+1,11]<- RRcil
+result[test+1,12]<- RRciu
+result[test+1,13]<- RRest
 
 if(test>1){
 for(i in 1:(test-1)){
@@ -456,7 +558,9 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,7]<- round(target_alpha_o
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,8]<- round(actual_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 result[i+1,9]<- round(CVs_old[i],6)
 result[i+1,10]<- paste("No")
-
+result[i+1,11]<- inputSetUp[10,i]
+result[i+1,12]<- inputSetUp[11,i]
+result[i+1,13]<- inputSetUp[12,i]
                     }
           }
 
@@ -471,6 +575,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", Historical number of events= ",cc," and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",gamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
 
@@ -501,10 +607,10 @@ legend("topleft",c("Needed to reject H0 (CV)","Observed LLR"),col=c("red","blue"
 
 if(start>0&CurrentSample>=SampleSize&max(inputSetUp[5,])<alpha-0.00000001&reject==0&reject_new==0){ # OPEN
 
-result<- data.frame(matrix(0,test+1,10))
+result<- data.frame(matrix(0,test+1,13))
 
-colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ", "--Confidence","interval for RR--"," ") 
+result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit","Unbiased RR estimate")
 
 
 result[test+1,1]<- test
@@ -517,6 +623,9 @@ result[test+1,7]<- round(current_alpha,4)
 result[test+1,8]<- round(actualspent,4)
 if(is.numeric(CV)==TRUE){result[test+1,9]<- round(CV,6)}else{result[test+1,9]<- CV}
 result[test+1,10]<- paste("No")
+result[test+1,11]<- RRcil
+result[test+1,12]<- RRciu
+result[test+1,13]<- RRest
 
 if(test>1){
 for(i in 1:(test-1)){
@@ -531,7 +640,9 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,7]<- round(target_alpha_o
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,8]<- round(actual_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 result[i+1,9]<- round(CVs_old[i],6)
 result[i+1,10]<- paste("No")
-
+result[i+1,11]<- inputSetUp[10,i]
+result[i+1,12]<- inputSetUp[11,i]
+result[i+1,13]<- inputSetUp[12,i]
                     }
           }
 
@@ -553,6 +664,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", Historical number of events= ",cc," and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",gamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
                                                         
 
@@ -584,10 +697,10 @@ legend("topleft",c("Needed to reject H0 (CV)","Observed LLR"),col=c("red","blue"
 if(start>0&CurrentSample>=SampleSize&max(inputSetUp[5,])>=alpha-0.00000001&start>0&reject==0&reject_new==0){ # OPEN
 
 tau0<- max(tau0_old)
-result<- data.frame(matrix(0,test+1,10))
+result<- data.frame(matrix(0,test+1,13))
 
-colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ", "--Confidence","interval for RR--"," ") 
+result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit","Unbiased RR estimate")
 
 
 result[test+1,1]<- test
@@ -600,6 +713,9 @@ result[test+1,7]<- round(current_alpha,4)
 result[test+1,8]<- round(current_alpha,4)
 if(is.numeric(CV)==TRUE){result[test+1,9]<- round(CV,6)}else{result[test+1,9]<- CV}
 result[test+1,10]<- paste("No")
+result[test+1,11]<- RRcil
+result[test+1,12]<- RRciu
+result[test+1,13]<- RRest
 
 if(test>1){
 for(i in 1:(test-1)){
@@ -614,7 +730,9 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,7]<- round(target_alpha_o
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,8]<- round(actual_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 result[i+1,9]<- round(CVs_old[i],6)
 result[i+1,10]<- paste("No")
-
+result[i+1,11]<- inputSetUp[10,i]
+result[i+1,12]<- inputSetUp[11,i]
+result[i+1,13]<- inputSetUp[12,i]
                     }
           }
 
@@ -635,6 +753,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", Historical number of events= ",cc," and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",gamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
                                                          
 
@@ -664,10 +784,10 @@ legend("topleft",c("Needed to reject H0 (CV)","Observed LLR"),col=c("red","blue"
 
 if(reject==0&reject_new>0){# OPEN
 
-result<- data.frame(matrix(0,test+1,10))
+result<- data.frame(matrix(0,test+1,13))
 
-colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ", "--Confidence","interval for RR--"," ") 
+result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit","Unbiased RR estimate")
 
 
 result[test+1,1]<- test
@@ -680,7 +800,9 @@ result[test+1,7]<- round(current_alpha,4)
 result[test+1,8]<- round(actualspent,4)
 result[test+1,9]<- round(CV,6)
 result[test+1,10]<- paste("Yes")
-
+result[test+1,11]<- RRcil
+result[test+1,12]<- RRciu
+result[test+1,13]<- RRest
 if(test>1){
 for(i in 1:(test-1)){
 
@@ -694,7 +816,9 @@ if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,7]<- round(target_alpha_o
 if(is.numeric(actual_alpha_old[[i]])==TRUE){result[i+1,8]<- round(actual_alpha_old[i],4)}else{result[i+1,8]<- "NA"}
 result[i+1,9]<- round(CVs_old[i],6)
 result[i+1,10]<- paste("No")
-
+result[i+1,11]<- inputSetUp[10,i]
+result[i+1,12]<- inputSetUp[11,i]
+result[i+1,13]<- inputSetUp[12,i]
                     }
           }
 
@@ -710,6 +834,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", Historical number of events= ",cc," and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",gamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
 # Graphic with critical values and observed test statistic
@@ -740,10 +866,10 @@ legend("topleft",c("Needed to reject H0 (CV)","Observed LLR"),col=c("red","blue"
 
 if(reject>0){# OPEN
 
-result<- data.frame(matrix(0,test+1,10))
+result<- data.frame(matrix(0,test+1,13))
 
-colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ") 
-result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0")
+colnames(result)<- c(" "," "," ", "----------","Cumulative----"," ","--alpha","spent--"," "," ", "--Confidence","interval for RR--"," ") 
+result[1,]<- c("Test","Person-timeR","events","Person-timeR","events","LLR","target","actual","CV","Reject H0","Lower limit","Upper limit","Unbiased RR estimate")
 
 
 result[test+1,1]<- test
@@ -756,6 +882,9 @@ result[test+1,7]<- paste("NA")
 result[test+1,8]<- paste("NA")
 result[test+1,9]<- paste("NA")
 result[test+1,10]<- paste("Yes")
+result[test+1,11]<- RRcil
+result[test+1,12]<- RRciu
+result[test+1,13]<- RRest
 
 if(test>1){
 for(i in 1:(test-1)){
@@ -766,6 +895,9 @@ result[i+1,3]<- events_old[i]
 result[i+1,4]<- round(sum(tau_old[1:i]),2) 
 result[i+1,5]<- sum(events_old[1:i]) 
 result[i+1,6]<- round(cLLR(sum(events_old[1:i]),cc,sum(tau_old[1:i])),2)
+result[i+1,11]<- inputSetUp[10,i]
+result[i+1,12]<- inputSetUp[11,i]
+result[i+1,13]<- inputSetUp[12,i]
 
 if(i>reject){result[i+1,c(7,8,9)]<- paste("NA")}else{
 if(is.numeric(target_alpha_old[[i]])==TRUE){result[i+1,7]<- round(target_alpha_old[i],4)}else{result[i+1,7]<- "NA"}
@@ -792,6 +924,8 @@ print(result,right=TRUE,row.names=FALSE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 message(c("Parameter settings: Sample size= ",SampleSize,", alpha= ",alpha,", Historical number of events= ",cc," and M= ",M,"."),domain = NULL, appendLF = TRUE)
 message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing unstable data with robust alpha spending: events_fraction= ",events_fraction, "."),domain = NULL, appendLF = TRUE)
+message(c("Confidence coefficient for the interval estimation: ",gamma, "."),domain = NULL, appendLF = TRUE)
 message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
             }# CLOSE
@@ -821,8 +955,9 @@ inputSetUp[4,test]<- k
 inputSetUp[5,test]<- actualspent
 inputSetUp[6,test]<- tau
 if(reject==0){inputSetUp[7,test]<- current_alpha;inputSetUp[8,test]<- tau0}else{inputSetUp[7,test]<- alpha}
-
-
+inputSetUp[10,test]<- RRcil
+inputSetUp[11,test]<- RRciu
+inputSetUp[12,test]<- RRest
 
 
 ############################################################
@@ -836,19 +971,27 @@ write.table(inputSetUp,name)
 if(start>0&reject==0&max(as.numeric(inputSetUp[5,]))<alpha-0.00000001){write.table(p,paste(name1,"p.txt",sep=""))}
 
 result2<- result[2:(test+1),]
-colnames(result2)<- c("Test","Person-timeR","events","Cum. Person-timeR","Cum. events","LLR","target alpha","actual alpha","CV","Reject H0")
+colnames(result2)<- c("Test","Person-timeR","events","Cum. Person-timeR","Cum. events","LLR","target alpha","actual alpha","CV","Reject H0","RR_CI_lower","RR_CI_upper","Unbiased RR estimate")
+write.table(result2,paste(name1,"results.txt",sep=""))
+
+#####
+#####  CLOSES IMPORTANT GLOBAL TEST
+#####
+                   } 
+
+
 invisible(result2)
 
 #####################################
 }##### Close function Analyze.Poisson
 #####################################
 
-#AnalyzeSetUp.CondPoisson(name="TestA",SampleSizeType="Events",K=100,cc=20,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="C:/Users/Visitante/Ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO")
+#AnalyzeSetUp.CondPoisson(name="TestA",SampleSizeType="Events",K=100,cc=20,alpha=0.05,M=1,AlphaSpendType="Wald",rho=1,title="n",address="C:/Users/User/Documents/Viagens a Boston/2024/BACKUP DEVIDO AO PROBLEMA DE VIRUS/TRABALHO V2/Robust Alpha Spending/CODES/TESTE",Tailed="upper",events_fraction=0,power=0.9,RR=2)
 
 
-#Analyze.CondPoisson(name="TestA",test=1,events=5,PersonTimeRatio=0.5,AlphaSpend="n")
-#Analyze.CondPoisson(name="TestA",test=2,events=6,PersonTimeRatio=0.3,AlphaSpend="n")
-#Analyze.CondPoisson(name="TestA",test=3,events=10,PersonTimeRatio=0.1,AlphaSpend="n")
+#Analyze.CondPoisson(name="TestA",test=1,events=1,PersonTimeRatio=0.05,AlphaSpend="n")
+#Analyze.CondPoisson(name="TestA",test=2,events=2,PersonTimeRatio=0.03,AlphaSpend="n")
+#Analyze.CondPoisson(name="TestA",test=3,events=2,PersonTimeRatio=0.05,AlphaSpend="n")
 
 
 

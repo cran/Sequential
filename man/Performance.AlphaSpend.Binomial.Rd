@@ -120,7 +120,7 @@ Development of the Performance.AlphaSpend.Binomial function was funded by:\cr
 #  The statistical performance is evaluated for RR= 2:
 
 # res<- Performance.AlphaSpend.Binomial(N=50,alpha=0.05,AlphaSpend=1,z=c(1,1.5,2,1.3),
-# p="n",GroupSizes=c(15,15,10,10),Tailed="upper",RR=2,rho=0.5)
+# p="n",GroupSizes=c(15,15,10,10),Tailed="upper",rho=0.5, RR=2,Statistic="MaxSPRT")
 
 }
 

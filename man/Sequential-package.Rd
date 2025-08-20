@@ -11,8 +11,9 @@ off-set term to account for variable matching ratios. For Poisson data, the crit
 of the log-likelihood ratio, and on a predetermined maximum sample size. Alternatively, it is also possible to apply a user defined alpha spending function
 in order to specify non-flat signaling thresholds. For group sequential analyses, there are functions for pre-specified group sizes and for the situation when
 the group sizes are not known a priori. It is also possible to perform mixed continuous/group sequential analysis, where, for example, there is at first a big
-batch of data that arrives in one group, followed by continuous sequential analysis. All results are exact, based on iterative numerical calculations, rather
-than asymptotic theory or computer simulations. In the \code{Sequential} package, there are functions to calculate critical values, statistical power,
+batch of data that arrives in one group, followed by continuous sequential analysis. All non regressional results are exact, based on iterative numerical calculations, rather
+than asymptotic theory or computer simulations. For regression versions of the methods, Monte Carlo and asymptotic methods are used.
+In the \code{Sequential} package, there are functions to calculate critical values, statistical power,
 expected time to signal, and expected sample size at the end of the sequential analyses whether the null hypothesis was rejected or not.
 For example, for any desired power, relative risk and alpha level, the package can calculate the required upper limit on the sample size (maximum length of surveillance),
 the critical value needed, and the corresponding expected time to signal when the null hypothesis is rejected.}
@@ -20,8 +21,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.3.4\cr
-Date: \tab 2024-10-24\cr
+Version: \tab 4.4\cr
+Date: \tab 2025-08-10\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -38,20 +39,45 @@ Index: \tab \cr
                                               \tab with Poisson Data.\cr
 \code{\link[Sequential]{Analyze.Binomial}} \tab Function to Conduct Group Sequential Analyses for Binomial\cr
                                            \tab Data When the Goup Sizes are not Known a Priori.\cr
+
+
+\code{\link[Sequential]{AnalyzeRegression.Binomial}} \tab Function to Conduct Group Sequential Regression\cr 
+                                           \tab Analyses for Binomial\cr
+                                           \tab Data When the Goup Sizes are not Known a Priori.\cr
+
+
+\code{\link[Sequential]{AnalyzeSetUpRegression.Binomial}} \tab Function to Set Up the Input Parameters Before Using the\cr
+                                                \tab \code{AnalyzeRegression.Binomial} Function for the First Time.\cr
+
+
+
 \code{\link[Sequential]{AnalyzeSetUp.Binomial}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.Binomial} Function for the First Time.\cr
+\code{\link[Sequential]{Analyze.Multinomial}} \tab Function to Conduct Group Sequential Analyses for multinomial\cr
+                                           \tab Data When the Goup Sizes are not Known a Priori.\cr
+\code{\link[Sequential]{AnalyzeSetUp.Multinomial}} \tab Function to Set Up the Input Parameters Before Using the\cr
+                                                \tab \code{Analyze.Multinomial} Function for the First Time.\cr
 \code{\link[Sequential]{Analyze.wBinomial}} \tab Function for group sequential analyses of multiple\cr
                                            \tab weighted binomial endpoints.\cr
 \code{\link[Sequential]{AnalyzeSetUp.wBinomial}} \tab Function to set up input parameters before using the\cr
                                                 \tab \code{Analyze.wBinomial} function for the first time.\cr
 \code{\link[Sequential]{Analyze.Poisson}} \tab Function to Conduct Group Sequential Analyses for Poisson\cr
                                            \tab Data When the Goup Sizes are not Known a Priori.\cr
+\code{\link[Sequential]{AnalyzeRegression.Poisson}} \tab Function to Conduct Group Sequential Regression Analyses\cr
+                                           \tab for Poisson Data When the Goup Sizes are not Known a Priori.\cr
+\code{\link[Sequential]{AnalyzeSetUpRegression.Poisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
+                                                \tab \code{AnalyzeRegression.Poisson} Function for the First Time.\cr
 \code{\link[Sequential]{AnalyzeSetUp.Poisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.Poisson} Function for the First Time.\cr
 \code{\link[Sequential]{Analyze.CondPoisson}} \tab Function to Conduct Group Sequential Analyses for Conditional\cr
                                            \tab Poisson Data When the Goup Sizes are not Known a Priori.\cr
+\code{\link[Sequential]{AnalyzeRegression.CondPoisson}} \tab Function to Conduct Group Sequential Regression \cr
+                                           \tab Analyses for Conditional\cr
+                                           \tab Poisson Data When the Goup Sizes are not Known a Priori.\cr
 \code{\link[Sequential]{AnalyzeSetUp.CondPoisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
                                                 \tab \code{Analyze.CondPoisson} Function for the First Time.\cr
+\code{\link[Sequential]{AnalyzeSetUpRegression.CondPoisson}} \tab Function to Set Up the Input Parameters Before Using the\cr
+                                                \tab \code{AnalyzeRegression.CondPoisson} Function for the First Time.\cr
 \code{\link[Sequential]{ConfidenceInterval.Binomial}} \tab Confidence interval for the relative risk following\cr
                                                       \tab a sequential test with binomial data.\cr
 \code{\link[Sequential]{CV.Binomial}} \tab Critical Values for Group and Continuous Sequential\cr
@@ -216,6 +242,29 @@ expected time to signal, expected time of surveillance, and maximum sample size 
 \code{Performance.CondPoisson}, \code{Performance.Threshold.CondPoisson}, \code{Performance.AlphaSpend.CondPoisson}, and \code{SampleSize.CondPoisson} functions.
 For fixed and/or unpredictable group sizes, see the function \code{Analyze.CondPoisson}.
 
+
+
+\bold{Multinomial Data}
+
+
+The function \code{Analyze.Multinomial} performs continuous or group sequential analysis for multinomial data. It can also be used for mixed continuous-group sequential
+analysis where some data arrives continuously while other data arrives in groups. There is (i) no need to pre-specify the
+group sizes before the sequential analysis starts, and (ii) a variety of alpha spending functions are available.
+
+The function \code{Analyze.Multinomial} runs the adaptive sequential multiple hypotheses testing for seasonal concomitant vaccines safety surveillance introduced by Silva and Maro(2025a),
+which was developed for rapidly detecting increased risks of adverse events from one or more combinations of simultaneous vaccine exposure.
+As explained by Silva and Maro(2025a), multiple seasonal vaccines may be recommended for some strata of the population defined by covariates, such as gender
+and age, for example. Such vaccines can be administered simultaneously or at least within the same vaccination season. Thus, monitoring adverse events origination from
+multiple vaccines may be more informative and statistically powerful than monitoring each vaccine separately.   
+
+The method is an extension of the binomial MaxSPRT method to a multinomial exposure model. With an exact analytical alpha spending approach,
+the computationally feasible limit of multiple exposures is likely limited to no more than two vaccines.
+For more complex situations with several vaccines (>2), which can multiple types of endpoints (i.e. designated adverse events),
+a valid Monte Carlo decision rule is constructed. 
+
+
+
+
 \bold{Alpha spending function for unpredictable group sizes}
 
 The alpha spending function specifies the cumulative amount, \eqn{F_{\alpha}(t)}, of Type I error probability related to each of the possible values of \eqn{n}.
@@ -235,18 +284,25 @@ The optimal solution is based on exact calculations through linear programing, a
 For MaxSPRT with Poisson data, Silva (2018b) presents a rule of thumb for a near-optimal alpha spending shape. Likewise, Silva et al. (2019b) discuss
 the choice of alpha spending shapes for CMaxSPRT.
 
+For multinomial data, the alpha spending plan is designed in a way to ensure that a target statistical power, gamma, is endured
+for detecting a target increased risk, R1, for each multinomial entry. This is possible by means of a new concept introduced by
+Silva and Maro(2025a), the robust alpha spending plan. For more details about the method and the construction of the critical values,
+see Silva and Maro(2025a). 
+
+
 To run continuous or group sequential analysis with an user defined alpha spending function, and/or, when the group sizes are not known a prior,
-\code{Analyze.Binomial}, \code{Analyze.wBinomial} (for multiple weighted binomial endpoints), \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} should be used for binomial and Poisson, and conditional Poisson data, respectively. 
+\code{Analyze.Binomial}, \code{Analyze.Multinomial},\code{Analyze.wBinomial} (for multiple weighted binomial endpoints), \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} should be used for binomial and Poisson, and conditional Poisson data, respectively. 
 These functions work differently than the other functions mentioned above.
 Those other functions are designed to be used before the start of the sequential analysis, in order to determine what the maximum sample size
 and critical value should be. Once the sequential analysis is under way, the test statistic is then calculated using a hand calculator or an
-excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial}, \code{Analyze.Poisson}, and \code{Analyze.CondPoisson} work very differently, in that they are run at each look at
+excel spread sheet, and compared with the critical value. The functions \code{Analyze.Binomial}, \code{Analyze.Multinomial}, \code{Analyze.Poisson}, and \code{Analyze.CondPoisson}
+work very differently, in that they are run at each look at
 the accumulating data, whenever a new group of data arrives, and it is meant to perform the test itself, i.e., there is no need to use hand calculators or
 excel spread sheets or any other auxiliar code. The results and conclusions, including a descriptive table and illustrative graphics, are automatically
-provided after running \code{Analyze.Binomial}, \code{Analyze.wBinomial}, \code{Analyze.Poisson}, or \code{Analyze.CondPoisson}.
+provided after running \code{Analyze.Binomial}, \code{Analyze.Multinomial}, \code{Analyze.wBinomial}, \code{Analyze.Poisson}, or \code{Analyze.CondPoisson}.
 
 Important: before using these functions, though, it is necessary to first run the
-functions \code{AnalyzeSetup.Binomial}, \code{AnalyzeSetup.wBinomial}, \code{AnalyzeSetup.Poisson}, or \code{AnalyzeSetup.CondPoisson} once in order to set everything up for the sequential analysis.
+functions \code{AnalyzeSetup.Binomial}, \code{AnalyzeSetup.Multinomial},\code{AnalyzeSetup.wBinomial}, \code{AnalyzeSetup.Poisson}, or \code{AnalyzeSetup.CondPoisson} once in order to set everything up for the sequential analysis.
 
 }
 
@@ -312,6 +368,12 @@ Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for V
 
 Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, 40(22), 4890--4913.
 
+Silva IR, Maro J. (2025a), Adaptive Sequential Multiple Hypotheses Testing for Seasonal Concomitant Vaccines Safety Surveillance. Working paper, Sentinel (TIDE), Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+
+Silva IR, Maro J. (2025b), Robust Alpha Spending for Unstable Data. Working paper, Sentinel (TIDE), Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+
+Silva IR, Montalban, J., Oliveira, F. (2025c), Maximized Sequential Probability Ratio Test Regression. Working paper - Sentinel (TIDE) project, Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+
 Silva IR, Kulldorff M, Yih W. Katherine. (2020), Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 
 Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2020), Exact Sequential Analysis for Multiple Weighted Binomial Endpoints. Statistics in Medicine, 39(3), 340--351.
@@ -344,11 +406,12 @@ Development of the R Sequential package has been funded and supported by:\cr
 -	Food and Drug Administration, USA, through the Mini-Sentinel Project (v1.0,1.1,2.0).\cr
 -	National Institute of General Medical Sciences, NIH, USA, through grant number R01GM108999 (v2.0 to 3.1).\cr
 -	Federal University of Ouro Preto (UFOP), through contract under internal UFOP's resolution CEPE 4600 (v2.0 to 3.1).\cr
--	National Council of Scientific and Technological Development (CNPq), Brazil, process number 301391/2019-0. (v3.1 to v4.3).\cr
+-	National Council of Scientific and Technological Development (CNPq), Brazil, process number 301391/2019-0. (v3.1 to v4.4).\cr
 -     National Council of Scientific and Technological Development (CNPq), Brazil, process number 302882/2022-7. (v4.3.1).\cr
 -	Support Foundation to Minas Gerais State Research-Fapemig, Brazil, grant numbers PQ-00787-21 and RED-00133-21. (v3.1 to v4.3). \cr
 -	Bank for Development of the Minas Gerais State (BDMG), Brazil (v1.0).\cr
 -	Vaccine Safety Datalink - VSD Infrastructure Activities project at HPHCI. (v4.3.4).\cr
+-     Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute (v4.4).\cr
 \cr
 Feedback from users is greatly appreciated. Very valuable suggestions concerning the R Sequential package have been received from various individuals, including:\cr
 -	Ron Berman, University of California Berkeley.\cr
@@ -536,5 +599,8 @@ Version 4.3.3, Feb 2024\cr
 \cr
 Version 4.3.4, Oct 2024\cr
 -	Correction of bugs in theAnalyze.CondPoisson function.\cr
+\cr
+Version 4.4, May 2025\cr
+-	Inclusion of the Analyze.Multinomial function, inclusion of confidence intervals in the output tables of the Analyze.Binomial, Analyze.Poisson and Analyze.CondPoisson functions, and management of unstable data by means of a robust alpha spending approach.\cr
 \cr
 }

@@ -29,7 +29,7 @@ for(ii in 1: length(CV.upper)){if(is.na(CV.upper[ii])==TRUE){CV.upper[ii]<- Grou
 
 if(Tailed=="upper"|Tailed=="two"){ # open 1
 
-#### Auxiliar function for calculating the probability of crossing the upper limit throshold
+#### Auxiliar function for calculating the probability of crossing the upper limit threshold
 ####
 Dist_Cases<- function(RRh){ # opens Dist_Cases
 

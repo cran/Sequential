@@ -1,9 +1,9 @@
 
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable conditional Poisson MaxSPRT surveillance - Version edited at Dez-12-2016
+# Function to perform the unpredictable conditional Poisson MaxSPRT surveillance - Version edited at April-2025
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.CondPoisson<- function(name,SampleSizeType="Events",T="n",K="n",cc,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="n",Tailed="upper")
+AnalyzeSetUp.CondPoisson<- function(name,SampleSizeType="Events",T="n",K="n",cc,alpha=0.05,M=1,AlphaSpendType="Wald",rho=1,title="n",address="n",Tailed="upper",events_fraction=0,power=0.9,RR=2)
 {
 
 if(Tailed!="upper"){stop("For this version of the Sequential package, AnalyzeSetUp.CondPoisson works only for 'Tailed=upper'.",call. =FALSE)}
@@ -92,12 +92,71 @@ if(MinCases>SampleSize||is.numeric(MinCases)==FALSE){stop("'M' must be an intege
 if(MinCases<1){stop("'M' must be an integer greater than zero.",call. =FALSE)}
 if(MinCases!=round(MinCases)){stop("'M' must be an integer.",call. =FALSE)}
 
+if(SampleSizeType == "PersonTimeRatio"&events_fraction>0){stop("When 'events_fraction'>0, 'SampleSizeType' must be equal to 'Events'.",call. =FALSE)}
+
 
 alpha1<- alpha
 
 posi<- 2
 
 rejt<- 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Updating the SampleSize for ensuring the target power for unstable data
+
+
+
+if(events_fraction>0){
+
+if(events_fraction<1){events_fraction<- ceiling(events_fraction*SampleSize)}
+
+
+res<- Performance.AlphaSpend.CondPoisson(SampleSize,cc,alpha,AlphaSpend=1,
+GroupSizes="n",rho,gamma="n",Tailed="upper",RR)
+
+CV_new<- rep(0,events_fraction+length(res$CV))
+CV_new[(events_fraction+1):length(CV_new)]<- res$CV  ; CV_new[CV_new==0]<- 10  
+
+res2<- Performance.Threshold.CondPoisson(SampleSize,cc,CV.upper=CV_new,
+Person_timeRatioH0="n",GroupSizes=1,Tailed="upper",RR) 
+power_ref<- res2$Performance[2]
+
+while(power_ref<power){
+    SampleSize<- SampleSize+events_fraction    
+
+res<- Performance.AlphaSpend.CondPoisson(SampleSize,cc,alpha,AlphaSpend=1,
+GroupSizes="n",rho,gamma="n",Tailed="upper",RR)
+
+CV_new<- rep(0,events_fraction+length(res$CV))
+CV_new[(events_fraction+1):length(CV_new)]<- res$CV  ; CV_new[CV_new==0]<- 10
+  
+res2<- Performance.Threshold.CondPoisson(SampleSize,cc,CV.upper=CV_new,
+Person_timeRatioH0="n",GroupSizes=1,Tailed="upper",RR) 
+power_ref<- res2$Performance[2]
+
+                      }                    
+T<-  SampleSize
+}
+
+
+
+
+
+
+
 
 # -------------------------------------------------------------------------
 # Function produces alpha spending associated to flat critical values - continuous conditional Poisson MaxSPRT
@@ -336,14 +395,18 @@ sum_sa<- sa%*%(upper.tri(matrix(0,length(sa),length(sa)),diag=TRUE))
 # line 6: observed PersonTimeRatio values, test by test
 # line 7: has the target alpha spending actually used until the (test-1)th look.
 # line 8: has the critical values tau0 in the scale of the ratio Pk/V.
+# line 9: collumn 1 has the number of events that can be added to the counts of events by mistake, that is, this is to manage the effects of unstable data, collumn 2 has the target power, and collumn 3 has the target relative risk.
+# line 10: lower limit of the confidence interval per test
+# line 11: upper limit of the confidence interval per test
+# line 12: relative risk estimate of RR, test by test
 
 if(AlphaSpendType=="Wald"){k<- length(sa)}
-inputSetUp<- as.data.frame(matrix(0,8,11))
+inputSetUp<- as.data.frame(matrix(0,12,11))
 
 if(SampleSizeType=="Events"){SampleSizeType<-1}else{SampleSizeType<- 0}
 
 inputSetUp[1,]<- 0
-inputSetUp[1,1:11]<- c(0,SampleSize,alpha,M,1,0,0,pho,j,cc,SampleSizeType) 
+inputSetUp[1,1:11]<- c(0,SampleSize,alpha,M,1,0,0,rho,j,cc,SampleSizeType) 
 inputSetUp[2,]<- 0
 inputSetUp[2,1]<- 0 # says if the surveillance was started or not.
 inputSetUp[3,]<- 0
@@ -352,6 +415,10 @@ inputSetUp[5,]<- 0
 inputSetUp[6,]<- 0
 inputSetUp[7,]<- 0
 inputSetUp[8,]<- 0
+inputSetUp[9,]<- 0; inputSetUp[9,1]<- events_fraction  ; inputSetUp[9,2]<- power ; inputSetUp[9,3]<- RR
+inputSetUp[10,]<- 0
+inputSetUp[11,]<- 0
+inputSetUp[12,]<- 0
 
 if(AlphaSpendType=="Wald"){alphaspend<- sum_sa} #Target alpha spending to be spent event by event.
 
@@ -364,7 +431,7 @@ message(c("The parameters were successfully set at '",address,"'."),domain = NUL
 message(c("The temporary directory of your computer has the address of the directory where the settings information of this sequential analysis is saved.
 Thus, do not clean the temporary directory before finishing this sequential analysis."),domain = NULL, appendLF = TRUE)
 
-if(AlphaSpendType=="Wald"&phoref!="n"){message(c("The value of 'rho' is ignored, as it is not used when AlphaSpendType='Wald'."),domain = NULL, appendLF = TRUE)}
+if(AlphaSpendType=="Wald"&phoref!="n"&events_fraction==0){message(c("The value of 'rho' is ignored, as it is not used when AlphaSpendType='Wald' and events_fraction=0."),domain = NULL, appendLF = TRUE)}
 
 write.table(titlecheck,paste(name1,"title.txt",sep=""))
 
@@ -374,7 +441,7 @@ setwd(safedir)
 
 } ## end function AnalyzeSetUp.CondPoisson
 
-# AnalyzeSetUp.CondPoisson(name="TestA",SampleSizeType="PersonTimeRatio",T=2,K="n",cc=20,alpha=0.05,M=1,AlphaSpendType="Wald",rho="n",title="n",address="C:/Users/Visitante/Ivair/POST-DOC/Material para construcao do pacote Sequential/PASTA PARA TREINO")
+# AnalyzeSetUp.CondPoisson(name="TestA",SampleSizeType="PersonTimeRatio",T=2,K="n",cc=20,alpha=0.05,M=1,AlphaSpendType="Wald",rho=1,title="n",address="C:/Users/User/Documents/Viagens a Boston/2024/BACKUP DEVIDO AO PROBLEMA DE VIRUS/TRABALHO V2/Robust Alpha Spending/CODES/TESTE",events_fraction=0,power=0.9,RR=2)
 
 
 

@@ -3,30 +3,32 @@
 \title{Function to set up input parameters before using the \code{Analyze.Binomial} function for the first time.}
 \description{The function \code{AnalyzeSetUp.Binomial} must be run ahead of \code{Analyze.Binomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Binomial(name,N="n",alpha=0.05,zp="n",pp="n",
+AnalyzeSetUp.Binomial(name,N="n",alpha=0.05,zp=1,pp="n",
 M=1,AlphaSpendType="optimal",power=0.9,RR=2,ConfIntWidth="n",ConfTimes=1,
-Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=0.5,title="n",
-address="n",Tailed="upper")
+Gamma=0.9,R0=1,ObjectiveMin="ETimeToSignal",rho=1,title="n",
+address="n",Tailed="upper",cases_fraction=0,events_fraction=0)
       }
 \arguments{
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Binomial} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
 \item{N}{The maximum sample size, at which the sequential analysis stops without rejecting the null hypothesis. The default N="n" means that the optimal procedure will also find out the optimal sample size for the target power.}
 \item{alpha}{The overall significance level. Must be in the range (0,0.5]. The default is "alpha=0.05".}
-\item{zp}{The prediction for z, the expected ratio between cases and controls under the null hypothesis that will be specified in the \code{Analyze.Binomial} function. This variable is only needed when AlphaSpendType= "Wald", and it is used to calculate the appropriate rejection boundary. If the z used in \code{Analyze.Binomial} during the actual sequential analysis is different from zp, that is okay, and the sequential analysis will still maintain the correct alpha level. The default value is "z=1".}
+\item{zp}{The prediction for z, the expected ratio between cases and controls under the null hypothesis that will be specified in the \code{Analyze.Binomial} function. This variable is only needed when AlphaSpendType= "Wald", and it is used to calculate the appropriate rejection boundary. If the z used in \code{Analyze.Binomial} during the actual sequential analysis is different from zp, that is okay, and the sequential analysis will still maintain the correct alpha level. The default value is "zp=1".}
 \item{pp}{The prediction for p, the expected probability under the null hypothesis that will be specified in the \code{Analyze.Binomial} function. This variable is only needed when AlphaSpendType= "Wald", and it is used to calculate the appropriate rejection boundary. If the p used in \code{Analyze.Binomial} during the actual sequential analysis is different from pp, that is okay, and the sequential analysis will still maintain the correct alpha level. There is no default value.}
 \item{M}{The minimum number of events required before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".}
 \item{AlphaSpendType}{The type of alpha spending function to be used. The options are AlphaSpendType= "optimal", the default, AlphaSpendType= "Wald", AlphaSpendType= "power-type". With the 'Wald' option, the Wald type upper rejection boundary is used, which is flat with respect to the likelihood ratio. With the power-type option, the alpha spending uses a power function with parameter rho, with rho defined by the user. With the optimal option, the code uses the alpha spending that minimizes expected time to signal or expected sample size. For more information, see Details. The alpha spending setting is automatically used when the \code{Analyze.Binomial} function is run, but, during the sequential analysis, and before each test, the user can always specify an arbitrary amount of alpha spending to be used up until and including that test. See below for details. The default is "optimal".}
-\item{power}{The target power to be used as a constraint in the optimal alpha spending soluation. It is only applicable for 'AlphaSpendType=optimal'.}
+\item{power}{The target power to be used as a constraint in the optimal alpha spending solution and for the robust alpha spending.}
 \item{RR}{The relative risk for the target power. It is only applicable for 'AlphaSpendType=optimal'.}
 \item{ConfIntWidth}{Positive value for a fixed-width and fixed accuracy confidence interval for the relative risk. Default is without confidence coeficient.}
 \item{ConfTimes}{Times where the restriction on the confidence interval width is initiated for each entry of ConfIntWidth. Default is 1.}
 \item{Gamma}{Confidence coefficient for the bounded width interval estimator of the relative risk for AlphaSpendType= "optimal". Default is 0.9. It has no effect when ConfIntWidth="n".}
 \item{R0}{A positive real-valued number for the relative risk under H0, where R<=R0 if "Tailed=lower", R>=R0 if "Tailed=upper", or a two-dimensional vector for H0: R0_1<= R <= R0_2 if "Tailed=two". Default is 1.}
 \item{ObjectiveMin}{The objective function to minimize in case of 'AlphaSpendType=optimal'. The default is 'ObjectiveMin=ETimeToSignal'. The other option is 'ObjectiveMin=ESampleSize'.}
-\item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=0.5".}
+\item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. See below for details. It is not used for other alpha spending options. The variable rho must be a positive number. The default value is "rho=1".}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
 \item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
 \item{Tailed}{Tailed="upper" (default) for H0:RR<=1, and Tailed="lower" for H0:RR>=1 or Tailed="two" for H0:RR=1. For this version of the package, only Tailed="upper" is active.}
+\item{cases_fraction}{This activates the construction of a robust alpha spending due to unstable data. The deafult is cases_fraction=0, which means that controls will not be wrongly registered as cases. If cases_fraction is in (0, 1), then it represents a percent of the cummulative number of events during the surveillance. If cases_fraction >= 1, it represents the number of controls taken as cases in each testing time.}
+\item{events_fraction}{This activates the construction of a robust alpha spending due to unstable data. The deafult is events_fraction=0, which means that there will not occur events disappearing during the surveillance. If events_fraction is in (0, 1), then it represents a percent of the cummulative number of events during the surveillance. If events_fraction >= 1, it represents the number of events disappearing during the analysis.}
 }
 
 
@@ -69,7 +71,8 @@ Otherwise, an error message will appear to remind that such condition must be co
 
 Another alpha spending option is the power-type alpha spending plan (Kim and DeMetz 1987, p150; Jennison and Turnbull 2000, p148), with parameter rho: \eqn{F(t)= alpha*t^{rho}}, 
 where \eqn{alpha} is the overall significance level and \eqn{t} is a fraction of N, the maximum length of sequential analysis.
-According to Silva (2018), 'rho=0.5' is indicated when expected time to signal is the design criterion, hence this is the default in \code{AnalyzeSetUp.Binomial}. 
+According to Silva (2018), 'rho=0.5' is indicated when expected time to signal is the design criterion. The choice 'rho=1' is a proper option that provides
+a balance between time to signal and maximum lenght and surveillance, hence this is the default in \code{AnalyzeSetUp.Binomial}. 
 
 The third option for alpha spending selection is the optimal solution. This is the default. In this case, the alpha spending is obtained by means of the method introduced by
 Silva and Kulldorff method (Silva and Kulldorff, 2018), which is an exact method for finding the optimal alpha spending through linera programing.
