@@ -1,16 +1,17 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4
+# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.5
 # -------------------------------------------------------------------------
 
-Analyze.Multinomial<- function(name,test,cases,controls,N_exposures,N_controls,AlphaSpend="n")
+Analyze.Multinomial<- function(name,test,cases,controls,N_exposures,N_controls,exposure_group,strata_group_cases="n",strata_group_controls="n", AlphaSpend="n")
 {
 
 # name: name to be used in each analysis to read the information saved from previus test.
-# test: the number of tests already performed plus the current test
-# cases: vector with the number of events per multinomial entry
-# controls: the number of events in the control window.
-# N_exposures: vector with the number of individuals in the same risk window per multinomial entry excluding the entry for the control group. Must have the same dimension as cases. 
-# N_controls: number of individuals in the control group 
+# test: the number of tests already performed plus the current test.
+# cases: vector with the number of events per combination of exposure_group and strata_group_cases.
+# controls: the number of events in the control window per strata_group_controls.
+# N_exposures: vector with the number of individuals in the same risk window per combination of exposure_group and strata_group_cases excluding the entry for the control group. Must have the same dimension as cases. 
+# N_controls: number of individuals in the control group per strata_group_controls. 
+# exposure_group: the labels of each exposure group, which must coincide with the "ExposuresNames" informed in the AnalyzeSet.Multinomial function.
 # AlphaSpend: Acummulative alpha spending up to the current test. The default is the power-type with rho defined in the AnalyzeSetUp.Multinomial function.
 
 
@@ -51,6 +52,146 @@ if(title==0){title<- " "}else{title<- as.character(title)}
 
 NN<- sum(cases)+sum(controls) # number of events in the current test.
 
+if(NN==0){
+  stop(c("The total number of events, cases+controls, must be greater than zero."),call. =FALSE)
+         }
+
+
+#### Bringing the information from the setup step:
+inputSetUp<- read.table(name)
+if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1,1]+1,". ",
+"If you do not have information about previous tests, see the user manual for more details."),call. =FALSE)}
+
+k<- as.numeric(inputSetUp[1,4]) # number of exposures
+
+
+
+
+
+
+
+
+#### Adjusting for confounding covariates
+
+ExposuresNames<- read.table("ExposuresNames.txt") 
+ExposuresNames<- ExposuresNames[1:k,1]
+
+aux_exg<- 0
+for(i in 1:length(exposure_group)){aux_exg<- aux_exg + 1*(sum(ExposuresNames==exposure_group[i])==0) }
+
+
+if( aux_exg>0 ){
+           stop(c("The labels in the input 'exposure_group' must coincide exactly with the entries of the input 'ExposuresNames' informed in the AnalyzeSetUp.Multinomial function. See the examples in the user guide of Analyze.Multinomial."),call. =FALSE)
+               }
+
+
+
+# Matrix with the events and population per exposure-stratum combination
+
+StratNamesCases<- names(table(strata_group_cases))
+cases_a<- matrix(0,length(StratNamesCases),k)
+N_exposures_a<- matrix(0,length(StratNamesCases),k)
+
+for(i in 1:k){
+   for(j in 1:length(StratNamesCases)){
+       if(sum(exposure_group==ExposuresNames[i])>0&sum(strata_group_cases==StratNamesCases[j])>0 ){
+       cases_a[j,i]<- sum(cases[exposure_group==ExposuresNames[i]&strata_group_cases==StratNamesCases[j]])
+       N_exposures_a[j,i]<- sum(N_exposures[exposure_group==ExposuresNames[i]&strata_group_cases==StratNamesCases[j]])
+                                                                                                  }
+                                      }
+             }
+
+
+# Vector with the controls and population per stratum combination
+
+StratNamesControls<- names(table(strata_group_controls))
+if( sum( StratNamesControls == StratNamesCases) !=length(StratNamesControls) ){
+          stop(c("The labels appearing in 'strata_group_cases' must appear in 'strata_group_controls', and vice versa. See the examples in the user guide of Analyze.Multinomial."),call. =FALSE)
+                                                                              }
+
+controls_a<- rep(0,length(StratNamesControls))
+N_controls_a<- rep(0,length(StratNamesControls))
+
+for(j in 1:length(StratNamesControls)){
+    controls_a[j]<- sum(controls[StratNamesControls[j]==strata_group_controls])
+    N_controls_a[j]<- sum(N_controls[StratNamesControls[j]==strata_group_controls])
+                                      }
+
+
+cases<- cases_a
+N_exposures<- N_exposures_a
+controls<- controls_a
+N_controls<- N_controls_a
+
+
+# Defining the reference strata group
+ref_group<- 0
+aux_eg<- 0
+while(aux_eg==0){
+       ref_group<- ref_group+1
+       if(sum(cases[ref_group,])+controls[ref_group]>0){aux_eg<- 1}
+                }
+
+
+  theta_cases<- matrix(0,nrow(cases),ncol(cases))
+  theta_controls<- rep(0,length(controls))
+
+  theta_cases[ref_group,]<- 1
+  theta_controls[ref_group]<- 1
+
+
+  
+# Log-likelihood in theta for the strata effects:
+LLRt<- function(theta_c){
+  return( sum( yjc*log(theta_c) - (yjc+yj1)*log(Nj1+Njc*theta_c) ) )
+                        }
+
+
+
+# MLE for theta_c through maxLik package:
+ if(nrow(cases)>1){ # if there are covariates to adjust for.
+  cs<- seq(1,nrow(cases))[-ref_group]
+yj1<- c( cases[ref_group,], controls[ref_group])
+Nj1<- c( N_exposures[ref_group,], N_controls[ref_group])
+
+  for(j in 1:length(cs)){    
+    yjc<- c( cases[cs[j],], controls[cs[j]])
+    Njc<- c( N_exposures[cs[j],], N_controls[cs[j]])
+    res_theta<- suppressMessages( maxLik(LLRt,start=1) )
+    theta_c<- res_theta$estimate
+    theta_cases[cs[j],]<- theta_c
+    theta_controls[cs[j]]<- theta_c
+                        }
+                  }
+
+ 
+                    
+
+
+
+# Collapsing the information through a weighted sum over strata groups
+
+if(is.matrix(cases)==TRUE){      
+       
+           # finally adjusting N_exposures and N_controls
+           N_exposures2<- rep(0,ncol(cases)); cases2<- rep(0,ncol(cases)) ; N_controls<- sum( theta_controls*N_controls) ; controls<- sum(controls)
+           for(j in 1:ncol(cases)){
+                              N_exposures2[j]<- sum( theta_cases[,j]*N_exposures[,j])
+                              cases2[j]<- sum(cases[,j]) 
+                                  } 
+           N_exposures<- N_exposures2
+           cases<- cases2    
+                             
+                           }
+
+N_exposures<- round(N_exposures)
+N_controls<- round(N_controls)
+
+
+
+
+
+
 
 
 
@@ -58,14 +199,6 @@ NN<- sum(cases)+sum(controls) # number of events in the current test.
 ####
 ## Uploading information from previous tests
 ####
-
-inputSetUp<- read.table(name)
-if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1,1]+1,". ",
-"If you do not have information about previous tests, see the user manual for more details."),call. =FALSE)}
-
-k<- as.numeric(inputSetUp[1,4]) # number of exposures
-ExposuresNames<- read.table("ExposuresNames.txt") # TESTAR AQUI
-ExposuresNames<- ExposuresNames[1:k,1]
 
 ## inputSetUp matrix contains:
 # line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) Maximum SampleSize, (C13) alpha, (C14) k, (C15) m, (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) rho, (C19) vazio, (C1,10) vazio
@@ -584,56 +717,3 @@ invisible(result)
 #####################################
 }##### Close function Analyze.Multinomial
 #####################################
-
-
-
-
-## Illustrative example 
-
-#library(Sequential)
-
-#AnalyzeSetUp.Multinomial(name="testee",N=200,alpha=0.05,k=7,R0=1,rho=1,m=10000,
-#title="tituto da tabela",ExposuresNames=c("A","B","C","AB","AC","AD","ABC"),
-#address="C:/Users/User/Documents/Viagens a Boston/2024/BACKUP DEVIDO AO PROBLEMA DE VIRUS/TRABALHO V2/MULTIPLE VACCINES/TESTES")
-
-
-# Test 1
-#res1<- Analyze.Multinomial(name="testee",test=1,cases=c(8,6,1,4,1,0,0),controls= 3,N_exposures=c(1000,1500,300,300,320,280,240),N_controls=500,AlphaSpend="n")
-#res1
-
-# Test 2
-#res2<- Analyze.Multinomial(name="testee",test=2,cases=c(13,1,4,6,4,2,1),controls= 5,N_exposures=c(900,1200,800,280,250,250,275),N_controls=1500,AlphaSpend="n")
-#res2
-
-# Test 3
-#res3<- Analyze.Multinomial(name="testee",test=3,cases=c(8,5,3,3,3,1,7),controls= 3,N_exposures=c(800,1000,1000,230,280,310,300),N_controls=2000,AlphaSpend="n")
-#res3
-
-# Test 4
-#res4<- Analyze.Multinomial(name="testee",test=4,cases=c(6,6,5,3,6,3,8),controls= 8,N_exposures=c(700,900,1000,200,300,350,310),N_controls=3000,AlphaSpend="n")
-#res4
-
-# Test 5
-#res5<- Analyze.Multinomial(name="testee",test=5,cases=c(4,2,3,4,6,2,5),controls= 7,N_exposures=c(800, 850, 900, 200, 250, 300, 200),N_controls=1000,AlphaSpend="n")
-#res5
-
-# Test 6
-#res6<- Analyze.Multinomial(name="testee",test=6,cases=c(6,3,3,6,7,3,6),controls= 8,N_exposures=c(815, 790, 880, 210, 240, 310, 208),N_controls=950,AlphaSpend="n")
-#res6
-
-
-#### Graph with the alpha spending of this example:
-
-#target<- as.numeric(res6$Alpha_spending[1,])
-#actual<- as.numeric(res6$Alpha_spending[2,])
-#ns<- c( sum(as.numeric(res6$Cumulative_cases[1,])), sum(as.numeric(res6$Cumulative_cases[2,])),  sum(as.numeric(res6$Cumulative_cases[3,])) , sum(as.numeric(res6$Cumulative_cases[4,])) , sum(as.numeric(res6$Cumulative_cases[5,])), sum(as.numeric(res6$Cumulative_cases[6,])) )
-#plot(ns, target, type="b", lty=1, lwd=2, xlab="Sample size", ylab= "Alpha spending",cex=1.5) 
-#lines(ns, actual, type="b", lty=2, lwd= 2)
-#abline(h=0.05)
-#legend(550,0.02, c("Target", "Actual"),lty= c(1,2),pch=1, lwd=2, bty="n")
-#text(locator(7),c("(23, 0.004527)", "(59, 0.013427)", "(92, 0.019827)", "(137, 0.032627)", "(170, 0.037327)", "(212, 0.037627)", "approx 0.036573"),cex=1.5)
-
-
-
-
-

@@ -256,11 +256,11 @@ return(tm)
 ##### AUXILIAR FUNCTIONS FOR CALCULATION OF CRITICAL VALUES
 #####
 
-if(sum(events_old)+k<=20){Inference="exact"} ; if(20<sum(events_old)+k&sum(events_old)+k<=50){Inference="conservative"}; if(50<sum(events_old)+k){Inference="liberal"}
+if(sum(events_old)+k<=50){Inference="exact"} ; if(50<sum(events_old)+k&sum(events_old)+k<=80){Inference="conservative"}; if(80<sum(events_old)+k){Inference="liberal"}
 
 if(Inference=="exact"){
 
-cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt); rest[rest<=0]<- 10^(10) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
+cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt); rest[rest<=0]<- 10^(-10) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
 cond.dpois<- function(x,tt){if(x<0){return(0)};return(exp( x*log(tt)-lfactorial(x)+ log( A(x,tt) ) ) )}
 cond.dpois_mult<- function(x,tt){if(x<0){return(0)}else{return(exp(x*log(tt)-lfactorial(x) ))}}
 
@@ -290,7 +290,7 @@ if(x<0){return(0)}else{
 ####<=====
 if(Inference=="conservative"){
 
-cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt) ; rest[rest<=0]<- 10^(10) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
+cond.ppois<- function(x,tt){if(x<0){return(0)};y<- seq(0,x); rest<- apply(matrix(y,ncol=1),1,A,tt) ; rest[rest<=0]<- 10^(-10) ; return(sum(exp( y*log(tt)-lfactorial(y)+ log(rest) ) ) )}
 cond.dpois<- function(x,tt){if(x<0){return(0)};return(exp( x*log(tt)-lfactorial(x)+ log( A(x,tt) ) ) )}
 cond.dpois_mult<- function(x,tt){if(x<0){return(0)}else{return(exp(x*log(tt)-lfactorial(x) ))}}
 

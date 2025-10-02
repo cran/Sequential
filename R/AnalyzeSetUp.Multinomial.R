@@ -1,22 +1,21 @@
 
 # -------------------------------------------------------------------------
 # Function to setup parameters for the Analyze.Multinomial function
-# to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version edited at May-25-2025
+# to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version edited at September-30-2025
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,AlphaSpendType=1,k,R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95, target_power=0.8,Rmin=1,Rmax=10,gamma=0.9, m=100000,title="n",ExposuresNames="n",address="n")
+AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,AlphaSpendType=1,R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95, target_power=0.8,Rmin=1,Rmax=2,gamma=0.9, m=100000,title="n",ExposuresNames="n",address="n")
 {
 
 # name: name to be used in each analysis to read the information saved from previus test.
 # N: maximum length of surveillance.
 # alpha: overall significance level.
-# k: length of the multinomial vector.
 # R0: test margin under the null hypothesis. Must be a positive number. Default is R0=1.  
 # R1: relative risk under the alternative hypothesis given the target_power.
 # rho: parameter to setup the shape of the power-type alpha spending.
 # m: Monte Carlo replications of the multinomial for critical values calculations
 # title: Optional. title of the table with results of analysis
-# ExposuresNames: Optional. This is to inform the name of the exposures related to each entry of the multinomial vector. For example, it can be c("A","B","AB") indicating that the count entries in the "cases" vector are related to populations exposed to vaccines A, B, and AB, respectively.
+# ExposuresNames: This is to inform the name of the exposures related to each entry of the multinomial vector. For example, it can be c("A","B","AB") to indicate that vaccines A and B are monitored.
 # AlphaSpendType: the possible values are 1 and 2 according to Silva and Maro 2025.
 # Rmin: minimum value for the relative risks of adjacent exposures when constructing the confidence interval for RR of a given exposure
 # Rmax: maximum value for the relative risks of adjacent exposures when constructing the confidence interval for RR of a given exposure
@@ -63,8 +62,8 @@ if( sum(is.numeric(alpha))!=1){stop("Symbols and texts are not applicable for 'a
 if(is.numeric(N)==FALSE){stop("Symbols and texts are not applicable for 'N'. It must be an integer greater than zero or equal to the default 'n'.",call. =FALSE)}
 if(N<=0){stop("'N' must be an integer greater than zero or equal to the default 'n'.",call. =FALSE)}
 if(alpha<=0|alpha>0.5||is.numeric(alpha)==FALSE){stop("'alpha' must be a number greater than zero and smaller than 0.5.",call. =FALSE)}
-
-
+if(length(ExposuresNames)==1){stop("The labels, names, of each exposure group must be informed. See the example in the user guide for the Analyze.Multinomial function.",call. =FALSE)}
+k<- length(ExposuresNames)
 
 
 
@@ -82,7 +81,9 @@ sum_sa<- alpha*(x^rho)
 
 
 active<- rep(1,k) # entries of the multinomial that are still alive for future tests
-if(length(ExposuresNames)!=k){ExposuresNames<- seq(1,k)}
+if(length(ExposuresNames)!=k){
+stop("The labels, names, of each exposure group must be informed. See the example in the user guide of the Analyze.Multinomial function.",call. =FALSE)
+                             }
 
 
 

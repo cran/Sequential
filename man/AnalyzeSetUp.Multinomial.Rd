@@ -3,8 +3,8 @@
 \title{Function to set up input parameters before using the \code{Analyze.Multinomial} function for the first time.}
 \description{The function \code{AnalyzeSetUp.Multinomial} must be run ahead of \code{Analyze.Multinomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Multinomial(name,N=200,alpha=0.05,AlphaSpendType=1,k,
-R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95,target_power=0.8,Rmin=1,Rmax=10,
+AnalyzeSetUp.Multinomial(name,N=200,alpha=0.05,AlphaSpendType=1,
+R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95,target_power=0.8,Rmin=1,Rmax=2,
 gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
       }
 \arguments{
@@ -12,7 +12,6 @@ gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
 \item{N}{The maximum sample size, at which the sequential analysis stops without rejecting the null hypothesis.}
 \item{alpha}{The overall significance level. Must be in the range (0,0.5]. The default is "alpha=0.05".}
 \item{AlphaSpendType}{Type of robust alpha spending. The possible values are 1 and 2 according to Silva and Maro(2025a). The default is equal to 1.}
-\item{k}{Length of the multinomial vector.}
 \item{R0}{Test margin under the null hypothesis. Must be a positive number. Default is R0=1.}
 \item{R1}{Relative risk under the alternative hypothesis given the target_power.}
 \item{rho}{The parameter rho is used to build the target alpha spending function according to a power-type function. The variable rho must be a positive number. The default value is "rho=1".}
@@ -24,7 +23,7 @@ gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
 \item{gamma}{Confidence coefficient for the interval estimators of the relative risk of each multinomial entry. Default is 0.9.}
 \item{m}{Monte Carlo replications of the multinomial for critical values calculations.}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}
-\item{ExposuresNames}{Optional. This is to inform the name of the exposures related to each entry of the multinomial vector. For example, it can be c("A","B","AB") indicating that the counting entries in the "cases" vector are related to populations exposed to vaccines A, B, and AB, respectively.}
+\item{ExposuresNames}{This is to inform the name of the exposures related to each entry of the multinomial vector. For example, it can be c("A","B","AB") for a three-exposure concomitant vaccination with two vaccines, vaccines "A" and "B". There is no default.}
 \item{address}{The address of the directory where the settings information of this sequential analysis is saved.}
 }
 \details{

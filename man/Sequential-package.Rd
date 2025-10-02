@@ -21,8 +21,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.4\cr
-Date: \tab 2025-08-10\cr
+Version: \tab 4.5\cr
+Date: \tab 2025-09-30\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -262,6 +262,9 @@ the computationally feasible limit of multiple exposures is likely limited to no
 For more complex situations with several vaccines (>2), which can multiple types of endpoints (i.e. designated adverse events),
 a valid Monte Carlo decision rule is constructed. 
 
+To adjust for covariates confounders, \code{Analyze.Multinomial} utilizes the maxLik package (Henningsen et al., 2011) to compute the MLE of the baseline covariates
+effects as derived by Silva and Maro(2025).
+
 
 
 
@@ -353,6 +356,8 @@ Ghosh BK, Sen PK. (1991), Handbook of Sequential Analysis, New York: MARCEL DEKK
 
 Ghosh M, Mukhopadhyay N, Sen PK. (2011), Sequential Estimation: Wiley.
 
+Henningsen A, Toomet O (2011), maxLik: A package for maximum likelihood estimation in R. Computational Statistics, 26(3), 443--458.
+
 Jennison C, Turnbull B. (2000), Group Sequential Methods with Applications to Clinical
 Trials, London: Chapman and Hall/CRC.
 
@@ -364,7 +369,7 @@ Li L, Kulldorff M. (2010), A conditional maximized sequential probability ratio 
 
 Mukhopadhyay N, Silva BM. (2002), Sequential Methods and Their Applications, 1th ed.: Chapman and Hall/CRC. 
 
-Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71 (3), 851--858.
+Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for Vaccine and Drug Safety Surveillance. Biometrics, 71(3), 851--858.
 
 Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, 40(22), 4890--4913.
 
@@ -602,5 +607,8 @@ Version 4.3.4, Oct 2024\cr
 \cr
 Version 4.4, May 2025\cr
 -	Inclusion of the Analyze.Multinomial function, inclusion of confidence intervals in the output tables of the Analyze.Binomial, Analyze.Poisson and Analyze.CondPoisson functions, and management of unstable data by means of a robust alpha spending approach.\cr
+\cr
+Version 4.5, October 2025\cr
+-	Adjustments of input parameters for the Analyze.Multinomial function.\cr
 \cr
 }
