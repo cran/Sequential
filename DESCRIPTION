@@ -1,8 +1,8 @@
 Package: Sequential
 Type: Package
 Title: Exact Sequential Analysis for Poisson and Binomial Data
-Version: 4.5
-Date: 2025-09-30
+Version: 4.5.1
+Date: 2025-10-28
 Authors@R: c(person(given=c("Ivair", "Ramos"),
              family= "Silva", role=c("aut","cre"),
              email= "ivair@ufop.edu.br"),
@@ -14,8 +14,8 @@ License: GPL-2
 LazyLoad: yes
 Imports: boot, pmultinom, maxLik
 NeedsCompilation: no
-Packaged: 2025-10-01 21:43:24 UTC; User
+Packaged: 2025-10-28 19:49:41 UTC; User
 Author: Ivair Ramos Silva [aut, cre],
   Martin Kulldorff [aut]
 Repository: CRAN
-Date/Publication: 2025-10-02 05:10:20 UTC
+Date/Publication: 2025-10-29 06:10:42 UTC

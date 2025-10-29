@@ -21,8 +21,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.5\cr
-Date: \tab 2025-09-30\cr
+Version: \tab 4.5.1\cr
+Date: \tab 2025-10-28\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -608,7 +608,10 @@ Version 4.3.4, Oct 2024\cr
 Version 4.4, May 2025\cr
 -	Inclusion of the Analyze.Multinomial function, inclusion of confidence intervals in the output tables of the Analyze.Binomial, Analyze.Poisson and Analyze.CondPoisson functions, and management of unstable data by means of a robust alpha spending approach.\cr
 \cr
-Version 4.5, October 2025\cr
+Version 4.5, October 2, 2025\cr
+-	Adjustments of input parameters for the Analyze.Multinomial function.\cr
+\cr
+Version 4.5.1, October 29, 2025\cr
 -	Adjustments of input parameters for the Analyze.Multinomial function.\cr
 \cr
 }

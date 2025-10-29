@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.5
+# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.5.1
 # -------------------------------------------------------------------------
 
 Analyze.Multinomial<- function(name,test,cases,controls,N_exposures,N_controls,exposure_group,strata_group_cases="n",strata_group_controls="n", AlphaSpend="n")
@@ -143,7 +143,10 @@ while(aux_eg==0){
   
 # Log-likelihood in theta for the strata effects:
 LLRt<- function(theta_c){
-  return( sum( yjc*log(theta_c) - (yjc+yj1)*log(Nj1+Njc*theta_c) ) )
+  yjc2<- yjc[(Nj1+Njc*theta_c)>0]
+  yya<- (yjc+yj1)[(Nj1+Njc*theta_c)>0] 
+  N2a<- (Nj1+Njc*theta_c)[(Nj1+Njc*theta_c)>0]
+  return( sum( yjc2*log(theta_c) - yya*log(N2a) ) )
                         }
 
 
@@ -169,7 +172,7 @@ Nj1<- c( N_exposures[ref_group,], N_controls[ref_group])
 
 
 
-# Collapsing the information through a weighted sum over strata groups
+#=> Collapsing the information through a weighted sum over strata groups
 
 if(is.matrix(cases)==TRUE){      
        
@@ -318,10 +321,11 @@ Nss<- Ns[1:j][pss>0]
 
 pss<- pss[pss>0]
 
-     if(AlphaOld>0){res<- Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaOld/k,
+     if(AlphaOld>0){res<- try(Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaOld/k,
 AlphaSpend=1,p=pss,GroupSizes=Nss,Tailed="upper",RR=R1,
-Statistic="MaxSPRT",rho)
-     powers[i,j]<- res$Performance[2]}else{powers[i,j]<- 0}
+Statistic="MaxSPRT",rho), silent = TRUE )
+     if(is.numeric(res[[1]])==TRUE){powers[i,j]<- res$Performance[2]}
+                   }else{powers[i,j]<- 0}
                                                                           }
                    }
              }
@@ -379,10 +383,11 @@ Nss<- Ns[1:j][pss>0]
 
 pss<- pss[pss>0]
 
-     if(AlphaSpend>0){res<- Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaSpend/k,
+     if(AlphaSpend>0){res<- try(Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaSpend/k,
 AlphaSpend=1,p=pss,GroupSizes=Nss,Tailed="upper",RR=R1,
-Statistic="MaxSPRT",rho)
-     power[i,j]<- res$Performance[2]}else{power[i,j]<- 0}
+Statistic="MaxSPRT",rho) , silent = TRUE )
+     if(is.numeric(res[[1]])==TRUE){power[i,j]<- res$Performance[2]}
+                     }else{power[i,j]<- 0}
                                                                               }
                    }
              }
@@ -422,7 +427,8 @@ CI_RR<- matrix(0,k,2)
 for(i in 1:k){
 
 # finding the lower bound of the confidence interval for Ri
- 
+
+if(hR[i,1]>0){ 
 RR<- rep(Rmin,k)
 RR1<- 0.001; RR2<- 100; RRm<- (RR1+RR2)/2; RR[i]<- RRm
 prob<- 0
@@ -437,6 +443,7 @@ if(prob>(1-gamma)/2){RR2<- RRm}else{RR1<- RRm}; RRm<- (RR1+RR2)/2; RR[i]<- RRm
                                      }
 
 CI_RR[i,1]<- RRm
+             }
 
 
 # finding the upper bound of the confidence interval for Ri
@@ -667,6 +674,7 @@ names(Reject_H0)<- ExposuresNames
 
 
 ps_under_H0<- round(t(ps[1:k,]),4)
+if(test>1){for(i in 2:test){for(j in 1:ncol(ps)){if(ps_under_H0[i,j]==0){ps_under_H0[i,j]<- ps_under_H0[i-1,j]}}}}
 colnames(ps_under_H0)<- ExposuresNames
 rownames(ps_under_H0)<- linhas
 
@@ -687,6 +695,7 @@ colnames(Cumulative_Cases)<- c(ExposuresNames,"Controls")
 rownames(Cumulative_Cases)<- linhas
 
 Relative_Risk_estimates<-  round(t(inputSetUp[(20+2*k+1):(20+3*k),1:test]),2)
+if(test>1){for(i in 2:test){for(j in 1:ncol(Relative_Risk_estimates)){if(Relative_Risk_estimates[i,j]==0){Relative_Risk_estimates[i,j]<- Relative_Risk_estimates[i-1,j]}}}}
 colnames(Relative_Risk_estimates)<- ExposuresNames
 rownames(Relative_Risk_estimates)<- linhas
 
@@ -700,6 +709,7 @@ Alpha_spending[2,]<- round(as.numeric(inputSetUp[5,1:test]),6)
 colnames(Alpha_spending)<- linhas
 
 Lower_bound_CI<- round(t(inputSetUp[(20+4*k+3):(20+4*k+3+k-1),1:test]),2)
+if(test>1){for(i in 2:test){for(j in 1:ncol(Lower_bound_CI)){if(Lower_bound_CI[i,j]==0){Lower_bound_CI[i,j]<- Lower_bound_CI[i-1,j]}}}}
 colnames(Lower_bound_CI)<- ExposuresNames
 rownames(Lower_bound_CI)<- linhas
 
