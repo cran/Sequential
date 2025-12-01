@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.5.1
+# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.5.2
 # -------------------------------------------------------------------------
 
 Analyze.Multinomial<- function(name,test,cases,controls,N_exposures,N_controls,exposure_group,strata_group_cases="n",strata_group_controls="n", AlphaSpend="n")
@@ -72,8 +72,8 @@ k<- as.numeric(inputSetUp[1,4]) # number of exposures
 
 
 #### Adjusting for confounding covariates
-
-ExposuresNames<- read.table("ExposuresNames.txt") 
+ExposuresNamesCheck<- paste(name1,"ExposuresNames.txt",sep="")
+ExposuresNames<- read.table(ExposuresNamesCheck) 
 ExposuresNames<- ExposuresNames[1:k,1]
 
 aux_exg<- 0
@@ -287,6 +287,7 @@ if(test==1){ps<- matrix(p_h0,k+1,1)}else{ps<- cbind(ps,matrix(p_h0,k+1,1))}
 
 
 
+
 #### Setting the robust alpha spending function
 
 if(AlphaSpendType==1){alpha1<- alpha/2; alpha2<- alpha/2}else{alpha1<- alpha/(k+1); alpha2<- k*alpha/(k+1)}
@@ -396,75 +397,87 @@ Statistic="MaxSPRT",rho) , silent = TRUE )
 
 
 
+
+
+
+
+
+
 #### Maximum likelihood estimator for the vector of relative risks
+##### NEW VERSION. THE PREVIOUS METHOD WORKED UNTIL  Sequential 4.5.1 
+#####
+
+# Test specific information per test and exposure 
+if(test>1){
+hcontrols<- c(as.numeric(inputSetUp[8,1:(test-1)]), controls)
+hcases<- t(inputSetUp[(20+k+1):(20+2*k),1:(test-1)])
+hcasesaux<- matrix(0,nrow(hcases),ncol(hcases)); hcasesaux[1,]<- hcases[1,]
+if(test>2){for(ii in 2:nrow(hcases)){hcasesaux[ii,]<- hcases[ii,]-hcases[ii-1,]}}
+hcases<- rbind(hcasesaux, cases)
+
+hN_exposures<- read.table(paste(name1,"MatrixN_exposures.txt",sep=""))
+hN_exposures<- rbind( hN_exposures  , N_exposures )
+hN_controls<- as.numeric(read.table(paste(name1,"VectorN_controls.txt",sep=""))[,1])
+hN_controls<- c( hN_controls , N_controls )
+          }
+
+if(test==1){
+    hcontrols<- controls
+    hcases<- matrix(cases,nrow=1)
+    hN_exposures<- matrix(N_exposures, nrow=1)  
+    hN_controls<- N_controls  
+           }
+
+# Information of populations for future tests.
+MatrixN_exposures<- hN_exposures
+VectorN_controls<- hN_controls
 
 
-if(test>1){xxx<- CumCases[,ncol(CumCases)]+cases ; n<- CumControls[length(CumControls)] + controls + sum(xxx) }else{xxx<- cases; n<- controls+sum(xxx)}
-hp<- xxx/n  # MLE for the unknown p
-
-
-valid_entries<- seq(1,k)[N_exposures>0]
-
-R_partial<- matrix(0,length(valid_entries),length(valid_entries))
-
-for(i in 1:length(valid_entries)){R_partial[i,]<-
- -N_exposures[valid_entries]*hp[valid_entries[i]]; R_partial[i,i]<- N_exposures[valid_entries[i]]*(1-hp[valid_entries[i]])}
-
-hR<-  solve(R_partial)%*%matrix(N_controls*hp[valid_entries],length(valid_entries),1)  # MLE for the relative risk vector, R.
-
-
-hR1<- rep(0,k); hR1[valid_entries]<- hR; hR<- matrix(hR1,k,1) 
+#  Taking only the entries with non-zero values in hN_exposures
+Individuals_non_zero_pop<- seq(1,k)[apply(hN_exposures,2,sum)>0]
+hcases<- matrix(hcases[,Individuals_non_zero_pop],ncol=length(Individuals_non_zero_pop), byrow=FALSE)
+if(test>1){hN_exposures<- hN_exposures[,Individuals_non_zero_pop]}else{hN_exposures<- matrix(hN_exposures[,Individuals_non_zero_pop],ncol=length(Individuals_non_zero_pop),byrow=TRUE)}
 
 
 
+
+# Log-likelihood function for RR
+lRo<- function(RRR)
+{
+
+if (any(RRR <= 0)){ return(-Inf) }else{
+
+lR<- 0
+for(tt in 1:test){      
+    lR<- lR + sum( hcases[tt,]*log(RRR) ) - ( sum(hcases[tt,])+hcontrols[tt] )*log( sum(hN_exposures[tt,]*RRR)+ hN_controls[test] )                     
+                 }
+
+return(lR)
+                                      }
+}
+# CLOSES THE LOG-LIKELIHOOD FUNCTION
+
+
+
+
+# Here is the estimation of RR:
+    res_RR<- suppressMessages( maxLik(lRo,start=rep(1,length(Individuals_non_zero_pop)) ))
+    hR<- res_RR$estimate
+hR1<- rep(NA,k); hR1[Individuals_non_zero_pop]<- hR; hR<- matrix(hR1,k,1)
 
 
 #### Confidence Interval for RR
+# Asymptotic confidence intervals for the relative risks:
+
+CONFS<- confint(res_RR, level = gamma)
+CI_RR<- matrix(NA,k,2)
+CI_RR[Individuals_non_zero_pop,1]<- CONFS[,1]
+CI_RR[Individuals_non_zero_pop,2]<- CONFS[,2]
+##### HERE THE NEW VERSIONOF MLE IS FINISHED
+#####
 
 
-CI_RR<- matrix(0,k,2)
 
-for(i in 1:k){
-
-# finding the lower bound of the confidence interval for Ri
-
-if(hR[i,1]>0){ 
-RR<- rep(Rmin,k)
-RR1<- 0.001; RR2<- 100; RRm<- (RR1+RR2)/2; RR[i]<- RRm
-prob<- 0
-while(abs(prob-(1-gamma)/2)>10^(-6) & RRm>0.001){
-
-pi<- N_exposures[i]*RRm/(sum(RR*N_exposures)+N_controls)
-
-prob<- 1-pbinom(xxx[i]-1,n,pi)
-
-if(prob>(1-gamma)/2){RR2<- RRm}else{RR1<- RRm}; RRm<- (RR1+RR2)/2; RR[i]<- RRm 
-
-                                     }
-
-CI_RR[i,1]<- RRm
-             }
-
-
-# finding the upper bound of the confidence interval for Ri
- 
-RR<- rep(Rmax,k)
-RR1<- 0.001; RR2<- 100; RRm<- (RR1+RR2)/2; RR[i]<- RRm
-prob<- 0
-while(abs(prob-(1-gamma)/2)>10^(-6) &RRm<100){
-
-pi<- N_exposures[i]*RRm/(sum(RR*N_exposures)+N_controls)
-
-prob<- pbinom(xxx[i],n,pi)
-
-if(prob>(1-gamma)/2){RR1<- RRm}else{RR2<- RRm}; RRm<- (RR1+RR2)/2; RR[i]<- RRm 
-
-                                     }
-
-CI_RR[i,2]<- RRm
-
-            }
- 
 
 
 
@@ -595,7 +608,7 @@ G<- 0
 
 
 ############################################################
-## UPDATING INFORMATION FOR FUTURE TESTES
+## UPDATING INFORMATION FOR FUTURE TESTS
 ############################################################
 
 if(ncol(inputSetUp)<test){inputSetUp<- cbind(inputSetUp,rep(0,nrow(inputSetUp)))}
@@ -659,7 +672,8 @@ inputSetUp[(20+4*k+3+k):(20+5*k+3+k-1),test]<- CI_RR[,2]
 ############################################################
 
 write.table(inputSetUp,name)
-
+write.table(MatrixN_exposures, paste(name1,"MatrixN_exposures.txt",sep="") )
+write.table(VectorN_controls, paste(name1,"VectorN_controls.txt",sep="") )
 
 ##########################################################
 ## PRINTING OUTPUT TABLES
@@ -673,9 +687,8 @@ names(Reject_H0)<- ExposuresNames
 
 
 
-ps_under_H0<- round(t(ps[1:k,]),4)
-if(test>1){for(i in 2:test){for(j in 1:ncol(ps)){if(ps_under_H0[i,j]==0){ps_under_H0[i,j]<- ps_under_H0[i-1,j]}}}}
-colnames(ps_under_H0)<- ExposuresNames
+ps_under_H0<- cbind( round(t(ps[1:k,]),4) , matrix( round( 1- apply ( t(ps[1:k,]),1,sum )  ,4),ncol=1 ) )
+colnames(ps_under_H0)<- c( ExposuresNames, "Controls")
 rownames(ps_under_H0)<- linhas
 
 
@@ -695,7 +708,7 @@ colnames(Cumulative_Cases)<- c(ExposuresNames,"Controls")
 rownames(Cumulative_Cases)<- linhas
 
 Relative_Risk_estimates<-  round(t(inputSetUp[(20+2*k+1):(20+3*k),1:test]),2)
-if(test>1){for(i in 2:test){for(j in 1:ncol(Relative_Risk_estimates)){if(Relative_Risk_estimates[i,j]==0){Relative_Risk_estimates[i,j]<- Relative_Risk_estimates[i-1,j]}}}}
+#if(test>1){for(i in 2:test){for(j in 1:ncol(Relative_Risk_estimates)){if(Relative_Risk_estimates[i,j]==0){Relative_Risk_estimates[i,j]<- Relative_Risk_estimates[i-1,j]}}}}
 colnames(Relative_Risk_estimates)<- ExposuresNames
 rownames(Relative_Risk_estimates)<- linhas
 
@@ -708,8 +721,8 @@ Alpha_spending[1,]<- round(as.numeric(inputSetUp[7,1:test]),6)
 Alpha_spending[2,]<- round(as.numeric(inputSetUp[5,1:test]),6) 
 colnames(Alpha_spending)<- linhas
 
-Lower_bound_CI<- round(t(inputSetUp[(20+4*k+3):(20+4*k+3+k-1),1:test]),2)
-if(test>1){for(i in 2:test){for(j in 1:ncol(Lower_bound_CI)){if(Lower_bound_CI[i,j]==0){Lower_bound_CI[i,j]<- Lower_bound_CI[i-1,j]}}}}
+Lower_bound_CI<- round(t(inputSetUp[(20+4*k+3):(20+4*k+3+k-1),1:test]),2); Lower_bound_CI[Lower_bound_CI<0] <- 0
+#if(test>1){for(i in 2:test){for(j in 1:ncol(Lower_bound_CI)){if(Lower_bound_CI[i,j]==0){Lower_bound_CI[i,j]<- Lower_bound_CI[i-1,j]}}}}
 colnames(Lower_bound_CI)<- ExposuresNames
 rownames(Lower_bound_CI)<- linhas
 

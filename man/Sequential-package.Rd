@@ -21,8 +21,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.5.1\cr
-Date: \tab 2025-10-28\cr
+Version: \tab 4.5.2\cr
+Date: \tab 2025-11-30\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -613,5 +613,8 @@ Version 4.5, October 2, 2025\cr
 \cr
 Version 4.5.1, October 29, 2025\cr
 -	Adjustments of input parameters for the Analyze.Multinomial function.\cr
+\cr
+Version 4.5.2, November 30, 2025\cr
+-	Adjustments of output tables for the Analyze.Multinomial function.\cr
 \cr
 }

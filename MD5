@@ -1,8 +1,8 @@
-8a0d81e74dcbe0e972d03a4b66b6a8e9 *DESCRIPTION
-d5422068129b01f2ee4ea69d3341b2c3 *NAMESPACE
+fcf1612610fa8c076c9d4f0e4110c1cd *DESCRIPTION
+77b1591d6cd9a7aae1e065bc4809579d *NAMESPACE
 471ee6454da0688658e5dc3281ee5b4a *R/Analyze.Binomial.R
 99fec7be61b135e539ed59887c79315e *R/Analyze.CondPoisson.R
-d6003ffe9f569e803cb5bf6d958bf542 *R/Analyze.Multinomial.R
+8d42c183fad1e372d21ce10ff325ed9e *R/Analyze.Multinomial.R
 fa0c0d26ce53605a6195f2cd8a8b3195 *R/Analyze.Poisson.R
 70b8f2f1cdf8a3b57f4e214314a78ca8 *R/Analyze.wBinomial.R
 50f7019de20fdfdc4d686a541955bea2 *R/AnalyzeRegression.Binomial.R
@@ -10,7 +10,7 @@ fa0c0d26ce53605a6195f2cd8a8b3195 *R/Analyze.Poisson.R
 29288cfed78797abe382a275c8b4c1c3 *R/AnalyzeRegression.Poisson.R
 371390c22c5fd2522f1182945764f09c *R/AnalyzeSetUp.Binomial.R
 33654ac0a2278bc29bc96e2f4e5c55f7 *R/AnalyzeSetUp.CondPoisson.R
-902c69af7ac3b6372590314ed4640559 *R/AnalyzeSetUp.Multinomial.R
+e6e7139e116be07e356137a6fb1f2eac *R/AnalyzeSetUp.Multinomial.R
 0c7e3fba7c173584cbda34c9fc5526f7 *R/AnalyzeSetUp.Poisson.R
 4dd408ff5858e6a1533f251e128e70fb *R/AnalyzeSetUp.wBinomial.R
 36858bb1eab2b0f9e4886f75f8927c9a *R/AnalyzeSetUpRegression.Binomial.R
@@ -66,4 +66,4 @@ d888a18271445853920d7af75508088b *man/Performance.Threshold.Poisson.Rd
 d9c5580b6aa541962476a16974da84ab *man/SampleSize.Binomial.Rd
 bba8542b05c5dde37738351cbae0a117 *man/SampleSize.CondPoisson.Rd
 32576b668f3bd074c4efab6076703d8d *man/SampleSize.Poisson.Rd
-cd22c108f7267451d436f50ba113d72a *man/Sequential-package.Rd
+cc5ff43ad632af46fd8992f8e96039a4 *man/Sequential-package.Rd

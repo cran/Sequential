@@ -146,7 +146,7 @@ inputSetUp[19,1]<- 0
 
 
 write.table(inputSetUp,name)
-write.table(ExposuresNames,"ExposuresNames.txt")
+write.table(ExposuresNames,paste(name1,"ExposuresNames.txt",sep=""))
 titlecheck<- data.frame(matrix(0,1,1))
 if(title!=0){titlecheck[1,1]<- title}
  
