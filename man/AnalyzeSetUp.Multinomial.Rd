@@ -4,7 +4,7 @@
 \description{The function \code{AnalyzeSetUp.Multinomial} must be run ahead of \code{Analyze.Multinomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
 AnalyzeSetUp.Multinomial(name,N=200,alpha=0.05,AlphaSpendType=1,
-R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95,target_power=0.8,Rmin=1,Rmax=2,
+R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95,target_power=0.8,
 gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
       }
 \arguments{
@@ -18,8 +18,6 @@ gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
 \item{pmin}{Minimum value of the multinomial probability to activate its portion of alpha spending at each test. See Silva and Maro(2025) for more details. The default is pmin=0.05}
 \item{pmax}{Maximum value of the multinomial probability to activate its portion of alpha spending at each test. See Silva and Maro(2025) for more details. The default is pmin=0.05}
 \item{target_power}{The target power for detecting an elevated risk (>R0) for each entry of the multinomial vector.}
-\item{Rmin}{Minimum value for the relative risks of adjacent exposures when constructing the confidence interval for RR of a given exposure.}
-\item{Rmax}{Maximum value for the relative risks of adjacent exposures when constructing the confidence interval for RR of a given exposure.}
 \item{gamma}{Confidence coefficient for the interval estimators of the relative risk of each multinomial entry. Default is 0.9.}
 \item{m}{Monte Carlo replications of the multinomial for critical values calculations.}
 \item{title}{Title for the results shown in the output tables and the illustrative graphics. It can be any text string. The default is that there is no title.}

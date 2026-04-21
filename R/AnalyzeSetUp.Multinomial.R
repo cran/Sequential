@@ -1,10 +1,10 @@
 
 # -------------------------------------------------------------------------
 # Function to setup parameters for the Analyze.Multinomial function
-# to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version edited at September-30-2025
+# to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version edited at April-20-2026
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,AlphaSpendType=1,R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95, target_power=0.8,Rmin=1,Rmax=2,gamma=0.9, m=100000,title="n",ExposuresNames="n",address="n")
+AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,AlphaSpendType=1,R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95, target_power=0.8,gamma=0.9, m=100000,title="n",ExposuresNames="n",address="n")
 {
 
 # name: name to be used in each analysis to read the information saved from previus test.
@@ -17,8 +17,6 @@ AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,AlphaSpendType=1,R0=1,
 # title: Optional. title of the table with results of analysis
 # ExposuresNames: This is to inform the name of the exposures related to each entry of the multinomial vector. For example, it can be c("A","B","AB") to indicate that vaccines A and B are monitored.
 # AlphaSpendType: the possible values are 1 and 2 according to Silva and Maro 2025.
-# Rmin: minimum value for the relative risks of adjacent exposures when constructing the confidence interval for RR of a given exposure
-# Rmax: maximum value for the relative risks of adjacent exposures when constructing the confidence interval for RR of a given exposure
 # gamma: confidence coefficient of the confidence intervals for RR's 
 
 
@@ -137,7 +135,7 @@ inputSetUp[12,1:length(sum_sa)]<- sum_sa
 inputSetUp[13,]<- 0
 inputSetUp[14,]<- 0
 inputSetUp[15,1]<- R0
-inputSetUp[16,1:k]<- 0; inputSetUp[16,1]<- AlphaSpendType; inputSetUp[16,2]<- pmin; inputSetUp[16,3]<- pmax; inputSetUp[16,4]<- target_power; inputSetUp[16,5]<- R1 ; inputSetUp[16,6]<- Rmin; inputSetUp[16,7]<- Rmax; inputSetUp[16,8]<- gamma  
+inputSetUp[16,1:k]<- 0; inputSetUp[16,1]<- AlphaSpendType; inputSetUp[16,2]<- pmin; inputSetUp[16,3]<- pmax; inputSetUp[16,4]<- target_power; inputSetUp[16,5]<- R1 ; inputSetUp[16,8]<- gamma  
 inputSetUp[17,1:k]<- active
 inputSetUp[18,]<- 0 
 inputSetUp[19,1]<- 0

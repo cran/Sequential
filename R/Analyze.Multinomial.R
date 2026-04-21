@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.5.2
+# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.6.0
 # -------------------------------------------------------------------------
 
 Analyze.Multinomial<- function(name,test,cases,controls,N_exposures,N_controls,exposure_group,strata_group_cases="n",strata_group_controls="n", AlphaSpend="n")
@@ -235,8 +235,6 @@ N<- as.numeric(inputSetUp[1,2])
 alpha<- as.numeric(inputSetUp[1,3])
 m<- as.numeric(inputSetUp[1,5])
 rho<- as.numeric(inputSetUp[1,8])
-Rmin<- as.numeric(inputSetUp[16,6])
-Rmax<- as.numeric(inputSetUp[16,7])
 gamma<- as.numeric(inputSetUp[16,8])
 
 R0<- as.numeric(inputSetUp[15,1])
@@ -732,8 +730,12 @@ colnames(Upper_bound_CI)<- ExposuresNames
 rownames(Upper_bound_CI)<- linhas
 
 
-result<- list(Reject_H0,Reject_Test_Time,ps_under_H0,power,Critical_Values,Cumulative_Cases,Relative_Risk_estimates,Critical_Values_LLR,Alpha_spending,Lower_bound_CI,Upper_bound_CI)
-names(result)<- c("Reject_H0","Rejection_time","ps_under_H0","power","Critical_values_in_cumulative_cases_scale","Cumulative_cases","Relative_risk_estimates","Critical_values_in_MaxSPRT_scale","Alpha_spending","Lower_bound_CI","Upper_bound_CI")
+
+result<-      list(Reject_H0,   Reject_Test_Time, ps_under_H0,   power,               Critical_Values_LLR,               Cumulative_Cases,   Critical_Values,                              Relative_Risk_estimates,   Lower_bound_CI,              Upper_bound_CI,               Alpha_spending)
+names(result)<- c("Reject_H0", "Rejection_time",  "ps_under_H0", "Cumulative power", "Critical_values_in_MaxSPRT_scale", "Cumulative_cases", "Critical_values_in_cumulative_cases_scale",  "Relative_risk_estimates", "Relative_Risk_Lower_bound", "Relative_Risk_Upper_bound", "Alpha_spending")
+
+
+
 
 invisible(result)
 
