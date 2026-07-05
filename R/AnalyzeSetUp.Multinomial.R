@@ -4,12 +4,13 @@
 # to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version edited at April-20-2026
 # -------------------------------------------------------------------------
 
-AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,AlphaSpendType=1,R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95, target_power=0.8,gamma=0.9, m=100000,title="n",ExposuresNames="n",address="n")
+AnalyzeSetUp.Multinomial<- function(name,N=200,alpha=0.05,M=1,AlphaSpendType=1,R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95, target_power=0.8,gamma=0.9, m=100000,title="n",ExposuresNames="n",address="n")
 {
 
 # name: name to be used in each analysis to read the information saved from previus test.
 # N: maximum length of surveillance.
 # alpha: overall significance level.
+# M: The minimum number of events required before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".
 # R0: test margin under the null hypothesis. Must be a positive number. Default is R0=1.  
 # R1: relative risk under the alternative hypothesis given the target_power.
 # rho: parameter to setup the shape of the power-type alpha spending.
@@ -96,7 +97,7 @@ inputSetUp<- as.data.frame(matrix(0, 19+6*k+6, max(N,10,k) ))
 
 
 ## inputSetUp matrix contains:
-# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) Maximum SampleSize, (C13) alpha, (C14) k, (C15) m, (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) rho, (C19) vazio, (C1,10) vazio
+# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) Maximum SampleSize, (C13) alpha, (C14) k, (C15) m, (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) rho, (C19) M (minimum number of events to signal), (C1,10) vazio
 # line 2: says if the analysis has been started or not. 0 for not started. 1 for already started.
 # line 3: critical values in the scale of MaxSPRT
 # line 4: observed cases  
@@ -118,7 +119,7 @@ inputSetUp<- as.data.frame(matrix(0, 19+6*k+6, max(N,10,k) ))
 
 
 inputSetUp[1,]<- 0
-inputSetUp[1,1:10]<- c(0,N,alpha,k,m,0,0,rho,0,0) 
+inputSetUp[1,1:10]<- c(0,N,alpha,k,m,0,0,rho,M,0) 
 inputSetUp[2,]<- 0
 inputSetUp[2,1]<- 0
 inputSetUp[3,]<- 0

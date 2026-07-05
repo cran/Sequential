@@ -21,8 +21,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.6.0\cr
-Date: \tab 2026-04-20\cr
+Version: \tab 4.6.1\cr
+Date: \tab 2026-07-05\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -373,11 +373,11 @@ Silva IR, Kulldorff M. (2015), Continuous versus Group Sequential Analysis for V
 
 Silva IR, Maro J, Kulldorff M. (2021), Exact sequential test for clinical trials and post-market drug and vaccine safety surveillance with Poisson and binary data. Statistics in Medicine, 40(22), 4890--4913.
 
-Silva IR, Maro J. (2025a), Adaptive Sequential Multiple Hypotheses Testing for Seasonal Concomitant Vaccines Safety Surveillance. Working paper, Sentinel (TIDE), Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+Silva IR, Wang L, Maro J (2026). Adaptive Sequential Multiple Hypotheses Testing for Concomitant Vaccine Safety Surveillance. Statistics in Medicine, 45:e70662.
 
 Silva IR, Maro J. (2025b), Robust Alpha Spending for Unstable Data. Working paper, Sentinel (TIDE), Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
 
-Silva IR, Montalban, J., Oliveira, F. (2025c), Maximized Sequential Probability Ratio Test Regression. Working paper - Sentinel (TIDE) project, Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+Silva IR, Montalban, J., Oliveira, F. (2025c), Maximized Sequential Probability Ratio Test Regression. Biometrics, 81(4), ujaf170.
 
 Silva IR, Kulldorff M, Yih W. Katherine. (2020), Optimal alpha spending for sequential analysis with binomial data. Journal of the Royal Statistical Society Series B, 82(4) p. 1141--1164.
 
@@ -385,7 +385,7 @@ Silva IR, Gagne J, Najafzadeh M, Kulldorff M. (2020), Exact Sequential Analysis 
 
 Silva IR, Li L, Kulldorff M. (2019a), Exact conditional maximized sequential probability ratio test adjusted for covariates. Sequential Analysis, 38(1), 115--133.
 
-Silva IR. (2018a), Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15;37(1), 107--118.
+Silva IR. (2018a), Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance with Binomial Data. Statistics in Medicine, 15:37(1), 107--118.
 
 Silva IR. (2018b), Type I Error Probability Spending for Post-Market Drug and Vaccine Safety Surveillance With Poisson Data. Methodol Comput Appl Probab, 20(2), 739--750.
 
@@ -618,6 +618,9 @@ Version 4.5.2, November 30, 2025\cr
 -	Adjustments of output tables for the Analyze.Multinomial function.\cr
 \cr
 Version 4.6.0, April 20, 2026\cr
+-	Adjustments of output tables for the Analyze.Multinomial function.\cr
+\cr
+Version 4.6.1, July 05, 2026\cr
 -	Adjustments of output tables for the Analyze.Multinomial function.\cr
 \cr
 }

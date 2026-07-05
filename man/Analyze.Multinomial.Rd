@@ -69,7 +69,7 @@ effects as derived by Silva and Maro(2025).
 
 
 \references{
-Silva IR, Maro J. (2025), Adaptive Sequential Multiple Hypotheses Testing for Seasonal Concomitant Vaccines Safety Surveillance. Working paper, Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute. 
+Silva IR, Wang L, Maro J (2026). Adaptive Sequential Multiple Hypotheses Testing for Concomitant Vaccine Safety Surveillance. Statistics in Medicine, 45:e70662. 
 
 Henningsen A, Toomet O (2011), maxLik: A package for maximum likelihood estimation in R. Computational Statistics, 26(3), 443--458.
 }
@@ -95,8 +95,8 @@ Development of the \code{Analyze.Multinomial} function was funded by:
 ### Firstly, it is necessary to set up the input parameters.
 ##  Note: cut off the "#" symbol before running the four lines below.
 
-#   AnalyzeSetUp.Multinomial(name="VaccinesABC",N=200,alpha=0.05,R0=1,rho=1,
-#   m=10000, title="Title of the output table",
+#   AnalyzeSetUp.Multinomial(name="VaccinesABC",N=200,alpha=0.05,M=3,
+#   R0=1,rho=1, m=10000, title="Title of the output table",
 #   ExposuresNames=c("A","B","C","AB","AC","BC","ABC"),
 #   address="C:/Users")
 

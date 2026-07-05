@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------
-# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.6.0
+# Function to perform the unpredictable multinomial marginal MaxSPRT surveillance - Version 4.6.1
 # -------------------------------------------------------------------------
 
 Analyze.Multinomial<- function(name,test,cases,controls,N_exposures,N_controls,exposure_group,strata_group_cases="n",strata_group_controls="n", AlphaSpend="n")
@@ -59,8 +59,26 @@ if(NN==0){
 
 #### Bringing the information from the setup step:
 inputSetUp<- read.table(name)
-if(inputSetUp[1,1]!=test-1){stop(c("The current test should be"," ",inputSetUp[1,1]+1,". ",
-"If you do not have information about previous tests, see the user manual for more details."),call. =FALSE)}
+if(inputSetUp[1,1]!=test-1){
+aux_aux<- 1
+message(c("The current test should be"," ",inputSetUp[1,1]+1,". ",
+"If you do not have information about previous tests, see the user manual for more details."),domain = NULL, appendLF = TRUE)
+                           }else{aux_aux<- 0}
+
+
+
+
+
+if(inputSetUp[1,1]>0&aux_aux==1){nameb<- paste(name1,"results.txt",sep=""); result2<- readRDS(nameb)}
+
+
+#####
+#####  OPEN IMPORTANT GLOBAL TEST FOR THE CASE WHEN THE WRONG test INPUT IS ENTERED. THUS, THIS FUNCTION ONLY RETURNS THE TABLE WITH INFORMATION FROM PREVIOUS TESTS
+#####
+
+if(aux_aux==0){
+
+
 
 k<- as.numeric(inputSetUp[1,4]) # number of exposures
 
@@ -89,33 +107,33 @@ if( aux_exg>0 ){
 # Matrix with the events and population per exposure-stratum combination
 
 StratNamesCases<- names(table(strata_group_cases))
-cases_a<- matrix(0,length(StratNamesCases),k)
-N_exposures_a<- matrix(0,length(StratNamesCases),k)
+StratNamesControls<- names(table(strata_group_controls))
+StratNames<- levels(factor(c(StratNamesControls,StratNamesCases)))
+
+cases_a<- matrix(0,length(StratNames),k)
+N_exposures_a<- matrix(0,length(StratNames),k)
 
 for(i in 1:k){
-   for(j in 1:length(StratNamesCases)){
-       if(sum(exposure_group==ExposuresNames[i])>0&sum(strata_group_cases==StratNamesCases[j])>0 ){
-       cases_a[j,i]<- sum(cases[exposure_group==ExposuresNames[i]&strata_group_cases==StratNamesCases[j]])
-       N_exposures_a[j,i]<- sum(N_exposures[exposure_group==ExposuresNames[i]&strata_group_cases==StratNamesCases[j]])
-                                                                                                  }
-                                      }
+   for(j in 1:length(StratNames)){
+       if(sum(exposure_group==ExposuresNames[i])>0&sum(strata_group_cases==StratNames[j])>0 ){
+       cases_a[j,i]<- sum(cases[exposure_group==ExposuresNames[i]&strata_group_cases==StratNames[j]])
+       N_exposures_a[j,i]<- sum(N_exposures[exposure_group==ExposuresNames[i]&strata_group_cases==StratNames[j]])
+                                                                                             }
+                                 }
              }
 
 
 # Vector with the controls and population per stratum combination
 
-StratNamesControls<- names(table(strata_group_controls))
-if( sum( StratNamesControls == StratNamesCases) !=length(StratNamesControls) ){
-          stop(c("The labels appearing in 'strata_group_cases' must appear in 'strata_group_controls', and vice versa. See the examples in the user guide of Analyze.Multinomial."),call. =FALSE)
-                                                                              }
+controls_a<- rep(0,length(StratNames))
+N_controls_a<- rep(0,length(StratNames))
 
-controls_a<- rep(0,length(StratNamesControls))
-N_controls_a<- rep(0,length(StratNamesControls))
-
-for(j in 1:length(StratNamesControls)){
-    controls_a[j]<- sum(controls[StratNamesControls[j]==strata_group_controls])
-    N_controls_a[j]<- sum(N_controls[StratNamesControls[j]==strata_group_controls])
-                                      }
+for(j in 1:length(StratNames)){
+    if(sum(strata_group_controls==StratNames[j])>0 ){
+    controls_a[j]<- sum(controls[StratNames[j]==strata_group_controls])
+    N_controls_a[j]<- sum(N_controls[StratNames[j]==strata_group_controls])
+                                                    }
+                              }
 
 
 cases<- cases_a
@@ -140,34 +158,25 @@ while(aux_eg==0){
   theta_controls[ref_group]<- 1
 
 
-  
-# Log-likelihood in theta for the strata effects:
-LLRt<- function(theta_c){
-  yjc2<- yjc[(Nj1+Njc*theta_c)>0]
-  yya<- (yjc+yj1)[(Nj1+Njc*theta_c)>0] 
-  N2a<- (Nj1+Njc*theta_c)[(Nj1+Njc*theta_c)>0]
-  return( sum( yjc2*log(theta_c) - yya*log(N2a) ) )
-                        }
 
 
 
-# MLE for theta_c through maxLik package:
- if(nrow(cases)>1){ # if there are covariates to adjust for.
+#### Exact MLE for theta_c to adjust for the strata effects:
+
+if(nrow(cases)>1){ # if there are covariates to adjust for.
   cs<- seq(1,nrow(cases))[-ref_group]
-yj1<- c( cases[ref_group,], controls[ref_group])
-Nj1<- c( N_exposures[ref_group,], N_controls[ref_group])
-
-  for(j in 1:length(cs)){    
-    yjc<- c( cases[cs[j],], controls[cs[j]])
-    Njc<- c( N_exposures[cs[j],], N_controls[cs[j]])
-    res_theta<- suppressMessages( maxLik(LLRt,start=1) )
-    theta_c<- res_theta$estimate
-    theta_cases[cs[j],]<- theta_c
-    theta_controls[cs[j]]<- theta_c
+  yj1<- c( cases[ref_group,], controls[ref_group])
+  Nj1<- c( N_exposures[ref_group,], N_controls[ref_group])
+   for(j in 1:length(cs)){   
+     Njc<- c( N_exposures[cs[j],], N_controls[cs[j]])
+     yjc<- c( cases[cs[j],], controls[cs[j]])
+     theta_c<- sum(Nj1)*sum(yjc)/(sum(Njc)*sum(yj1))
+     theta_cases[cs[j],]<- theta_c
+     theta_controls[cs[j]]<- theta_c
                         }
-                  }
+                  } 
 
- 
+
                     
 
 
@@ -204,7 +213,7 @@ N_controls<- round(N_controls)
 ####
 
 ## inputSetUp matrix contains:
-# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) Maximum SampleSize, (C13) alpha, (C14) k, (C15) m, (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) rho, (C19) vazio, (C1,10) vazio
+# line 1: (C11) the index for the order of the test (zero entry if we did not have a first test yet), (C12) Maximum SampleSize, (C13) alpha, (C14) k, (C15) m, (C16) title, (C17) reject (the index indicating if and when H0 was rejected), (C18) rho, (C19) M (minimum events to signal), (C1,10) vazio
 # line 2: says if the analysis has been started or not. 0 for not started. 1 for already started.
 # line 3: critical values in the scale of MaxSPRT
 # line 4: sum of the cases per test  
@@ -235,6 +244,7 @@ N<- as.numeric(inputSetUp[1,2])
 alpha<- as.numeric(inputSetUp[1,3])
 m<- as.numeric(inputSetUp[1,5])
 rho<- as.numeric(inputSetUp[1,8])
+M<- as.numeric(inputSetUp[1,9])
 gamma<- as.numeric(inputSetUp[16,8])
 
 R0<- as.numeric(inputSetUp[15,1])
@@ -456,26 +466,35 @@ return(lR)
 # CLOSES THE LOG-LIKELIHOOD FUNCTION
 
 
+###### EXACT MLE ESTIMATOR OF RR
 
+hR<- matrix(0,k,1)
+for(i in 1:k){ hR[i,1]<- ( sum(hN_controls)/sum(hN_exposures[,i]) ) * sum(hcases[,i])/sum(hcontrols)  }
 
-# Here is the estimation of RR:
-    res_RR<- suppressMessages( maxLik(lRo,start=rep(1,length(Individuals_non_zero_pop)) ))
-    hR<- res_RR$estimate
-hR1<- rep(NA,k); hR1[Individuals_non_zero_pop]<- hR; hR<- matrix(hR1,k,1)
+hR1<- rep(NA,k); hR1[Individuals_non_zero_pop]<- hR[Individuals_non_zero_pop]; hR<- matrix(hR1,k,1)
 
 
 #### Confidence Interval for RR
-# Asymptotic confidence intervals for the relative risks:
+# Sison-Glaz method using the DescTools package
+# The confidence interval is obtained by inverting the simultaneous interval for the ps in terms of the RR vector.
 
-CONFS<- confint(res_RR, level = gamma)
+cumEvents<- rep(0,k+1); cumPops<- rep(0,k+1)
+for(i in 1:(k+1)){
+ if(i==(k+1)){
+   cumEvents[i]<- sum(hcontrols)
+   cumPops[i]<- sum(hN_controls)
+             }else{
+ cumEvents[i]<- sum(hcases[,i])
+ cumPops[i]<- sum(hN_exposures[,i]) 
+                  }
+                 }
+
+intres<- MultinomCI(cumEvents, conf.level =gamma, method = "sisonglaz")
 CI_RR<- matrix(NA,k,2)
-CI_RR[Individuals_non_zero_pop,1]<- CONFS[,1]
-CI_RR[Individuals_non_zero_pop,2]<- CONFS[,2]
-##### HERE THE NEW VERSIONOF MLE IS FINISHED
-#####
-
-
-
+for(i in 1:k){if(cumPops[i]>0){CI_RR[i,1]<- intres[i,2]*cumPops[k+1]/(intres[k+1,3]*cumPops[i])
+                               CI_RR[i,2]<- intres[i,3]*cumPops[k+1]/(intres[k+1,2]*cumPops[i])
+                              }
+             }
 
 
 
@@ -492,7 +511,7 @@ CI_RR[Individuals_non_zero_pop,2]<- CONFS[,2]
 LLR <- function(cc,n,z){
 
        if(cc==n){x = n*log(1+z/R0)}else{
-         if((z/R0)*cc/(n-cc)<=1){x=0}else{
+         if((z/R0)*cc/(n-cc)<=1 | M>cc ){x=0}else{
 	       x = cc*log(cc/n)+(n-cc)*log((n-cc)/n)  -cc*log(1/(z/R0+1))-(n-cc)*log((z/R0)/(z/R0+1))
                                     }
                                   } 	
@@ -550,7 +569,7 @@ cv_new<- rep(NN+1,k+1 )
           probE1<- max(0,1-pmultinom(upper = cv_new-1, size=NN, probs= p_h0, method="exact"))
           if(probE1<= alphah){ ii<- ii-1; probE1ref<- probE1; cvs<- cv_new}   
                                   }
-  if(ii==0|probE1>alphah){cv_new<- rep(N_old+NN+1,k+1); probE1ref<- 0}else{cv_new<- cvs}
+  if(ii==0&probE1>alphah){cv_new<- rep(N_old+NN+1,k+1); probE1ref<- 0}else{cv_new<- cvs}
            } 
 
 
@@ -653,7 +672,7 @@ inputSetUp[(20+3*k+2):(20+3*k+2+k),test]<- p_h0
 
 if(sum(new_active==0&active==1)>0){inputSetUp[9,new_active==0&active==1]<- test}  
 Reject_Test_Time<- inputSetUp[9,1:k]
-if(sum(Reject_Test_Time==0)>0){Reject_Test_Time[Reject_Test_Time==0]<- "na"}
+if(sum(Reject_Test_Time==0)>0){Reject_Test_Time[Reject_Test_Time==0]<- NA}
 names(Reject_Test_Time)<- ExposuresNames
 rownames(Reject_Test_Time)<- " "
 
@@ -705,6 +724,19 @@ Cumulative_Cases<- cbind(Cumulative_Cases, matrix(c(inputSetUp[20+3*k+1,1:test])
 colnames(Cumulative_Cases)<- c(ExposuresNames,"Controls")
 rownames(Cumulative_Cases)<- linhas
 
+
+Expected_events_under_H0<- matrix(0,nrow(Cumulative_Cases),ncol(Cumulative_Cases))
+Expected_events_under_H0[1,]<- ps_under_H0[1,]*sum(as.numeric(Cumulative_Cases[1,]))
+if(test>1){
+for(i in 2:test){ 
+Expected_events_under_H0[i,]<- ps_under_H0[i,]*sum(as.numeric(Cumulative_Cases[i,])-as.numeric(Cumulative_Cases[i-1,]))+Expected_events_under_H0[i-1,]
+                }
+          } 
+colnames(Expected_events_under_H0)<- c(ExposuresNames,"Controls")
+rownames(Expected_events_under_H0)<- linhas
+
+
+
 Relative_Risk_estimates<-  round(t(inputSetUp[(20+2*k+1):(20+3*k),1:test]),2)
 #if(test>1){for(i in 2:test){for(j in 1:ncol(Relative_Risk_estimates)){if(Relative_Risk_estimates[i,j]==0){Relative_Risk_estimates[i,j]<- Relative_Risk_estimates[i-1,j]}}}}
 colnames(Relative_Risk_estimates)<- ExposuresNames
@@ -730,14 +762,41 @@ colnames(Upper_bound_CI)<- ExposuresNames
 rownames(Upper_bound_CI)<- linhas
 
 
+Up_to_date_summary<- matrix(c( ps_under_H0[nrow(ps_under_H0),],
+                               Expected_events_under_H0[nrow(Expected_events_under_H0),],
+                               Cumulative_Cases[nrow(Cumulative_Cases),],
+                               c(Critical_Values[nrow(Critical_Values),],NA),
+                               c(Reject_H0[1:k],NA),
+                               c(Reject_Test_Time,NA),
+                               c(Relative_Risk_estimates[nrow(Relative_Risk_estimates),],1),
+                               c(Lower_bound_CI[nrow(Lower_bound_CI),],1),
+                               c(Upper_bound_CI[nrow(Upper_bound_CI),],1),
+                               c(power[nrow(power),],NA)
+                               ), byrow=T , ncol=length(ExposuresNames)+1,
+                            ) 
 
-result<-      list(Reject_H0,   Reject_Test_Time, ps_under_H0,   power,               Critical_Values_LLR,               Cumulative_Cases,   Critical_Values,                              Relative_Risk_estimates,   Lower_bound_CI,              Upper_bound_CI,               Alpha_spending)
-names(result)<- c("Reject_H0", "Rejection_time",  "ps_under_H0", "Cumulative power", "Critical_values_in_MaxSPRT_scale", "Cumulative_cases", "Critical_values_in_cumulative_cases_scale",  "Relative_risk_estimates", "Relative_Risk_Lower_bound", "Relative_Risk_Upper_bound", "Alpha_spending")
+colnames(Up_to_date_summary)<- c(ExposuresNames,"Controls")
+rownames(Up_to_date_summary)<- c("ps_under_H0", "Expected_events_under_H0","Observed_events_(Cumulative_Cases)","Critical_Values","Reject_H0","Rejection_time","Relative_Risk_estimates","Relative_Risk_lower_bound","Relative_Risk_upper_bound","Cumulative_power")
+
+
+
+result2<-      list(Reject_H0,   Reject_Test_Time, ps_under_H0,   power,               Critical_Values_LLR,               Cumulative_Cases,   Critical_Values,                               Expected_events_under_H0,                                      Relative_Risk_estimates,   Lower_bound_CI,              Upper_bound_CI,               Alpha_spending,  Up_to_date_summary)
+names(result2)<- c("Reject_H0", "Rejection_time",  "ps_under_H0", "Cumulative_power", "Critical_values_in_MaxSPRT_scale", "Cumulative_cases", "Critical_values_in_cumulative_cases_scale",   "Expected_number_of_events_under_H0",                          "Relative_risk_estimates", "Relative_Risk_Lower_bound", "Relative_Risk_Upper_bound", "Alpha_spending", "Up_to_date_summary" )
 
 
 
 
-invisible(result)
+
+saveRDS(result2,paste(name1,"results.txt",sep=""))
+
+#####
+#####  CLOSES IMPORTANT GLOBAL TEST
+#####
+                   } 
+
+
+
+invisible(result2)
 
 #####################################
 }##### Close function Analyze.Multinomial

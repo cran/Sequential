@@ -3,7 +3,7 @@
 \title{Function to set up input parameters before using the \code{Analyze.Multinomial} function for the first time.}
 \description{The function \code{AnalyzeSetUp.Multinomial} must be run ahead of \code{Analyze.Multinomial} in order to set up the sequential analysis before the first group of data is analyzed. The function obtains the main parameter settings and performs basic calculations that are necessary for the subsequent sequential analysis.}
 \usage{
-AnalyzeSetUp.Multinomial(name,N=200,alpha=0.05,AlphaSpendType=1,
+AnalyzeSetUp.Multinomial(name,N=200,alpha=0.05,M=1,AlphaSpendType=1,
 R0=1,R1=2,rho=1,pmin=0.05, pmax=0.95,target_power=0.8,
 gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
       }
@@ -11,6 +11,7 @@ gamma=0.9,m=100000,title="n",ExposuresNames="n",address="n")
 \item{name}{The name of the sequential analysis. Must be identical for all looks at the data, and the same as the name given in the subsequent calls to the \code{Analyze.Multinomial} function. It cannot be the same as for another sequential analysis that is run simultaneously on the same computer. There is no default.}
 \item{N}{The maximum sample size, at which the sequential analysis stops without rejecting the null hypothesis.}
 \item{alpha}{The overall significance level. Must be in the range (0,0.5]. The default is "alpha=0.05".}
+\item{M}{The minimum number of events required per exposure before the null hypothesis can be rejected. It must be a positive integer. The default value is "M=1".}
 \item{AlphaSpendType}{Type of robust alpha spending. The possible values are 1 and 2 according to Silva and Maro(2025a). The default is equal to 1.}
 \item{R0}{Test margin under the null hypothesis. Must be a positive number. Default is R0=1.}
 \item{R1}{Relative risk under the alternative hypothesis given the target_power.}
@@ -68,7 +69,7 @@ Development of the AnalyzeSetUp.Multinomial function was funded by:\cr
 }
 
 \references{
-Silva IR, Maro J. (2025), Adaptive Sequential Multiple Hypotheses Testing for Seasonal Concomitant Vaccines Safety Surveillance. Working paper, Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute.
+Silva IR, Wang L, Maro J (2026). Adaptive Sequential Multiple Hypotheses Testing for Concomitant Vaccine Safety Surveillance. Statistics in Medicine, 45:e70662.
 }
 
 \keyword{Multinomial sequential analysis}
