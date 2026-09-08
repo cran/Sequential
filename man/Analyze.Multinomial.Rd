@@ -28,9 +28,9 @@ It can also be used for mixed continuous-group sequential
 analysis where some data arrives continuously while other data arrives in groups. There is (i) no need to pre-specify the
 group sizes before the sequential analysis starts, and (ii) a variety of alpha spending functions are available.
 
-This function runs the adaptive sequential multiple hypotheses testing for seasonal concomitant vaccines safety surveillance introduced by Silva and Maro(2025),
+This function runs the adaptive sequential multiple hypotheses testing for seasonal concomitant vaccines safety surveillance introduced by Silva et al. (2026),
 which was developed for rapidly detecting increased risks of adverse events from one or more combinations of simultaneous vaccine exposures.
-As explained by Silva and Maro(2025), multiple seasonal vaccines may be recommended for some strata of the population defined by covariates, such as gender
+As explained by Silva et al. (2026), multiple seasonal vaccines may be recommended for some strata of the population defined by covariates, such as gender
 and age, for example. Such vaccines can be administered simultaneously or at least within the same vaccination season. Thus, monitoring adverse events origination from
 multiple vaccines may be more informative and statistically powerful than monitoring each vaccine separately.   
 
@@ -40,12 +40,12 @@ For more complex situations with several vaccines, which can multiple types of e
 a valid Monte Carlo decision rule is constructed. 
 
 The alpha spending plan is designed in a way to ensure that a target statistical power, gamma, is ensured for detecting a target increased risk, r1,
-for each multinomial entry. This is possible by means of a new concept introduced by Silva and Maro(2025), the robust alpha spending plan.
-For more details about the method and the construction of the critical values, see Silva and Maro(2025). 
+for each multinomial entry. This is possible by means of a new concept introduced by Silva et al. (2026), the robust alpha spending plan.
+For more details about the method and the construction of the critical values, see Silva et al. (2026). 
 
 Before running \code{Analyze.Multinomial}, it is necessary to specify a planned default alpha spending function,
 which is done using the AlphaSpendType parameter in the
-\code{AnalyzeSetUp.Multinomial} function. As detailed by Silva and Maro(2025), there are two robust alpha spending plan choices, AlphaSpendType=1 or AlphaSpendType=2.
+\code{AnalyzeSetUp.Multinomial} function. As detailed by Silva et al. (2026), there are two robust alpha spending plan choices, AlphaSpendType=1 or AlphaSpendType=2.
 See \code{\link[Sequential]{AnalyzeSetUp.Multinomial}} for more details. 
 
 The function \code{Analyze.Multinomial} is meant to perform the multinomial sequential analysis with a certain level
@@ -57,7 +57,7 @@ Observe that, because the multinomial distribution is discrete, the target alpha
 a realistic interpretation of the results.
 
 To adjust for covariates confounders, \code{Analyze.Multinomial} utilizes the maxLik package (Henningsen et al., 2011) to compute the MLE of the baseline covariates
-effects as derived by Silva and Maro(2025). 
+effects as derived by Silva et al. (2026). 
    
 }
 

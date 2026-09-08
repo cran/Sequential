@@ -293,6 +293,12 @@ if(test==1){ps<- matrix(p_h0,k+1,1)}else{ps<- cbind(ps,matrix(p_h0,k+1,1))}
 
 
 
+#  Using the power calculation up to the last test
+if(test==1){power<- matrix(0,k,test)}else{
+    power<- read.table(paste(name1,"power.txt",sep=""))
+    power<- cbind( power  , rep(0,k) )       
+                                         }
+
 
 
 
@@ -307,7 +313,7 @@ NNs<- matrix(0,k,test)
 for(i in 1:test){if(i!=test){NNs[,i]<- Ns[i]}else{NNs[,i]<- NN}}
 
 
-if(AlphaSpend=="n"){
+if(AlphaSpend=="n"){# first check
 
 Mm<- c(as.numeric(inputSetUp[9,1:k]),1)
 Rejection<- matrix(0,k+1,test); Rejection[k+1,]<- 1
@@ -315,30 +321,22 @@ Rejection<- matrix(0,k+1,test); Rejection[k+1,]<- 1
 for(i in 1:k){if(Mm[i]>0){Rejection[i,Mm[i]:test]<- 1}}
 
 
+tentative_alpha<- min( alpha1,alpha1*(sum(Ns[1:test])/N)^rho )
 
 
-
-powers<- matrix(0,k+1,test); powers[k+1,]<- 1
- 
-if(test>1){
-for(i in 1:k){
-   for(j in 1:test){
-pss<- as.numeric(ps[i,1:j])
-Nss<- Ns[1:j][pss>0]
-      if(as.numeric(ps[i,j])==0|sum(Nss)<=2){if(j>1){powers[i,j]<- powers[i,j-1]}}else{
+if(test>1){powers<- rbind(power,rep(1,ncol(power)))}else{powers<- matrix(0,k+1,1); powers[k+1]<- 1}
 
 
-pss<- pss[pss>0]
-
-     if(AlphaOld>0){res<- try(Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaOld/k,
-AlphaSpend=1,p=pss,GroupSizes=Nss,Tailed="upper",RR=R1,
-Statistic="MaxSPRT",rho), silent = TRUE )
-     if(is.numeric(res[[1]])==TRUE){powers[i,j]<- res$Performance[2]}
-                   }else{powers[i,j]<- 0}
-                                                                          }
-                   }
-             }
-           }
+    for(i in 1:k){
+     pss<- as.numeric(ps[i,1:test])
+     Nss<- Ns[1:test][pss>0]
+      if(ps[i,test]==0|ps[i,test]==1|sum(Ns)<=2){if(test>1){powers[i,test]<- powers[i,test-1]}}else{
+             res<- try(Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= tentative_alpha/k,
+                       AlphaSpend=1,p=pss,GroupSizes=Nss,Tailed="upper",RR=R1,
+                       Statistic="MaxSPRT",rho) , silent = TRUE )
+                       if(is.numeric(res[[1]])==TRUE){powers[i,test]<- res$Performance[2]}
+                                                                                                   }
+                 }
 
 
 
@@ -355,7 +353,7 @@ for(l in 1:k){contribution<- contribution + min( alpha2/k, (alpha2/k)*(sum(MI[l,
 AlphaSpend = min( alpha1,alpha1*((N_old+NN)/N)^rho ) + contribution
 
                        
-                   }
+                  }# closes first check
 
 
 
@@ -379,28 +377,16 @@ alphah<- AlphaSpend - AlphaOld
 
 #### Actual lower bound for power
 
-power<- matrix(0,k,test)
-  
-for(i in 1:k){
-   for(j in 1:test){
-pss<- as.numeric(ps[i,1:j])
-Nss<- Ns[1:j][pss>0]
-      if(as.numeric(ps[i,j])==0|sum(Nss)<=2){
-                                                if(j>1){power[i,j]<- power[i,j-1]}
-                                                if(j==1){power[i,j]<- 0}
-                                                                         }else{
-
-pss<- pss[pss>0]
-
-     if(AlphaSpend>0){res<- try(Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaSpend/k,
-AlphaSpend=1,p=pss,GroupSizes=Nss,Tailed="upper",RR=R1,
-Statistic="MaxSPRT",rho) , silent = TRUE )
-     if(is.numeric(res[[1]])==TRUE){power[i,j]<- res$Performance[2]}
-                     }else{power[i,j]<- 0}
-                                                                              }
-                   }
-             }
-
+ for(i in 1:k){
+     pss<- as.numeric(ps[i,1:test])
+     Nss<- Ns[1:test][pss>0]
+      if(ps[i,test]==0|ps[i,test]==1|sum(Ns)<=2){if(test>1){power[i,test]<- power[i,test-1]}}else{
+             res<- try(Performance.AlphaSpend.Binomial(N=sum(Nss), alpha= AlphaSpend/k,
+                       AlphaSpend=1,p=pss,GroupSizes=Nss,Tailed="upper",RR=R1,
+                       Statistic="MaxSPRT",rho) , silent = TRUE )
+                       if(is.numeric(res[[1]])==TRUE){power[i,test]<- res$Performance[2]}
+                                                                                                   }
+              }
 
 
 
@@ -488,7 +474,7 @@ for(i in 1:(k+1)){
  cumPops[i]<- sum(hN_exposures[,i]) 
                   }
                  }
-
+#library("DescTools")
 intres<- MultinomCI(cumEvents, conf.level =gamma, method = "sisonglaz")
 CI_RR<- matrix(NA,k,2)
 for(i in 1:k){if(cumPops[i]>0){CI_RR[i,1]<- intres[i,2]*cumPops[k+1]/(intres[k+1,3]*cumPops[i])
@@ -506,20 +492,22 @@ for(i in 1:k){if(cumPops[i]>0){CI_RR[i,1]<- intres[i,2]*cumPops[k+1]/(intres[k+1
 
 
 ###########################################
-#----- THE MAXSPRT STATISTIC
+#------ Expanded version of the LLR (MAXSPRT STATISTIC - Wald-type), which considers different Bernoulli probabilities over time
+#------ This replaced the original MAXSPRT for version 4.6.2 of the Sequential package  
 
-LLR <- function(cc,n,z){
+LLR <- function(cc,ij){
 
-       if(cc==n){x = n*log(1+z/R0)}else{
-         if((z/R0)*cc/(n-cc)<=1 | M>cc ){x=0}else{
-	       x = cc*log(cc/n)+(n-cc)*log((n-cc)/n)  -cc*log(1/(z/R0+1))-(n-cc)*log((z/R0)/(z/R0+1))
-                                    }
-                                  } 	
-      	x
-	                 }
-#--------------------------
+hRh<- ( sum(hN_controls)/sum(hN_exposures[,ij]) ) * cc/sum(hcontrols)
 
+ if(hRh>R0& min(ps[ij,])<1&max(ps[ij,])>0){
+#zs<- 1/ps[ij,]-1
+ zs<- hN_controls/hN_exposures[,ij] #<= esar estes zs
+ NS<- hcases[,ij]+hcontrols #<= usar estes NS no lugar dos Ns abaixo
+max(0,cc*( log(hRh)-log(R0) ) + sum( NS*( log(R0+zs) - log(hRh+zs) ) ))
 
+                                          }else{0}
+
+                       }
 
 
 
@@ -528,22 +516,20 @@ LLR <- function(cc,n,z){
 #-------------------------------------------------
 ## Finding the critical values for the current test
 
+
 #### SAMPLE SPACE IN THE LLR SCALE
 aux3<- 0
 for(i in 1:k){
-if(p[i]>0&p[i]<1){
   for(x in 0:(NN+N_old)){
-             z<- 1/p[i]-1
-             if(aux3==0){aux3<- 1; llrs<-  LLR(x,NN+N_old,z)}else{
-             llrh<- LLR(x,NN+N_old,z)
-             llrs<-  c(llrs, llrh ) 
-                                                                }  
-                       }
-                 }
+    if(aux3==0){aux3<- 1; llrs<-  LLR(x,i)}else{
+             llrh<- LLR(x,i)
+             llrs<-  c(llrs, llrh) 
+                                               } 
+
+                        }
              }
 
 llrs<- unique(llrs); llrs<- llrs[order(llrs)]
-
 #------
 
 
@@ -561,9 +547,8 @@ cv_new<- rep(NN+1,k+1 )
        while(probE1<= alphah& ii>0){ 
            cv_llr<- llrs[ii] 
            for(j in 1:k){
-                         if(p[j]>0 & p[j]<1){
-                         z<- 1/p[j]-1
-                         x<- NN; llr2<- LLR(x,NN,z) ; while(llr2>=cv_llr){cv_new[j]<- x; x<- x-1; llr2<- LLR(x,NN,z) }
+                         if(p[j]>0 & p[j]<1){                         
+                         x<- NN; llr2<- LLR(x,j) ; while(llr2>=cv_llr){cv_new[j]<- x; x<- x-1; llr2<- LLR(x,j) }
                                             }
                         }      
           probE1<- max(0,1-pmultinom(upper = cv_new-1, size=NN, probs= p_h0, method="exact"))
@@ -585,16 +570,15 @@ if(test>1){
 
 cv_new<- rep(N_old+NN+1,k+1 )
 
-    ii<- sum(llrs<cv_llr_old/2)
+    ii<- sum(llrs<cv_llr_old/4)
     
     probE1<- 1
        while(probE1> alphah & ii<=length(llrs)){ # first while
            cv_llr<- llrs[ii] 
            for(j in 1:k){
-                        if(p[j]>0 & p[j]<1){
-                        z<- 1/p[j]-1
- ### MUDEI O while(llr2>=cv_llr) ABAIXO POR while(llr2>cv_llr)
-                        x<- NN+N_old; llr2<- LLR(x,NN+N_old,z) ; while(llr2>cv_llr){cv_new[j]<- x; x<- x-1; llr2<- LLR(x,NN+N_old,z) }
+                        if(p[j]>0 & p[j]<1){                        
+ ### THE while(llr2>=cv_llr) BELOW WAS REPLACED BY while(llr2>cv_llr)
+                        x<- NN+N_old; llr2<- LLR(x,j) ; while(llr2>cv_llr){cv_new[j]<- x; x<- x-1; llr2<- LLR(x,j) }
                                            }
                         } 
              
@@ -603,8 +587,8 @@ cvs<- cbind(cvs_old,cv_new)
 ys<- matrix(0,k+1,test)
 G<- 0
  for(i in 1:m){
-         ys[,1]<- rmultinom(1,as.numeric(Ns[1]),p_h0); aux<- sum(sum(ys[,1]<cvs[,1])==(k+1))
-         for(j in 2:test){ys[,j]<- ys[,j-1]+rmultinom(1,as.numeric(Ns[j]),p_h0); if(j==test){aux<- aux+sum(sum(ys[1:k,j]>=cvs[1:k,j])>0)}else{aux<- aux+sum(sum(ys[,j]<cvs[,j])==(k+1))}} 
+         ys[,1]<- rmultinom(1,as.numeric(Ns[1]),ps[,1]); aux<- sum(sum(ys[,1]<cvs[,1])==(k+1))
+         for(j in 2:test){ys[,j]<- ys[,j-1]+rmultinom(1,as.numeric(Ns[j]),ps[,j]); if(j==test){aux<- aux+sum(sum(ys[1:k,j]>=cvs[1:k,j])>0)}else{aux<- aux+sum(sum(ys[,j]<cvs[,j])==(k+1))}} 
          G<- G + sum(aux==test)        
               }
          
@@ -615,7 +599,6 @@ G<- 0
                                   }# close first while
   cv_new<- cvs ; if(ii== (length(llrs)+1) ){cv_new<- rep(N_old+NN+1,k+1)}
  
-
           }
 
 
@@ -691,6 +674,7 @@ inputSetUp[(20+4*k+3+k):(20+5*k+3+k-1),test]<- CI_RR[,2]
 write.table(inputSetUp,name)
 write.table(MatrixN_exposures, paste(name1,"MatrixN_exposures.txt",sep="") )
 write.table(VectorN_controls, paste(name1,"VectorN_controls.txt",sep="") )
+write.table(power, paste(name1,"power.txt",sep="") )
 
 ##########################################################
 ## PRINTING OUTPUT TABLES
@@ -720,16 +704,23 @@ colnames(Critical_Values)<- ExposuresNames
 rownames(Critical_Values)<- linhas
 
 Cumulative_Cases<-  t(inputSetUp[(20+k+1):(20+2*k),1:test])
-Cumulative_Cases<- cbind(Cumulative_Cases, matrix(c(inputSetUp[20+3*k+1,1:test]),,1))
-colnames(Cumulative_Cases)<- c(ExposuresNames,"Controls")
+Cumulative_Cases<- cbind(Cumulative_Cases, matrix(c(inputSetUp[20+3*k+1,1:test]),,1) )
+
+Cumulative_Cases2<- Cumulative_Cases
+colnames(Cumulative_Cases2)<- c(ExposuresNames,"Controls")
+rownames(Cumulative_Cases2)<- linhas
+
+totals<- sum(as.numeric(Cumulative_Cases[1,])); if(test>1){for(i in 2:nrow(Cumulative_Cases)){totals<- c(totals,sum(as.numeric(Cumulative_Cases[i,])))}}
+Cumulative_Cases<- cbind(Cumulative_Cases, matrix(totals,,1) )
+colnames(Cumulative_Cases)<- c(ExposuresNames,"Controls","Total")
 rownames(Cumulative_Cases)<- linhas
 
 
-Expected_events_under_H0<- matrix(0,nrow(Cumulative_Cases),ncol(Cumulative_Cases))
-Expected_events_under_H0[1,]<- ps_under_H0[1,]*sum(as.numeric(Cumulative_Cases[1,]))
+Expected_events_under_H0<- matrix(0,nrow(Cumulative_Cases2),ncol(Cumulative_Cases2))
+Expected_events_under_H0[1,]<- ps_under_H0[1,]*sum(as.numeric(Cumulative_Cases2[1,]))
 if(test>1){
 for(i in 2:test){ 
-Expected_events_under_H0[i,]<- ps_under_H0[i,]*sum(as.numeric(Cumulative_Cases[i,])-as.numeric(Cumulative_Cases[i-1,]))+Expected_events_under_H0[i-1,]
+Expected_events_under_H0[i,]<- ps_under_H0[i,]*sum(as.numeric(Cumulative_Cases2[i,])-as.numeric(Cumulative_Cases2[i-1,]))+Expected_events_under_H0[i-1,]
                 }
           } 
 colnames(Expected_events_under_H0)<- c(ExposuresNames,"Controls")
@@ -764,7 +755,7 @@ rownames(Upper_bound_CI)<- linhas
 
 Up_to_date_summary<- matrix(c( ps_under_H0[nrow(ps_under_H0),],
                                Expected_events_under_H0[nrow(Expected_events_under_H0),],
-                               Cumulative_Cases[nrow(Cumulative_Cases),],
+                               Cumulative_Cases2[nrow(Cumulative_Cases2),],
                                c(Critical_Values[nrow(Critical_Values),],NA),
                                c(Reject_H0[1:k],NA),
                                c(Reject_Test_Time,NA),
@@ -781,7 +772,7 @@ rownames(Up_to_date_summary)<- c("ps_under_H0", "Expected_events_under_H0","Obse
 
 
 result2<-      list(Reject_H0,   Reject_Test_Time, ps_under_H0,   power,               Critical_Values_LLR,               Cumulative_Cases,   Critical_Values,                               Expected_events_under_H0,                                      Relative_Risk_estimates,   Lower_bound_CI,              Upper_bound_CI,               Alpha_spending,  Up_to_date_summary)
-names(result2)<- c("Reject_H0", "Rejection_time",  "ps_under_H0", "Cumulative_power", "Critical_values_in_MaxSPRT_scale", "Cumulative_cases", "Critical_values_in_cumulative_cases_scale",   "Expected_number_of_events_under_H0",                          "Relative_risk_estimates", "Relative_Risk_Lower_bound", "Relative_Risk_Upper_bound", "Alpha_spending", "Up_to_date_summary" )
+names(result2)<- c("Reject_H0", "Rejection_time",  "ps_under_H0", "Cumulative_power", "Critical_values_in_LLR_scale", "Cumulative_cases", "Critical_values_in_cumulative_cases_scale",   "Expected_number_of_events_under_H0",                          "Relative_risk_estimates", "Relative_Risk_Lower_bound", "Relative_Risk_Upper_bound", "Alpha_spending", "Up_to_date_summary" )
 
 
 
