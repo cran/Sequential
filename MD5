@@ -1,8 +1,8 @@
-bc5f6b6661d4c33c732b0b29f2133018 *DESCRIPTION
-430e08375a5c0e932ae379436543aada *NAMESPACE
+476f3c71effbfacad5e58bfe75edcb5a *DESCRIPTION
+cfe5457385ae0a312e8a15b4a2ace454 *NAMESPACE
 471ee6454da0688658e5dc3281ee5b4a *R/Analyze.Binomial.R
 99fec7be61b135e539ed59887c79315e *R/Analyze.CondPoisson.R
-eba8ce00c794f547cb1ac7e927c81b7a *R/Analyze.Multinomial.R
+21205dec2b79405afa2c6461d46869a0 *R/Analyze.Multinomial.R
 fa0c0d26ce53605a6195f2cd8a8b3195 *R/Analyze.Poisson.R
 70b8f2f1cdf8a3b57f4e214314a78ca8 *R/Analyze.wBinomial.R
 50f7019de20fdfdc4d686a541955bea2 *R/AnalyzeRegression.Binomial.R
@@ -66,4 +66,4 @@ d888a18271445853920d7af75508088b *man/Performance.Threshold.Poisson.Rd
 d9c5580b6aa541962476a16974da84ab *man/SampleSize.Binomial.Rd
 bba8542b05c5dde37738351cbae0a117 *man/SampleSize.CondPoisson.Rd
 32576b668f3bd074c4efab6076703d8d *man/SampleSize.Poisson.Rd
-b9ed5d6683be41570b130c36e5afcf96 *man/Sequential-package.Rd
+cecd3958c7c6fe0079930f982f55cd28 *man/Sequential-package.Rd

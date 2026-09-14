@@ -776,7 +776,13 @@ names(result2)<- c("Reject_H0", "Rejection_time",  "ps_under_H0", "Cumulative_po
 
 
 
-
+message("===========================================================================================",domain = NULL, appendLF = TRUE)
+message(c("Parameter settings: N= ",N,", alpha= ",alpha,", rho= ", rho, ", M= ",M, ", H0: RR<=",R0, "."),domain = NULL, appendLF = TRUE)
+message(c("Analysis performed on ",date(),"."),domain = NULL, appendLF = TRUE)
+message(c("Managing power per exposure with robust alpha spending: pmin= ",pmin, " pmax= ", pmax, "."),domain = NULL, appendLF = TRUE)
+message(c("The target power is ", target_power, " for RR>= ", R1, "."),domain = NULL, appendLF = TRUE)
+message(c("The global confidence coefficient for the simultaneous confidence intervals is ", gamma, "."),domain = NULL, appendLF = TRUE)
+message("===========================================================================================",domain = NULL, appendLF = TRUE)
 
 saveRDS(result2,paste(name1,"results.txt",sep=""))
 
