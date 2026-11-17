@@ -21,8 +21,8 @@ the critical value needed, and the corresponding expected time to signal when th
 \tabular{ll}{
 Package: \tab Sequential\cr
 Type: \tab Package\cr
-Version: \tab 4.6.3\cr
-Date: \tab 2026-09-12\cr
+Version: \tab 4.6.4\cr
+Date: \tab 2026-11-17\cr
 License: \tab GPL 2\cr
 LazyLoad: \tab yes\cr
 \tab \cr
@@ -419,24 +419,25 @@ Development of the R Sequential package has been funded and supported by:\cr
 -     Department of Population Medicine, Harvard Medical School and Harvard Pilgrim Health Care Institute (v4.4).\cr
 \cr
 Feedback from users is greatly appreciated. Very valuable suggestions concerning the R Sequential package have been received from various individuals, including:\cr
--	Ron Berman, University of California Berkeley.\cr
--	Claudia Coronel-Moreno, Harvard Pilgrim Health Care Institute.\cr
--	Bruce Fireman, Kaiser Permanente Northern California.\cr
--	Josh Gagne, Harvard Medical School and Brigham and Women`s Hospital.\cr
--	Ned Lewis, Kaiser Permanente Northern California.\cr
--	Judith Maro, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
--	Azadeh Shoaibi, Food and Drug Administration.\cr
--	Katherine Yih, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
--     Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC.\cr
--	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland.\cr
--	Andreia Leite, Department of Infectious Disease Epidemiology, London School of Hygiene and Tropical Medicine.\cr 
--	Laura Hou, Harvard Pilgrim Health Care Institute, Boston, USA.\cr
 -	Abdurrahman Abdurrob, Division of Pharmacoepidemiology and Pharmacoeconomics, Department of Medicine, Brigham and Women's Hospital and Harvard Medical School.\cr
+-	Andreia Leite, Department of Infectious Disease Epidemiology, London School of Hygiene and Tropical Medicine.\cr
+-	Azadeh Shoaibi, Food and Drug Administration.\cr
+-	Bruce Fireman, Kaiser Permanente Northern California.\cr
+-	Claudia Coronel-Moreno, Harvard Pilgrim Health Care Institute.\cr
+-	Diana Emerton, Department of Population Medicine - Harvard Pilgrim Health Care Institute.\cr
+-     Jie Tang, Clinical biostatistics, Janssen R and D US, Johnson and Johnson LLC.\cr
+-     Joselito M. Montalban, Active Living, Population and Public Health Branch, Winnipeg, Manitoba, Canada.\cr
+-	Josh Gagne, Harvard Medical School and Brigham and Women`s Hospital.\cr
+-	Judith Maro, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
+-	Katherine Yih, Harvard Medical School and Harvard Pilgrim Health Care Institute.\cr
 -	Kirk Snyder, Information Management Services, Inc.\cr
--     Joselito M. Montalban, Active Living, Population and Public Health Branch, Winnipeg, Manitoba, Canada.\cr 
--     Sarah Spruin and Vaccine Safety Surveillance, Public Health Agency of Canada.\cr
--     Lola Adewale, Stateam LLC, New Jersey, United States.\cr
+-	Laura Hou, Harvard Pilgrim Health Care Institute, Boston, USA.\cr
 -	Lian Lin, Ph.D., Director, Safety Statistics, Stats and Programming, Moderna.\cr
+-     Lola Adewale, Stateam LLC, New Jersey, United States.\cr
+-	Ned Lewis, Kaiser Permanente Northern California.\cr
+-	Ron Berman, University of California Berkeley.\cr
+-     Sarah Spruin and Vaccine Safety Surveillance, Public Health Agency of Canada.\cr
+-	Tuomo A. Nieminen, The National Institute for Health and Welfare (THL), Finland.\cr
 }
 
 \keyword{Sequential analysis}
@@ -628,5 +629,8 @@ Version 4.6.2, September 07, 2026\cr
 \cr
 Version 4.6.3, September 12, 2026\cr
 -	Adjustments of output tables for the Analyze.Multinomial function and removal of maxLik dependency.\cr
+\cr
+Version 4.6.4, Oct 10, 2026\cr
+-	Adjustments for the AnalyzeSetUp.CondPoisson function.\cr
 \cr
 }

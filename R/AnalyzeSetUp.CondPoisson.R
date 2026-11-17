@@ -151,9 +151,6 @@ power_ref<- res2$Performance[2]
 T<-  SampleSize
 }
 
-T<- length(CV_new)+4*events_fraction
-SampleSize<- length(CV_new)+4*events_fraction
-
 
 
 
